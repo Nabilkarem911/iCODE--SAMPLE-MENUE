@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة الطعام | واو بشاميل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; padding-bottom: 100px; }
+        
+        /* 1. Marquee */
+        .marquee-strip { background: #FFF7ED; overflow: hidden; white-space: nowrap; padding: 8px 0; border-bottom: 1px solid #FFEDD5; }
+        .marquee-content { display: inline-block; animation: scrollLeft 30s linear infinite; }
+        .marquee-item { display: inline-flex; align-items: center; gap: 5px; margin: 0 20px; font-size: 12px; font-weight: bold; color: #9A3412; }
+        @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
+
+        /* 2. Slider */
+        .slider-container { position: relative; width: 100%; overflow: hidden; padding: 10px 0; }
+        .slider-track { display: flex; gap: 15px; overflow-x: auto; scroll-behavior: smooth; padding: 0 15px; scrollbar-width: none; }
+        .slider-track::-webkit-scrollbar { display: none; }
+        .offer-card { flex: 0 0 85%; height: 160px; border-radius: 18px; overflow: hidden; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        @media (min-width: 768px) { .offer-card { flex: 0 0 40%; height: 220px; } }
+        .offer-card img { width: 100%; height: 100%; object-fit: cover; }
+        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 35px; height: 35px; background: rgba(255, 255, 255, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer; z-index: 20; color: #FF5400; transition: 0.2s; }
+        html[dir="rtl"] .prev-btn { right: 10px; } html[dir="rtl"] .next-btn { left: 10px; }
+        html[dir="ltr"] .prev-btn { left: 10px; transform: rotate(180deg); } html[dir="ltr"] .next-btn { right: 10px; transform: rotate(180deg); }
+
+        /* 3. Sticky Cats */
+        .sticky-cats { position: sticky; top: 0; z-index: 40; background: white/95; backdrop-filter: blur(5px); box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
+        .cat-scroll { display: flex; overflow-x: auto; gap: 10px; padding: 0 15px; scrollbar-width: none; }
+        .cat-pill { white-space: nowrap; padding: 8px 18px; border-radius: 25px; font-size: 13px; font-weight: bold; background: #f3f4f6; color: #4b5563; transition: 0.3s; cursor: pointer; border: 1px solid transparent; }
+        .cat-pill.active { background: #FF9F1C; color: white; border-color: #FF9F1C; }
+
+        /* 4. Menu Grid */
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
+        @media (min-width: 640px) { .menu-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1024px) { .menu-grid { grid-template-columns: repeat(4, 1fr); } }
+
+        .menu-item { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; display: flex; flex-direction: column; transition: transform 0.2s; }
+        .menu-img-box { position: relative; padding-top: 75%; overflow: hidden; }
+        .menu-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .add-btn-mini { position: absolute; bottom: 10px; left: 10px; width: 32px; height: 32px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.15); color: #FF9F1C; font-size: 16px; z-index: 10; cursor: pointer; transition: 0.2s; }
+        html[dir="ltr"] .add-btn-mini { left: auto; right: 10px; }
+
+        /* Badges & Icons (تم الإصلاح) */
+        .info-strip { display: flex; gap: 5px; padding: 0 10px; margin-top: -12px; position: relative; z-index: 5; }
+        .cal-badge { background: #fff; border: 1px solid #fee2e2; color: #ef4444; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 6px; display: flex; align-items: center; gap: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .allergen-icon { width: 22px; height: 22px; background: #f0f9ff; border: 1px solid #e0f2fe; color: #0284c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        /* Cart */
+        .cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 150%); z-index: 50; width: 90%; max-width: 500px; background: #1f2937; color: white; border-radius: 16px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: 0.4s; }
+        .cart-bar.show { transform: translate(-50%, 0); }
+        
+        .sec-header { display: flex; align-items: center; gap: 10px; padding: 25px 15px 10px 15px; }
+        .sec-header h3 { font-size: 18px; font-weight: 900; color: #1f2937; }
+        .sec-line { flex: 1; height: 2px; background: #f3f4f6; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div class="marquee-strip"><div class="marquee-content" id="marquee-txt">...</div></div>
+
+    <div class="bg-white p-4 flex justify-between items-center sticky top-0 z-30 shadow-sm border-b border-gray-100">
+        <h1 class="text-xl font-black text-gray-800" data-i18n="menuTitle">قائمة الطعام</h1>
+        <div class="flex gap-2">
+            <button onclick="toggleLang()" id="lang-btn" class="bg-gray-100 h-9 px-3 rounded-xl flex items-center justify-center font-bold text-xs border border-gray-200">EN</button>
+            <a href="index.html" class="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-200"><i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i></a>
+        </div>
+    </div>
+
+    <div class="bg-orange-50/50 pb-6 pt-4">
+        <div class="px-4 mb-2 font-black text-gray-700 flex items-center gap-2"><i class="fa-solid fa-fire text-orange-500"></i> <span data-i18n="offersTitle">العروض</span></div>
+        <div class="slider-container group" onmouseenter="stopAutoScroll()" onmouseleave="startAutoScroll()">
+            <div class="slider-btn prev-btn" onclick="scrollSlider(-1)"><i class="fa-solid fa-chevron-right"></i></div>
+            <div class="slider-btn next-btn" onclick="scrollSlider(1)"><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="slider-track" id="offers-track">
+                <div class="offer-card"><img src="images/offer1.jpg" onerror="this.src='https://placehold.co/400x200?text=Offer1'"></div>
+                <div class="offer-card"><img src="images/offer2.jpg" onerror="this.src='https://placehold.co/400x200?text=Offer2'"></div>
+                <div class="offer-card"><img src="images/offer3.jpg" onerror="this.src='https://placehold.co/400x200?text=Offer3'"></div>
+                <div class="offer-card"><img src="images/offer4.jpg" onerror="this.src='https://placehold.co/400x200?text=Offer4'"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sticky-cats">
+        <div class="cat-scroll">
+            <div class="cat-pill active" onclick="scrollToSec('sec-offers')" data-i18n="catOffers">عروض التوفير</div>
+            <div class="cat-pill" onclick="scrollToSec('sec-plates')" data-i18n="catPlates">أطباق</div>
+            <div class="cat-pill" onclick="scrollToSec('sec-clay')" data-i18n="catClay">فخار</div>
+            <div class="cat-pill" onclick="scrollToSec('sec-sweets')" data-i18n="catSweets">حلا</div>
+            <div class="cat-pill" onclick="scrollToSec('sec-drinks')" data-i18n="catDrinks">مشروبات</div>
+        </div>
+    </div>
+
+    <div id="sec-offers">
+        <div class="sec-header"><h3 data-i18n="catOffers">عروض التوفير</h3><div class="sec-line"></div></div>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <div class="menu-img-box"><img src="images/offer2.jpg" class="menu-img"><div class="add-btn-mini" onclick="addToCart(110)"><i class="fa-solid fa-plus"></i></div></div>
+                <div class="info-strip">
+                    <div class="cal-badge"><i class="fa-solid fa-fire"></i> 1200</div>
+                    <div class="allergen-icon"><i class="fa-solid fa-users"></i></div> </div>
+                <div class="p-3"><h4 class="font-bold text-xs text-gray-800" data-i18n="boxFamily">بوكس لمة العيلة</h4><p class="text-sm font-black text-orange-500 mt-1">110 <span class="curr">ر.س</span></p></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-img-box"><img src="images/offer1.jpg" class="menu-img"><div class="add-btn-mini" onclick="addToCart(65)"><i class="fa-solid fa-plus"></i></div></div>
+                <div class="info-strip">
+                    <div class="cal-badge"><i class="fa-solid fa-fire"></i> 850</div>
+                    <div class="allergen-icon"><i class="fa-solid fa-film"></i></div> </div>
+                <div class="p-3"><h4 class="font-bold text-xs text-gray-800" data-i18n="boxMovie">بوكس فيلم السهرة</h4><p class="text-sm font-black text-orange-500 mt-1">65 <span class="curr">ر.س</span></p></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sec-plates">
+        <div class="sec-header"><h3 data-i18n="catPlates">أطباق</h3><div class="sec-line"></div></div>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <div class="menu-img-box"><img src="images/special_chicken.jpg" onerror="this.src='https://placehold.co/300?text=NoImage'" class="menu-img"><div class="add-btn-mini" onclick="addToCart(30)"><i class="fa-solid fa-plus"></i></div></div>
+                <div class="info-strip">
+                    <div class="cal-badge"><i class="fa-solid fa-fire"></i> 450</div>
+                    <div class="allergen-icon" title="Gluten"><i class="fa-solid fa-bread-slice"></i></div>
+                    <div class="allergen-icon" title="Dairy"><i class="fa-solid fa-cheese"></i></div>
+                </div>
+                <div class="p-3"><h4 class="font-bold text-xs text-gray-800" data-i18n="itemSpChicken">سبيشال بشاميل دجاج</h4><p class="text-sm font-black text-orange-500 mt-1">30 <span class="curr">ر.س</span></p></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-img-box"><img src="images/special_meat.jpg" onerror="this.src='https://placehold.co/300?text=NoImage'" class="menu-img"><div class="add-btn-mini" onclick="addToCart(35)"><i class="fa-solid fa-plus"></i></div></div>
+                <div class="info-strip">
+                    <div class="cal-badge"><i class="fa-solid fa-fire"></i> 500</div>
+                    <div class="allergen-icon"><i class="fa-solid fa-bread-slice"></i></div>
+                    <div class="allergen-icon"><i class="fa-solid fa-cheese"></i></div>
+                </div>
+                <div class="p-3"><h4 class="font-bold text-xs text-gray-800" data-i18n="itemSpMeat">سبيشال بشاميل لحم</h4><p class="text-sm font-black text-orange-500 mt-1">35 <span class="curr">ر.س</span></p></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-img-box"><img src="images/balls.jpg" onerror="this.src='https://placehold.co/300?text=NoImage'" class="menu-img"><div class="add-btn-mini" onclick="addToCart(25)"><i class="fa-solid fa-plus"></i></div></div>
+                <div class="info-strip">
+                    <div class="cal-badge"><i class="fa-solid fa-fire"></i> 320</div>
+                    <div class="allergen-icon"><i class="fa-solid fa-egg"></i></div>
+                </div>
+                <div class="p-3"><h4 class="font-bold text-xs text-gray-800" data-i18n="itemBalls">كرات البطاطس</h4><p class="text-sm font-black text-orange-500 mt-1">25 <span class="curr">ر.س</span></p></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-img-box"><img src="images/moussaka_chicken.jpg" onerror="this.src='https://placehold.co/300?text=NoImage'" class="menu-img"><div class="add-btn-mini" onclick="addToCart(25)"><i class="fa-solid fa-plus"></i></div></div>
+                <div class="info-strip">
+                    <div class="cal-badge"><i class="fa-solid fa-fire"></i> 380</div>
+                    <div class="allergen-icon"><i class="fa-solid fa-plant-wilt"></i></div> </div>
+                <div class="p-3"><h4 class="font-bold text-xs text-gray-800" data-i18n="itemMouChicken">بشاميل مصقعة دجاج</h4><p class="text-sm font-black text-orange-500 mt-1">25 <span class="curr">ر.س</span></p></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-img-box"><img src="images/moussaka_meat.jpg" onerror="this.src='https://placehold.co/300?text=NoImage'" class="menu-img"><div class="add-btn-mini" onclick="addToCart(30)"><i class="fa-solid fa-plus"></i></div></div>
+                <div class="info-strip">
+                    <div class="cal-badge"><i class="fa-solid fa-fire"></i> 410</div>
+                </div>
+                <div class="p-3"><h4 class="font-bold text-xs text-gray-800" data-i18n="itemMouMeat">بشاميل مصقعة لحم</h4><p class="text-sm font-black text-orange-500 mt-1">30 <span class="curr">ر.س</span></p></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sec-clay">
+        <div class="sec-header"><h3 data-i18n="catClay">فخار</h3><div class="sec-line"></div></div>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <div class="menu-img-box"><img src="images/clay_meat.jpg" onerror="this.src='https://placehold.co/300?text=NoImage'" class="menu-img"><div class="add-btn-mini" onclick="addToCart(40)"><i class="fa-solid fa-plus"></i></div></div>
+                <div class="info-strip">
+                    <div class="cal-badge"><i class="fa-solid fa-fire"></i> 550</div>
+                    <div class="allergen-icon"><i class="fa-solid fa-bowl-food"></i></div>
+                </div>
+                <div class="p-3"><h4 class="font-bold text-xs text-gray-800" data-i18n="itemClayMeat">بشاميل فخار لحم</h4><p class="text-sm font-black text-orange-500 mt-1">40 <span class="curr">ر.س</span></p></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-img-box"><img src="images/clay_chicken.jpg" onerror="this.src='https://placehold.co/300?text=NoImage'" class="menu-img"><div class="add-btn-mini" onclick="addToCart(35)"><i class="fa-solid fa-plus"></i></div></div>
+                <div class="info-strip">
+                    <div class="cal-badge"><i class="fa-solid fa-fire"></i> 520</div>
+                    <div class="allergen-icon"><i class="fa-solid fa-bowl-food"></i></div>
+                </div>
+                <div class="p-3"><h4 class="font-bold text-xs text-gray-800" data-i18n="itemClayChicken">بشاميل فخار دجاج</h4><p class="text-sm font-black text-orange-500 mt-1">35 <span class="curr">ر.س</span></p></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sec-sweets">
+        <div class="sec-header"><h3 data-i18n="catSweets">حلا</h3><div class="sec-line"></div></div>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <div class="menu-img-box"><img src="images/omali.jpg" onerror="this.src='https://placehold.co/300?text=NoImage'" class="menu-img"><div class="add-btn-mini" onclick="addToCart(15)"><i class="fa-solid fa-plus"></i></div></div>
+                <div class="info-strip">
+                    <div class="cal-badge"><i class="fa-solid fa-fire"></i> 300</div>
+                    <div class="allergen-icon"><i class="fa-solid fa-bread-slice"></i></div>
+                    <div class="allergen-icon"><i class="fa-solid fa-cheese"></i></div>
+                </div>
+                <div class="p-3"><h4 class="font-bold text-xs text-gray-800" data-i18n="itemOmAli">فخار أم علي</h4><p class="text-sm font-black text-orange-500 mt-1">15 <span class="curr">ر.س</span></p></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sec-drinks">
+        <div class="sec-header"><h3 data-i18n="catDrinks">مشروبات</h3><div class="sec-line"></div></div>
+        <div class="menu-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="menu-item text-center">
+                <div class="p-2"><img src="images/pepsi.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2405/2405597.png'" class="w-10 h-10 mx-auto"></div>
+                <h4 class="font-bold text-[10px]" data-i18n="pepsi">بيبسي</h4>
+                <p class="text-xs font-bold text-orange-500 pb-2">2.5 <span class="curr">ر.س</span></p>
+                <button class="w-full bg-gray-100 py-1 text-xs" onclick="addToCart(2.5)">+</button>
+            </div>
+            <div class="menu-item text-center">
+                <div class="p-2"><img src="images/7up.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2405/2405597.png'" class="w-10 h-10 mx-auto filter hue-rotate-180"></div>
+                <h4 class="font-bold text-[10px]" data-i18n="7up">سفن أب</h4>
+                <p class="text-xs font-bold text-orange-500 pb-2">2.5 <span class="curr">ر.س</span></p>
+                <button class="w-full bg-gray-100 py-1 text-xs" onclick="addToCart(2.5)">+</button>
+            </div>
+            <div class="menu-item text-center">
+                <div class="p-2"><img src="images/water.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/824/824239.png'" class="w-10 h-10 mx-auto"></div>
+                <h4 class="font-bold text-[10px]" data-i18n="water">ماء</h4>
+                <p class="text-xs font-bold text-orange-500 pb-2">1.0 <span class="curr">ر.س</span></p>
+                <button class="w-full bg-gray-100 py-1 text-xs" onclick="addToCart(1)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cart-bar" id="cart-bar">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-yellow-400 font-bold text-lg" id="cart-count">0</div>
+            <div>
+                <p class="text-[10px] text-gray-300" data-i18n="total">الإجمالي</p>
+                <p class="font-bold text-lg leading-none"><span id="cart-total">0</span> <span class="curr">ر.س</span></p>
+            </div>
+        </div>
+        <button class="bg-yellow-500 text-gray-900 font-bold px-5 py-2 rounded-xl text-sm hover:bg-yellow-400 transition" data-i18n="checkout">إتمام الطلب</button>
+    </div>
+
+    <script>
+        // --- Translations ---
+        const translations = {
+            ar: {
+                menuTitle: 'قائمة الطعام', offersTitle: 'العروض',
+                catOffers: 'عروض التوفير', catPlates: 'أطباق', catClay: 'فخار', catSweets: 'حلا', catDrinks: 'مشروبات',
+                cal: 'سعرة', total: 'الإجمالي', checkout: 'إتمام الطلب', curr: 'ر.س',
+                boxFamily: 'بوكس لمة العيلة', boxMovie: 'بوكس فيلم السهرة',
+                itemSpChicken: 'سبيشال بشاميل دجاج', itemSpMeat: 'سبيشال بشاميل لحم',
+                itemBalls: 'كرات البطاطس', itemMouChicken: 'بشاميل مصقعة دجاج', itemMouMeat: 'بشاميل مصقعة لحم',
+                itemClayMeat: 'بشاميل فخار لحم', itemClayChicken: 'بشاميل فخار دجاج',
+                itemOmAli: 'فخار أم علي', pepsi: 'بيبسي', '7up': 'سفن أب', water: 'ماء',
+                marquee: '🍔 أشهى الطواجن • 🚚 توصيل سريع • 🔥 عروض حصرية • 🍝 مكرونة بشاميل • ⭐ أعلى تقييم'
+            },
+            en: {
+                menuTitle: 'Food Menu', offersTitle: 'Offers',
+                catOffers: 'Value Boxes', catPlates: 'Plates', catClay: 'Clay Pots', catSweets: 'Desserts', catDrinks: 'Drinks',
+                cal: 'Cal', total: 'Total', checkout: 'Checkout', curr: 'SAR',
+                boxFamily: 'Family Gathering Box', boxMovie: 'Movie Night Box',
+                itemSpChicken: 'Special Bechamel Chicken', itemSpMeat: 'Special Bechamel Meat',
+                itemBalls: 'Potato Balls', itemMouChicken: 'Moussaka Bechamel Chicken', itemMouMeat: 'Moussaka Bechamel Meat',
+                itemClayMeat: 'Clay Meat Bechamel', itemClayChicken: 'Clay Chicken Bechamel',
+                itemOmAli: 'Om Ali Clay', pepsi: 'Pepsi', '7up': '7 Up', water: 'Water',
+                marquee: '🍔 Tasty Casseroles • 🚚 Fast Delivery • 🔥 Exclusive Offers • 🍝 Bechamel Pasta • ⭐ Top Rated'
+            }
+        };
+
+        // --- Toggle Language ---
+        function toggleLang() {
+            const html = document.documentElement;
+            const btn = document.getElementById('lang-btn');
+            const isRTL = html.dir === 'rtl';
+            
+            if (isRTL) {
+                html.dir = 'ltr'; html.lang = 'en'; btn.innerText = 'AR';
+                updateContent('en');
+            } else {
+                html.dir = 'rtl'; html.lang = 'ar'; btn.innerText = 'EN';
+                updateContent('ar');
+            }
+        }
+
+        function updateContent(lang) {
+            const t = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerText = t[key];
+            });
+            document.querySelectorAll('.curr').forEach(el => el.innerText = t.curr);
+            document.getElementById('marquee-txt').innerHTML = 
+                `<span class="marquee-item">${t.marquee}</span>` + 
+                `<span class="marquee-item">${t.marquee}</span>` + 
+                `<span class="marquee-item">${t.marquee}</span>`;
+        }
+
+        // --- Slider & Cart (Standard) ---
+        const slider = document.getElementById('offers-track');
+        let autoScroll;
+        function scrollSlider(direction) {
+            const cardWidth = slider.querySelector('.offer-card').offsetWidth + 15;
+            slider.scrollBy({ left: direction * cardWidth * (document.dir === 'rtl' ? -1 : 1), behavior: 'smooth' });
+        }
+        function startAutoScroll() {
+            autoScroll = setInterval(() => {
+                const maxScroll = slider.scrollWidth - slider.clientWidth;
+                if (Math.abs(slider.scrollLeft) >= maxScroll - 20) { slider.scrollTo({ left: 0, behavior: 'smooth' }); } 
+                else { scrollSlider(1); }
+            }, 3000);
+        }
+        function stopAutoScroll() { clearInterval(autoScroll); }
+        document.addEventListener('DOMContentLoaded', () => { updateContent('ar'); startAutoScroll(); });
+
+        function scrollToSec(id) {
+            const el = document.getElementById(id);
+            const y = el.getBoundingClientRect().top + window.pageYOffset - 120;
+            window.scrollTo({top: y, behavior: 'smooth'});
+            document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        let count = 0; let total = 0;
+        function addToCart(price) {
+            count++; total += price;
+            const btn = event.currentTarget;
+            btn.style.transform = "scale(0.8)"; setTimeout(() => btn.style.transform = "scale(1)", 150);
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('cart-total').innerText = total;
+            document.getElementById('cart-bar').classList.add('show');
+        }
+    </script>
+
+</body>
+</html>
