@@ -4,29 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>واو بشاميل | الرئيسية</title>
-    <link rel="icon" type="image/png" href="images/logo.png"> <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; overflow-x: hidden; padding-bottom: 90px; }
-        
-        /* الهيدر */
-        .header-bg {
-            background: linear-gradient(135deg, #FF9F1C 0%, #FF5400 100%);
-            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
-            box-shadow: 0 15px 35px rgba(255, 84, 0, 0.25);
-            position: relative; overflow: visible;
-        }
+        .header-bg { background: linear-gradient(135deg, #FF9F1C 0%, #FF5400 100%); border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 15px 35px rgba(255, 84, 0, 0.25); position: relative; overflow: visible; }
         
         /* Sidebar */
         .sidebar { position: fixed; top: 0; right: -100%; width: 85%; max-width: 320px; height: 100%; background: #fffbf0; z-index: 200; transition: 0.4s; box-shadow: -10px 0 30px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         .sidebar.active { right: 0; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 190; display: none; }
         .overlay.active { display: block; }
-        html[dir="ltr"] .sidebar { right: auto; left: -100%; }
-        html[dir="ltr"] .sidebar.active { left: 0; }
-
+        html[dir="ltr"] .sidebar { right: auto; left: -100%; } html[dir="ltr"] .sidebar.active { left: 0; }
         .sidebar-link { display: block; text-align: right; padding: 12px 25px; font-size: 16px; font-weight: bold; color: #4b5563; transition: 0.2s; }
         .sidebar-title { font-size: 20px; font-weight: 800; color: #3730a3; margin-bottom: 15px; padding-right: 25px; margin-top: 10px; }
         .sidebar-card { margin: 20px; padding: 20px; background: white; border: 2px solid #FBBF24; border-radius: 20px; text-align: center; display: flex; flex-col; gap: 12px; align-items: center; }
@@ -37,34 +29,21 @@
         .accordion-btn { width: 100%; background: white; padding: 15px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; cursor: pointer; transition: all 0.3s; }
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; padding: 0 2px; }
         .accordion-content.open { max-height: 1000px; transition: max-height 0.4s ease-in; }
-        .rotate-icon { transition: transform 0.3s; }
-        .accordion-btn.active .rotate-icon { transform: rotate(180deg); }
+        .rotate-icon { transition: transform 0.3s; } .accordion-btn.active .rotate-icon { transform: rotate(180deg); }
 
-        /* Status & Pulse */
+        /* Status Widget */
+        .header-status-box { position: absolute; top: 20px; left: 20px; z-index: 30; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px; padding: 6px 12px; display: flex; flex-col; align-items: flex-end; }
+        html[dir="ltr"] .header-status-box { left: auto; right: 20px; align-items: flex-start; }
         .status-pulse { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 5px; }
         .pulse-green { background-color: #22c55e; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); animation: pulse-green 2s infinite; }
         .pulse-red { background-color: #ef4444; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); animation: pulse-red 2s infinite; }
         @keyframes pulse-green { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
         @keyframes pulse-red { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
-        /* Header Status Widget */
-        .header-status-box {
-            position: absolute; top: 20px; left: 20px; z-index: 30;
-            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px; padding: 6px 12px;
-            display: flex; flex-col; align-items: flex-end;
-        }
-        html[dir="ltr"] .header-status-box { left: auto; right: 20px; align-items: flex-start; }
-
-        /* Share Button */
-        .share-btn {
-            position: absolute; top: 20px; right: 20px; z-index: 30;
-            width: 35px; height: 35px; background: rgba(255,255,255,0.2); backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;
-            display: flex; align-items: center; justify-content: center; color: white; cursor: pointer;
-        }
-        html[dir="ltr"] .share-btn { right: auto; left: 20px; }
+        /* Social Media Animation (Alive Pulse) */
+        .social-alive { animation: heartbeat 1.5s infinite; transition: 0.3s; }
+        .social-alive:hover { animation: none; transform: scale(1.2) rotate(10deg); }
+        @keyframes heartbeat { 0% { transform: scale(1); } 50% { transform: scale(1.1); box-shadow: 0 0 15px rgba(255, 159, 28, 0.4); } 100% { transform: scale(1); } }
 
         /* Others */
         .logo-container { width: 110px; height: 110px; background: white; border-radius: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin: -55px auto 15px auto; position: relative; z-index: 20; border: 4px solid rgba(255,255,255,0.95); }
@@ -85,7 +64,8 @@
             <h3 class="sidebar-title" id="side-title">القائمة</h3>
             <div class="flex flex-col gap-2">
                 <a href="#" class="sidebar-link" id="side-home">الرئيسية</a>
-                <a href="menu.html" class="sidebar-link" id="side-menu">قائمة الطعام</a> <a href="#" class="sidebar-link" id="side-notes">ملاحظات</a>
+                <a href="menu.html" class="sidebar-link" id="side-menu">قائمة الطعام</a>
+                <a href="#" class="sidebar-link" id="side-notes">ملاحظات</a>
             </div>
         </div>
         <div class="px-6 mb-8">
@@ -101,13 +81,12 @@
 
     <header class="header-bg pt-6 pb-20 px-6 text-white">
         <div class="relative z-10 flex justify-between items-start">
-            <div class="flex items-center gap-3">
-                <button onclick="toggleLang()" id="lang-btn" class="bg-white/20 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs border border-white/20">EN</button>
-                <button onclick="toggleSidebar()" class="bg-white/20 w-10 h-10 rounded-xl flex items-center justify-center border border-white/20"><i class="fa-solid fa-bars"></i></button>
+            <div class="flex items-center gap-2">
+                <button onclick="shareSite()" class="bg-white/20 w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white/30 transition border border-white/20 shadow-lg text-white"><i class="fa-solid fa-share-nodes"></i></button>
+                <button onclick="toggleLang()" id="lang-btn" class="bg-white/20 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs border border-white/20 shadow-lg">EN</button>
+                <button onclick="toggleSidebar()" class="bg-white/20 w-10 h-10 rounded-xl flex items-center justify-center border border-white/20 shadow-lg"><i class="fa-solid fa-bars"></i></button>
             </div>
             
-            <button onclick="shareSite()" class="share-btn"><i class="fa-solid fa-share-nodes"></i></button>
-
             <div class="header-status-box">
                 <div class="flex items-center mb-1">
                     <span class="status-pulse pulse-green" id="status-dot-header"></span>
@@ -194,9 +173,9 @@
         </div>
 
         <div class="flex justify-center gap-4 mt-4 pb-6">
-            <a href="#" class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg"><i class="fa-brands fa-tiktok text-xl"></i></a>
-            <a href="#" class="w-12 h-12 bg-yellow-400 text-black rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg"><i class="fa-brands fa-snapchat text-xl"></i></a>
-            <a href="#" class="w-12 h-12 bg-gradient-to-tr from-yellow-500 to-purple-600 text-white rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg"><i class="fa-brands fa-instagram text-xl"></i></a>
+            <a href="#" class="social-alive w-12 h-12 bg-black text-white rounded-full flex items-center justify-center shadow-lg"><i class="fa-brands fa-tiktok text-xl"></i></a>
+            <a href="#" class="social-alive w-12 h-12 bg-yellow-400 text-black rounded-full flex items-center justify-center shadow-lg"><i class="fa-brands fa-snapchat text-xl"></i></a>
+            <a href="#" class="social-alive w-12 h-12 bg-gradient-to-tr from-yellow-500 to-purple-600 text-white rounded-full flex items-center justify-center shadow-lg"><i class="fa-brands fa-instagram text-xl"></i></a>
         </div>
     </main>
 
@@ -215,28 +194,13 @@
         function toggleBranches(btn) { const list = document.getElementById('branches-list'); btn.classList.toggle('active'); list.classList.toggle('open'); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.querySelector('.overlay').classList.toggle('active'); }
         function toggleWaMenu() { const m = document.getElementById('wa-menu'); m.classList.toggle('hidden'); m.classList.toggle('flex'); }
+        function shareSite() { if (navigator.share) { navigator.share({ title: 'واو بشاميل', text: 'اطلب ألذ طواجن البشاميل!', url: window.location.href }); } else { alert('الرابط: ' + window.location.href); } }
 
-        // Share Function (NEW)
-        function shareSite() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'واو بشاميل',
-                    text: 'اطلب ألذ طواجن البشاميل من واو بشاميل!',
-                    url: window.location.href
-                }).catch(console.error);
-            } else {
-                alert('الرابط: ' + window.location.href);
-            }
-        }
-
-        // Language & Status Logic
         function toggleLang() {
             const html = document.documentElement;
             const btn = document.getElementById('lang-btn');
-            
             const isRTL = html.dir === 'rtl';
-            
-            if(isRTL) {
+            if (isRTL) {
                 html.dir = 'ltr'; html.lang = 'en'; btn.innerText = 'AR';
                 updateText(true); 
                 document.getElementById('wa-container').classList.replace('left-6', 'right-6');
@@ -300,49 +264,27 @@
             const now = new Date();
             const h = now.getHours();
             const isOpen = (h >= 13 || h < 2); 
-            
             const isEnglish = document.documentElement.lang === 'en';
-            
-            const t = {
-                open: isEnglish ? 'Open' : 'مفتوح',
-                closed: isEnglish ? 'Closed' : 'مغلق',
-                time: isEnglish ? '01:00 PM - 02:00 AM' : '01:00 م - 02:00 ص',
-                opens: isEnglish ? 'Opens 01:00 PM' : 'يفتح 01:00 م'
-            };
-
+            const t = { open: isEnglish ? 'Open' : 'مفتوح', closed: isEnglish ? 'Closed' : 'مغلق', time: isEnglish ? '01:00 PM - 02:00 AM' : '01:00 م - 02:00 ص', opens: isEnglish ? 'Opens 01:00 PM' : 'يفتح 01:00 م' };
             const sText = document.getElementById('status-text-header');
             const sTime = document.getElementById('status-time-header');
             const sDot = document.getElementById('status-dot-header');
             
             if(isOpen) {
-                sText.innerText = t.open; 
-                sTime.innerText = t.time; 
-                sDot.className = "status-pulse pulse-green";
-                sText.style.color = "white";
+                sText.innerText = t.open; sTime.innerText = t.time; sDot.className = "status-pulse pulse-green"; sText.style.color = "white";
             } else {
-                sText.innerText = t.closed; 
-                sTime.innerText = t.opens; 
-                sDot.className = "status-pulse pulse-red";
-                sText.style.color = "#ffcccc";
+                sText.innerText = t.closed; sTime.innerText = t.opens; sDot.className = "status-pulse pulse-red"; sText.style.color = "#ffcccc";
             }
 
             document.querySelectorAll('.branch-card').forEach(card => {
                 const dot = card.querySelector('.branch-dot');
                 const txt = card.querySelector('.branch-status');
                 const time = card.querySelector('.branch-time');
-                
                 time.innerText = t.time; 
-
-                if(isOpen) {
-                    dot.classList.remove('pulse-red'); dot.classList.add('pulse-green');
-                    txt.innerText = t.open; txt.classList.remove('text-red-700'); txt.classList.add('text-green-700');
-                } else {
-                    dot.classList.remove('pulse-green'); dot.classList.add('pulse-red');
-                    txt.innerText = t.closed; txt.classList.remove('text-green-700'); txt.classList.add('text-red-700');
-                }
+                if(isOpen) { dot.classList.remove('pulse-red'); dot.classList.add('pulse-green'); txt.innerText = t.open; txt.classList.remove('text-red-700'); txt.classList.add('text-green-700'); } 
+                else { dot.classList.remove('pulse-green'); dot.classList.add('pulse-red'); txt.innerText = t.closed; txt.classList.remove('text-green-700'); txt.classList.add('text-red-700'); }
             });
         }
-        
         document.addEventListener('DOMContentLoaded', () => { checkBranchStatus(); });
     </script>
 </body>
