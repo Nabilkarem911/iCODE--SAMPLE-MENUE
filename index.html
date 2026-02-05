@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>واو بشاميل | الرئيسية</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="images/logo.png"> <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; overflow-x: hidden; padding-bottom: 90px; }
@@ -57,6 +57,15 @@
         }
         html[dir="ltr"] .header-status-box { left: auto; right: 20px; align-items: flex-start; }
 
+        /* Share Button */
+        .share-btn {
+            position: absolute; top: 20px; right: 20px; z-index: 30;
+            width: 35px; height: 35px; background: rgba(255,255,255,0.2); backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; color: white; cursor: pointer;
+        }
+        html[dir="ltr"] .share-btn { right: auto; left: 20px; }
+
         /* Others */
         .logo-container { width: 110px; height: 110px; background: white; border-radius: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin: -55px auto 15px auto; position: relative; z-index: 20; border: 4px solid rgba(255,255,255,0.95); }
         .marquee-container { background: #fff7ed; color: #9a3412; overflow: hidden; white-space: nowrap; padding: 10px 0; font-size: 12px; font-weight: bold; border-bottom: 1px solid #fed7aa; }
@@ -76,8 +85,7 @@
             <h3 class="sidebar-title" id="side-title">القائمة</h3>
             <div class="flex flex-col gap-2">
                 <a href="#" class="sidebar-link" id="side-home">الرئيسية</a>
-                <a href="menu.html" class="sidebar-link" id="side-menu">قائمة الطعام</a>
-                <a href="#" class="sidebar-link" id="side-notes">ملاحظات</a>
+                <a href="menu.html" class="sidebar-link" id="side-menu">قائمة الطعام</a> <a href="#" class="sidebar-link" id="side-notes">ملاحظات</a>
             </div>
         </div>
         <div class="px-6 mb-8">
@@ -98,6 +106,8 @@
                 <button onclick="toggleSidebar()" class="bg-white/20 w-10 h-10 rounded-xl flex items-center justify-center border border-white/20"><i class="fa-solid fa-bars"></i></button>
             </div>
             
+            <button onclick="shareSite()" class="share-btn"><i class="fa-solid fa-share-nodes"></i></button>
+
             <div class="header-status-box">
                 <div class="flex items-center mb-1">
                     <span class="status-pulse pulse-green" id="status-dot-header"></span>
@@ -122,7 +132,6 @@
     </div>
 
     <main class="space-y-6 pb-10">
-
         <div class="px-6">
             <a href="menu.html" class="group relative w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-3xl p-1 overflow-hidden shadow-xl block transform transition active:scale-95">
                 <div class="bg-gray-900 rounded-[22px] p-6 flex items-center justify-between h-full relative z-10 border border-gray-700">
@@ -189,7 +198,6 @@
             <a href="#" class="w-12 h-12 bg-yellow-400 text-black rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg"><i class="fa-brands fa-snapchat text-xl"></i></a>
             <a href="#" class="w-12 h-12 bg-gradient-to-tr from-yellow-500 to-purple-600 text-white rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg"><i class="fa-brands fa-instagram text-xl"></i></a>
         </div>
-
     </main>
 
     <div class="fixed bottom-6 left-6 z-50 flex flex-col items-end gap-3 group" id="wa-container">
@@ -208,7 +216,20 @@
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.querySelector('.overlay').classList.toggle('active'); }
         function toggleWaMenu() { const m = document.getElementById('wa-menu'); m.classList.toggle('hidden'); m.classList.toggle('flex'); }
 
-        // --- Language & Status Logic ---
+        // Share Function (NEW)
+        function shareSite() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'واو بشاميل',
+                    text: 'اطلب ألذ طواجن البشاميل من واو بشاميل!',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                alert('الرابط: ' + window.location.href);
+            }
+        }
+
+        // Language & Status Logic
         function toggleLang() {
             const html = document.documentElement;
             const btn = document.getElementById('lang-btn');
@@ -217,18 +238,18 @@
             
             if(isRTL) {
                 html.dir = 'ltr'; html.lang = 'en'; btn.innerText = 'AR';
-                updateText(true); // true = isEnglish
+                updateText(true); 
                 document.getElementById('wa-container').classList.replace('left-6', 'right-6');
                 document.getElementById('wa-container').classList.replace('items-end', 'items-start');
                 document.getElementById('wa-menu').classList.replace('origin-bottom-left', 'origin-bottom-right');
             } else {
                 html.dir = 'rtl'; html.lang = 'ar'; btn.innerText = 'EN';
-                updateText(false); // false = isArabic
+                updateText(false);
                 document.getElementById('wa-container').classList.replace('right-6', 'left-6');
                 document.getElementById('wa-container').classList.replace('items-start', 'items-end');
                 document.getElementById('wa-menu').classList.replace('origin-bottom-right', 'origin-bottom-left');
             }
-            checkBranchStatus(); // Refresh status text
+            checkBranchStatus(); 
         }
 
         function updateText(isEnglish) {
@@ -246,7 +267,6 @@
                 br2Loc: isEnglish ? 'Al-Samer' : 'حي السامر، الشارع العام',
                 waY: isEnglish ? 'Yanbu Br.' : 'فرع ينبع',
                 waJ: isEnglish ? 'Jeddah Br.' : 'فرع جدة',
-                // Sidebar
                 sideTitle: isEnglish ? 'Menu' : 'القائمة',
                 sideHome: isEnglish ? 'Home' : 'الرئيسية',
                 sideMenu: isEnglish ? 'Food Menu' : 'قائمة الطعام',
@@ -268,8 +288,6 @@
             document.getElementById('branch2-loc').innerText = txt.br2Loc;
             document.getElementById('wa-yanbu').innerText = txt.waY;
             document.getElementById('wa-jeddah').innerText = txt.waJ;
-            
-            // Sidebar updates
             document.getElementById('side-title').innerText = txt.sideTitle;
             document.getElementById('side-home').innerText = txt.sideHome;
             document.getElementById('side-menu').innerText = txt.sideMenu;
@@ -281,7 +299,7 @@
         function checkBranchStatus() {
             const now = new Date();
             const h = now.getHours();
-            const isOpen = (h >= 13 || h < 2); // 13:00 to 02:00
+            const isOpen = (h >= 13 || h < 2); 
             
             const isEnglish = document.documentElement.lang === 'en';
             
@@ -292,7 +310,6 @@
                 opens: isEnglish ? 'Opens 01:00 PM' : 'يفتح 01:00 م'
             };
 
-            // Update Header Widget
             const sText = document.getElementById('status-text-header');
             const sTime = document.getElementById('status-time-header');
             const sDot = document.getElementById('status-dot-header');
@@ -309,13 +326,12 @@
                 sText.style.color = "#ffcccc";
             }
 
-            // Update Branch Cards
             document.querySelectorAll('.branch-card').forEach(card => {
                 const dot = card.querySelector('.branch-dot');
                 const txt = card.querySelector('.branch-status');
                 const time = card.querySelector('.branch-time');
                 
-                time.innerText = t.time; // Update Branch Time Text
+                time.innerText = t.time; 
 
                 if(isOpen) {
                     dot.classList.remove('pulse-red'); dot.classList.add('pulse-green');
