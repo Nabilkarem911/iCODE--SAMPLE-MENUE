@@ -13,7 +13,7 @@
     <div class="max-w-6xl mx-auto">
         <div class="flex justify-between items-center mb-10 border-b border-gray-700 pb-5">
             <div class="flex items-center gap-4">
-                <img src="images/logo.png" class="w-12 h-12 rounded-lg bg-white p-1">
+                <img src="images/logo.png" class="w-12 h-12 rounded-lg bg-white p-1" onerror="this.src='https://via.placeholder.com/50'">
                 <div>
                     <h1 class="text-2xl font-black text-blue-500">i-Code <span class="text-white">Manager</span></h1>
                     <p class="text-gray-400 text-sm">لوحة إدارة المشتركين</p>
@@ -24,101 +24,91 @@
             </button>
         </div>
 
-        <div class="grid grid-cols-3 gap-6 mb-10">
-            <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
-                <h3 class="text-gray-400 mb-2">إجمالي المشتركين</h3>
-                <p class="text-4xl font-black text-white">12</p>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
-                <h3 class="text-gray-400 mb-2">المفعلين</h3>
-                <p class="text-4xl font-black text-green-500">10</p>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
-                <h3 class="text-gray-400 mb-2">اشتراكات منتهية</h3>
-                <p class="text-4xl font-black text-red-500">2</p>
-            </div>
-        </div>
+        <div id="add-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm">
+            <div class="bg-gray-800 p-8 rounded-2xl w-full max-w-md border border-gray-600 shadow-2xl">
+                <h3 class="text-2xl font-bold mb-6 text-white">إضافة مشترك جديد</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">اسم المطعم</label>
+                        <input type="text" id="clientName" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="مثال: واو بشاميل">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">البريد الإلكتروني</label>
+                        <input type="email" id="clientEmail" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="admin@restaurant.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">كلمة المرور</label>
+                        <input type="password" id="clientPass" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="********">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">معرف الرابط (Unique ID)</label>
+                        <input type="text" id="clientId" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="ex: wow-bechamel">
+                        <p class="text-xs text-gray-500 mt-1">هام: هذا الاسم سيظهر في رابط المنيو</p>
+                    </div>
+                </div>
 
-        <div class="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
-            <table class="w-full text-right">
-                <thead class="bg-gray-900 text-gray-400 text-sm">
-                    <tr>
-                        <th class="p-4">اسم المطعم (المشترك)</th>
-                        <th class="p-4">الباقة</th>
-                        <th class="p-4">تاريخ الانتهاء</th>
-                        <th class="p-4">الحالة</th>
-                        <th class="p-4">رابط المنيو</th>
-                        <th class="p-4">إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-300 divide-y divide-gray-700">
-                    <tr class="hover:bg-gray-700/50 transition">
-                        <td class="p-4 font-bold text-white flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-xs">W</div>
-                            واو بشاميل
-                        </td>
-                        <td class="p-4"><span class="bg-yellow-500/20 text-yellow-500 px-2 py-1 rounded text-xs">Premium</span></td>
-                        <td class="p-4">2026-12-01</td>
-                        <td class="p-4"><span class="text-green-400 text-xs">● نشط</span></td>
-                        <td class="p-4"><a href="#" class="text-blue-400 hover:underline text-xs">view link ↗</a></td>
-                        <td class="p-4 flex gap-2">
-                            <button class="bg-gray-700 hover:bg-gray-600 p-2 rounded text-white"><i class="fa-solid fa-pen"></i></button>
-                            <button class="bg-red-500/20 hover:bg-red-500/40 text-red-500 p-2 rounded"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-gray-700/50 transition">
-                        <td class="p-4 font-bold text-white flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-xs">B</div>
-                            برجر ستيشن
-                        </td>
-                        <td class="p-4"><span class="bg-gray-600 text-gray-300 px-2 py-1 rounded text-xs">Basic</span></td>
-                        <td class="p-4">2026-05-15</td>
-                        <td class="p-4"><span class="text-green-400 text-xs">● نشط</span></td>
-                        <td class="p-4"><a href="#" class="text-blue-400 hover:underline text-xs">view link ↗</a></td>
-                        <td class="p-4 flex gap-2">
-                            <button class="bg-gray-700 hover:bg-gray-600 p-2 rounded text-white"><i class="fa-solid fa-pen"></i></button>
-                            <button class="bg-red-500/20 hover:bg-red-500/40 text-red-500 p-2 rounded"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div id="add-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm">
-        <div class="bg-gray-800 p-8 rounded-2xl w-full max-w-md border border-gray-600 shadow-2xl">
-            <h3 class="text-2xl font-bold mb-6 text-white">إضافة مشترك جديد</h3>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">اسم المطعم</label>
-                    <input type="text" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="مثال: بيتزا هت">
+                <div class="flex gap-3 mt-8">
+                    <button onclick="createClient()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition">إنشاء حساب</button>
+                    <button onclick="closeModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-xl font-bold transition">إلغاء</button>
                 </div>
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">البريد الإلكتروني (للدخول)</label>
-                    <input type="email" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="admin@restaurant.com">
-                </div>
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">كلمة المرور</label>
-                    <input type="password" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="********">
-                </div>
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">معرف الرابط (Unique ID)</label>
-                    <input type="text" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="ex: wow-bechamel">
-                    <p class="text-xs text-gray-500 mt-1">الرابط هيكون: yoursite.com/?id=wow-bechamel</p>
-                </div>
-            </div>
-
-            <div class="flex gap-3 mt-8">
-                <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition">إنشاء حساب</button>
-                <button onclick="closeModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-xl font-bold transition">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <script>
-        function openModal() { document.getElementById('add-modal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('add-modal').style.display = 'none'; }
+    <script type="module">
+        import { db, auth, setDoc, doc, createUserWithEmailAndPassword } from './firebase-config.js';
+
+        // دالة الإنشاء
+        window.createClient = async function() {
+            const name = document.getElementById('clientName').value;
+            const email = document.getElementById('clientEmail').value;
+            const password = document.getElementById('clientPass').value;
+            const uniqueId = document.getElementById('clientId').value;
+
+            if(!name || !email || !password || !uniqueId) {
+                alert("⚠️ يرجى ملء جميع البيانات!");
+                return;
+            }
+
+            try {
+                // 1. إنشاء يوزر في Firebase Auth
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // 2. حفظ بيانات المطعم في Firestore
+                await setDoc(doc(db, "restaurants", uniqueId), {
+                    ownerId: user.uid,
+                    name: name,
+                    email: email,
+                    themeColor: "#FF9F1C",
+                    logo: "images/logo.png",
+                    products: [],
+                    stats: { views: 0, orders: 0 },
+                    isActive: true,
+                    createdAt: new Date().toISOString()
+                });
+
+                alert(`✅ تم بنجاح!\nاسم المستخدم: ${email}\nكلمة المرور: ${password}\nالرابط: menu.html?id=${uniqueId}`);
+                closeModal();
+                // تفريغ الخانات
+                document.getElementById('clientName').value = '';
+                document.getElementById('clientEmail').value = '';
+                document.getElementById('clientPass').value = '';
+                document.getElementById('clientId').value = '';
+
+            } catch (error) {
+                console.error("Error:", error);
+                let msg = error.message;
+                if(error.code === 'auth/email-already-in-use') msg = "هذا الإيميل مستخدم من قبل!";
+                if(error.code === 'auth/weak-password') msg = "كلمة المرور ضعيفة (6 حروف على الأقل)!";
+                alert("❌ خطأ: " + msg);
+            }
+        }
+
+        // دوال المودال
+        window.openModal = function() { document.getElementById('add-modal').style.display = 'flex'; }
+        window.closeModal = function() { document.getElementById('add-modal').style.display = 'none'; }
     </script>
 </body>
 </html>
