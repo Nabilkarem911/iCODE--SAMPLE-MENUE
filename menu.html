@@ -10,9 +10,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; padding-bottom: 120px; }
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; padding-bottom: 100px; scroll-behavior: smooth; }
         
-        /* RANDOMIZER BUTTON (NEW) 🎲 */
+        /* SCROLL TO TOP BTN */
+        .scroll-top {
+            position: fixed; bottom: 100px; right: 20px; z-index: 80;
+            width: 40px; height: 40px; background: white; color: #374151;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); opacity: 0; pointer-events: none; transition: 0.3s;
+            border: 1px solid #e5e7eb;
+        }
+        html[dir="ltr"] .scroll-top { right: 20px; left: auto; }
+        .scroll-top.show { opacity: 1; pointer-events: auto; }
+
+        /* RANDOMIZER BTN */
         .fab-random {
             position: fixed; bottom: 100px; left: 20px; z-index: 80;
             background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
@@ -27,7 +38,7 @@
         html[dir="ltr"] .fab-random { left: auto; right: 20px; }
         @keyframes floatBtn { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-        /* RANDOMIZER MODAL (NEW) */
+        /* RANDOMIZER MODAL */
         .random-content { text-align: center; padding: 30px 20px; }
         .random-img-box { 
             width: 150px; height: 150px; margin: 0 auto 20px; 
@@ -36,8 +47,8 @@
         }
         .random-img { width: 100%; height: 100%; object-fit: cover; }
         .shuffle-anim .random-img { filter: blur(2px); transform: scale(1.1); }
-        
-        /* Existing Styles (No Changes) */
+
+        /* Existing Styles */
         .marquee-strip { background: #FFF7ED; overflow: hidden; white-space: nowrap; padding: 8px 0; border-bottom: 1px solid #FFEDD5; }
         .marquee-content { display: inline-block; animation: scrollLeft 30s linear infinite; }
         .marquee-item { display: inline-flex; align-items: center; gap: 5px; margin: 0 20px; font-size: 12px; font-weight: bold; color: #9A3412; }
@@ -48,6 +59,9 @@
         .offer-card { flex: 0 0 85%; height: 160px; border-radius: 18px; overflow: hidden; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         @media (min-width: 768px) { .offer-card { flex: 0 0 40%; height: 220px; } }
         .offer-card img { width: 100%; height: 100%; object-fit: cover; }
+        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 35px; height: 35px; background: rgba(255, 255, 255, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer; z-index: 20; color: #FF5400; transition: 0.2s; }
+        html[dir="rtl"] .prev-btn { right: 10px; } html[dir="rtl"] .next-btn { left: 10px; }
+        html[dir="ltr"] .prev-btn { left: 10px; transform: rotate(180deg); } html[dir="ltr"] .next-btn { right: 10px; transform: rotate(180deg); }
         .sticky-cats { position: sticky; top: 0; z-index: 40; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 15px 0; border-bottom: 1px solid #f1f5f9; }
         .cat-scroll { display: flex; overflow-x: auto; gap: 20px; padding: 0 20px; scrollbar-width: none; }
         .cat-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; opacity: 0.7; }
@@ -106,13 +120,10 @@
         .sec-header { display: flex; align-items: center; gap: 10px; padding: 25px 15px 10px 15px; scroll-margin-top: 120px; }
         .sec-header h3 { font-size: 18px; font-weight: 900; color: #1f2937; }
         .sec-line { flex: 1; height: 2px; background: #f3f4f6; border-radius: 2px; }
-        
-        /* Splash Screen */
         .splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease-out, visibility 0.5s; }
         .splash-screen.hidden { opacity: 0; visibility: hidden; }
         .splash-logo { width: 120px; animation: pulseLogo 1.5s infinite; }
         @keyframes pulseLogo { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        /* Toast */
         .toast-box { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: rgba(31, 41, 55, 0.95); color: white; padding: 12px 25px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 10px; transition: transform 0.4s; width: max-content; }
         .toast-box.show { transform: translateX(-50%) translateY(0); }
     </style>
@@ -122,9 +133,10 @@
     <div class="splash-screen" id="splash"><img src="images/logo.png" class="splash-logo"></div>
     <div class="toast-box" id="toast"><i class="fa-solid fa-circle-check text-green-400"></i> <span id="toast-msg">تمت الإضافة للسلة</span></div>
 
-    <div class="fab-random" onclick="openRandomizer()">
-        <i class="fa-solid fa-shuffle"></i> محتار؟
-    </div>
+    <div class="fab-random" onclick="openRandomizer()"><i class="fa-solid fa-shuffle"></i> محتار؟</div>
+    <div class="scroll-top" onclick="window.scrollTo(0,0)" id="scroll-top-btn"><i class="fa-solid fa-arrow-up"></i></div>
+
+    <div class="marquee-strip"><div class="marquee-content" id="marquee-txt">...</div></div>
 
     <div class="bg-white p-4 flex justify-between items-center sticky top-0 z-50 shadow-sm border-b border-gray-100" style="position: relative;">
         <h1 class="text-xl font-black text-gray-800" data-i18n="menuTitle">قائمة الطعام</h1>
@@ -136,11 +148,11 @@
 
     <div class="sticky-cats">
         <div class="cat-scroll">
-            <div class="cat-item active" onclick="scrollToSec('sec-offers')"><div class="cat-circle"><img src="https://cdn-icons-png.flaticon.com/512/878/878052.png"></div><span class="cat-name" data-i18n="catOffers">عروض التوفير</span></div>
-            <div class="cat-item" onclick="scrollToSec('sec-plates')"><div class="cat-circle"><img src="https://cdn-icons-png.flaticon.com/512/706/706164.png"></div><span class="cat-name" data-i18n="catPlates">أطباق</span></div>
-            <div class="cat-item" onclick="scrollToSec('sec-clay')"><div class="cat-circle"><img src="https://cdn-icons-png.flaticon.com/512/1895/1895658.png"></div><span class="cat-name" data-i18n="catClay">فخار</span></div>
-            <div class="cat-item" onclick="scrollToSec('sec-sweets')"><div class="cat-circle"><img src="https://cdn-icons-png.flaticon.com/512/2515/2515183.png"></div><span class="cat-name" data-i18n="catSweets">حلا</span></div>
-            <div class="cat-item" onclick="scrollToSec('sec-drinks')"><div class="cat-circle"><img src="https://cdn-icons-png.flaticon.com/512/2738/2738730.png"></div><span class="cat-name" data-i18n="catDrinks">مشروبات</span></div>
+            <div class="cat-item active" id="nav-offers" onclick="scrollToSec('sec-offers')"><div class="cat-circle"><img src="https://cdn-icons-png.flaticon.com/512/878/878052.png"></div><span class="cat-name" data-i18n="catOffers">عروض التوفير</span></div>
+            <div class="cat-item" id="nav-plates" onclick="scrollToSec('sec-plates')"><div class="cat-circle"><img src="https://cdn-icons-png.flaticon.com/512/706/706164.png"></div><span class="cat-name" data-i18n="catPlates">أطباق</span></div>
+            <div class="cat-item" id="nav-clay" onclick="scrollToSec('sec-clay')"><div class="cat-circle"><img src="https://cdn-icons-png.flaticon.com/512/1895/1895658.png"></div><span class="cat-name" data-i18n="catClay">فخار</span></div>
+            <div class="cat-item" id="nav-sweets" onclick="scrollToSec('sec-sweets')"><div class="cat-circle"><img src="https://cdn-icons-png.flaticon.com/512/2515/2515183.png"></div><span class="cat-name" data-i18n="catSweets">حلا</span></div>
+            <div class="cat-item" id="nav-drinks" onclick="scrollToSec('sec-drinks')"><div class="cat-circle"><img src="https://cdn-icons-png.flaticon.com/512/2738/2738730.png"></div><span class="cat-name" data-i18n="catDrinks">مشروبات</span></div>
         </div>
     </div>
 
@@ -159,6 +171,8 @@
     <div id="sec-offers"><div class="sec-header"><h3 data-i18n="catOffers">عروض التوفير</h3><div class="sec-line"></div></div><div class="menu-grid">
         <div class="menu-item" onclick="openProduct('بوكس لمة العيلة', 110, 'images/offer2.jpg', 1200, ['users'], 'عرض عائلي!')"><div class="menu-img-box"><img src="images/offer2.jpg" class="menu-img"></div><div class="p-3"><h4 class="font-bold text-xs text-gray-800">بوكس لمة العيلة</h4><p class="text-sm font-black text-orange-500 mt-1">110 <span class="curr">ر.س</span></p></div></div>
         <div class="menu-item" onclick="openProduct('بوكس فيلم السهرة', 65, 'images/offer1.jpg', 850, ['film'], 'وجبة فردية')"><div class="menu-img-box"><img src="images/offer1.jpg" class="menu-img"></div><div class="p-3"><h4 class="font-bold text-xs text-gray-800">بوكس فيلم السهرة</h4><p class="text-sm font-black text-orange-500 mt-1">65 <span class="curr">ر.س</span></p></div></div>
+        <div class="menu-item" onclick="openProduct('بوكس عشاق الدجاج', 70, 'images/offer3.jpg', 900, [], 'مكرونة دجاج + كرات')"><div class="menu-img-box"><img src="images/offer3.jpg" class="menu-img"></div><div class="p-3"><h4 class="font-bold text-xs text-gray-800">بوكس عشاق الدجاج</h4><p class="text-sm font-black text-orange-500 mt-1">70 <span class="curr">ر.س</span></p></div></div>
+        <div class="menu-item" onclick="openProduct('بوكس عشاق اللحم', 85, 'images/offer4.jpg', 950, [], 'مكرونة لحم + كرات')"><div class="menu-img-box"><img src="images/offer4.jpg" class="menu-img"></div><div class="p-3"><h4 class="font-bold text-xs text-gray-800">بوكس عشاق اللحم</h4><p class="text-sm font-black text-orange-500 mt-1">85 <span class="curr">ر.س</span></p></div></div>
     </div></div>
 
     <div id="sec-plates"><div class="sec-header"><h3 data-i18n="catPlates">أطباق</h3><div class="sec-line"></div></div><div class="menu-grid">
@@ -166,6 +180,7 @@
         <div class="menu-item" onclick="openProduct('سبيشال بشاميل لحم', 35, 'images/special_meat.jpg', 500, ['cow'])"><div class="menu-img-box"><img src="images/special_meat.jpg" class="menu-img"></div><div class="p-3"><h4 class="font-bold text-xs text-gray-800">سبيشال بشاميل لحم</h4><p class="text-sm font-black text-orange-500 mt-1">35 <span class="curr">ر.س</span></p></div></div>
         <div class="menu-item" onclick="openProduct('كرات البطاطس', 25, 'images/balls.jpg', 320, ['egg'])"><div class="menu-img-box"><img src="images/balls.jpg" class="menu-img"></div><div class="p-3"><h4 class="font-bold text-xs text-gray-800">كرات البطاطس</h4><p class="text-sm font-black text-orange-500 mt-1">25 <span class="curr">ر.س</span></p></div></div>
         <div class="menu-item" onclick="openProduct('بشاميل مصقعة دجاج', 25, 'images/moussaka_chicken.jpg', 380)"><div class="menu-img-box"><img src="images/moussaka_chicken.jpg" class="menu-img"></div><div class="p-3"><h4 class="font-bold text-xs text-gray-800">بشاميل مصقعة دجاج</h4><p class="text-sm font-black text-orange-500 mt-1">25 <span class="curr">ر.س</span></p></div></div>
+        <div class="menu-item" onclick="openProduct('بشاميل مصقعة لحم', 30, 'images/moussaka_meat.jpg', 410)"><div class="menu-img-box"><img src="images/moussaka_meat.jpg" class="menu-img"></div><div class="p-3"><h4 class="font-bold text-xs text-gray-800">بشاميل مصقعة لحم</h4><p class="text-sm font-black text-orange-500 mt-1">30 <span class="curr">ر.س</span></p></div></div>
     </div></div>
 
     <div id="sec-clay"><div class="sec-header"><h3 data-i18n="catClay">فخار</h3><div class="sec-line"></div></div><div class="menu-grid">
@@ -220,13 +235,8 @@
             <div class="random-content">
                 <h2 class="text-2xl font-black text-gray-800 mb-2">🤔 محتار؟</h2>
                 <p class="text-gray-500 text-sm mb-6">خلينا نختار لك أكلة على ذوقنا!</p>
-                
-                <div class="random-img-box" id="random-box">
-                    <img src="images/logo.png" class="random-img" id="random-img">
-                </div>
-                
+                <div class="random-img-box" id="random-box"><img src="images/logo.png" class="random-img" id="random-img"></div>
                 <h3 class="text-xl font-bold text-purple-600 mb-6" id="random-name">...</h3>
-                
                 <button id="spin-btn" class="bg-purple-600 text-white w-full py-3 rounded-xl font-bold shadow-lg hover:bg-purple-700 transition" onclick="spinRandomizer()">يلا اختار لي! 🎲</button>
                 <button id="add-random-btn" class="hidden bg-green-500 text-white w-full py-3 rounded-xl font-bold shadow-lg hover:bg-green-600 transition mt-2" onclick="addRandomToCart()">أضف للسلة (<span id="random-price">0</span> ر.س) 🛒</button>
             </div>
@@ -257,13 +267,22 @@
     </div>
 
     <script>
-        // --- Randomizer Logic 🎲 ---
+        // --- RANDOMIZER (FULL LIST) ---
         const randomItems = [
+            {name: 'بوكس فيلم السهرة', price: 65, img: 'images/offer1.jpg'},
+            {name: 'بوكس لمة العيلة', price: 110, img: 'images/offer2.jpg'},
+            {name: 'بوكس عشاق الدجاج', price: 70, img: 'images/offer3.jpg'},
+            {name: 'بوكس عشاق اللحم', price: 85, img: 'images/offer4.jpg'},
             {name: 'سبيشال بشاميل دجاج', price: 30, img: 'images/special_chicken.jpg'},
             {name: 'سبيشال بشاميل لحم', price: 35, img: 'images/special_meat.jpg'},
-            {name: 'بوكس فيلم السهرة', price: 65, img: 'images/offer1.jpg'},
             {name: 'كرات البطاطس', price: 25, img: 'images/balls.jpg'},
-            {name: 'بشاميل فخار دجاج', price: 35, img: 'images/clay_chicken.jpg'}
+            {name: 'بشاميل مصقعة دجاج', price: 25, img: 'images/moussaka_chicken.jpg'},
+            {name: 'بشاميل مصقعة لحم', price: 30, img: 'images/moussaka_meat.jpg'},
+            {name: 'بشاميل فخار لحم', price: 40, img: 'images/clay_meat.jpg'},
+            {name: 'بشاميل فخار دجاج', price: 35, img: 'images/clay_chicken.jpg'},
+            {name: 'فخار أم علي', price: 15, img: 'images/omali.jpg'},
+            {name: 'بيبسي', price: 2.5, img: 'images/pepsi.png'},
+            {name: 'سفن أب', price: 2.5, img: 'images/7up.png'}
         ];
         let randomResult = null;
 
@@ -298,10 +317,8 @@
                 randomResult = winner;
                 imgEl.src = winner.img;
                 nameEl.innerText = `🎉 ${winner.name}`;
-                
-                const addBtn = document.getElementById('add-random-btn');
                 document.getElementById('random-price').innerText = winner.price;
-                addBtn.classList.remove('hidden');
+                document.getElementById('add-random-btn').classList.remove('hidden');
             }, 2000);
         }
 
@@ -313,11 +330,38 @@
             }
         }
 
-        // --- Core Logic (Cart, Products, etc) ---
+        // --- SCROLL SPY & SCROLL TO TOP (NEW) ---
+        window.onscroll = function() {
+            const scrollBtn = document.getElementById('scroll-top-btn');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollBtn.classList.add('show');
+            } else {
+                scrollBtn.classList.remove('show');
+            }
+
+            // Scroll Spy Logic
+            const sections = ['sec-offers', 'sec-plates', 'sec-clay', 'sec-sweets', 'sec-drinks'];
+            const navItems = {
+                'sec-offers': 'nav-offers', 'sec-plates': 'nav-plates', 'sec-clay': 'nav-clay', 'sec-sweets': 'nav-sweets', 'sec-drinks': 'nav-drinks'
+            };
+
+            let current = '';
+            sections.forEach(sec => {
+                const element = document.getElementById(sec);
+                if (element && window.scrollY >= (element.offsetTop - 150)) {
+                    current = sec;
+                }
+            });
+
+            if (current) {
+                document.querySelectorAll('.cat-item').forEach(li => li.classList.remove('active'));
+                document.getElementById(navItems[current]).classList.add('active');
+            }
+        };
+
+        // --- CORE LOGIC (Cart, etc.) ---
         window.addEventListener('load', () => { setTimeout(() => { document.getElementById('splash').classList.add('hidden'); }, 2000); });
         function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
-        
-        // (Insert previous logic: openProduct, checkout, toggleLang here - kept same)
         let currentItem = {}; let currentQty = 1; let cart = []; let total = 0; let selectedPayment = 'كاش 💵';
         function openProduct(title, price, img, cals, allergens = [], desc = "") {
             currentItem = { title, price }; currentQty = 1;
