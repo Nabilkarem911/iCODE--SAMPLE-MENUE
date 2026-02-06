@@ -11,12 +11,33 @@
     
     <style>
         body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; padding-bottom: 100px; }
+        
+        /* SPLASH SCREEN */
+        .splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 9999; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
+        }
+        .splash-screen.hidden { opacity: 0; visibility: hidden; }
+        .splash-logo { width: 120px; animation: pulseLogo 1.5s infinite; }
+        @keyframes pulseLogo { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* TOAST NOTIFICATION */
+        .toast-box {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: rgba(31, 41, 55, 0.95); color: white; padding: 12px 25px; border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; font-size: 13px; font-weight: bold;
+            display: flex; align-items: center; gap: 10px; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: max-content; max-width: 90%;
+        }
+        .toast-box.show { transform: translateX(-50%) translateY(0); }
+        .toast-icon { color: #22c55e; font-size: 16px; }
+
+        /* ... (نفس الستايلات القديمة بالظبط بدون تغيير) ... */
         .marquee-strip { background: #FFF7ED; overflow: hidden; white-space: nowrap; padding: 8px 0; border-bottom: 1px solid #FFEDD5; }
         .marquee-content { display: inline-block; animation: scrollLeft 30s linear infinite; }
         .marquee-item { display: inline-flex; align-items: center; gap: 5px; margin: 0 20px; font-size: 12px; font-weight: bold; color: #9A3412; }
         @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
-
-        /* Slider */
         .slider-container { position: relative; width: 100%; overflow: hidden; padding: 10px 0; }
         .slider-track { display: flex; gap: 15px; overflow-x: auto; scroll-behavior: smooth; padding: 0 15px; scrollbar-width: none; }
         .slider-track::-webkit-scrollbar { display: none; }
@@ -26,8 +47,6 @@
         .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 35px; height: 35px; background: rgba(255, 255, 255, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer; z-index: 20; color: #FF5400; transition: 0.2s; }
         html[dir="rtl"] .prev-btn { right: 10px; } html[dir="rtl"] .next-btn { left: 10px; }
         html[dir="ltr"] .prev-btn { left: 10px; transform: rotate(180deg); } html[dir="ltr"] .next-btn { right: 10px; transform: rotate(180deg); }
-
-        /* Categories */
         .sticky-cats { position: sticky; top: 0; z-index: 40; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 15px 0; border-bottom: 1px solid #f1f5f9; }
         .cat-scroll { display: flex; overflow-x: auto; gap: 20px; padding: 0 20px; scrollbar-width: none; }
         .cat-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; opacity: 0.7; }
@@ -36,8 +55,6 @@
         .cat-item.active .cat-circle { border-color: #FF9F1C; box-shadow: 0 4px 12px rgba(255, 159, 28, 0.3); }
         .cat-circle img { width: 100%; height: 100%; object-fit: cover; }
         .cat-name { font-size: 12px; font-weight: bold; color: #4b5563; white-space: nowrap; }
-
-        /* Menu Grid */
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
         @media (min-width: 640px) { .menu-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 1024px) { .menu-grid { grid-template-columns: repeat(4, 1fr); } }
@@ -50,8 +67,6 @@
         .info-strip { display: flex; gap: 5px; padding: 0 10px; margin-top: -12px; position: relative; z-index: 5; }
         .cal-badge { background: #fff; border: 1px solid #fee2e2; color: #ef4444; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 6px; display: flex; align-items: center; gap: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .allergen-icon { width: 22px; height: 22px; background: #f0f9ff; border: 1px solid #e0f2fe; color: #0284c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-
-        /* Popups */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .product-modal { background: white; width: 90%; max-width: 450px; border-radius: 25px; overflow: hidden; transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); position: relative; display: flex; flex-direction: column; max-height: 90vh; }
@@ -66,26 +81,19 @@
         .allergen-title { background: #fee2e2; color: #991b1b; font-size: 11px; font-weight: bold; padding: 4px; border-radius: 6px; display: inline-block; margin-bottom: 5px; }
         .modal-badges { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; border-top: 1px solid #f3f4f6; padding-top: 10px; }
         .modal-badge { background: #f3f4f6; color: #4b5563; font-size: 11px; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; font-weight: bold; }
-        
         .notes-input { width: 100%; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px; font-size: 13px; margin-bottom: 15px; resize: none; background: #f9fafb; }
         .notes-input:focus { outline: none; border-color: #FF9F1C; background: white; }
-        
         .cart-select { width: 100%; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; font-size: 14px; background: white; margin-bottom: 10px; outline: none; font-weight: bold; color: #374151; }
         .cart-select:focus { border-color: #FF9F1C; }
-
-        /* Payment Buttons */
         .payment-option { flex: 1; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px; text-align: center; font-size: 11px; font-weight: bold; color: #4b5563; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .payment-option:hover { background: #f9fafb; }
         .payment-option.active { border-color: #FF9F1C; background: #FFF7ED; color: #d97706; }
         .payment-option i { font-size: 16px; }
-
         .qty-control { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px; }
         .qty-btn { width: 40px; height: 40px; background: #f3f4f6; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #374151; cursor: pointer; }
         .add-to-order-btn { width: 100%; background: #FF9F1C; color: white; padding: 15px; border-radius: 16px; font-weight: 800; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
-
         .cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 150%); z-index: 90; width: 90%; max-width: 500px; background: #1f2937; color: white; border-radius: 16px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: 0.4s; cursor: pointer; }
         .cart-bar.show { transform: translate(-50%, 0); }
-
         .cart-modal-content { padding: 20px; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f3f4f6; padding: 10px 0; }
         .cart-item-info { flex: 1; }
@@ -94,13 +102,20 @@
         .cart-item-price { font-weight: bold; color: #FF9F1C; font-size: 13px; }
         .cart-remove-btn { color: #ef4444; background: #fee2e2; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; margin-right: 10px; cursor: pointer; }
         html[dir="ltr"] .cart-remove-btn { margin-right: 0; margin-left: 10px; }
-        
         .sec-header { display: flex; align-items: center; gap: 10px; padding: 25px 15px 10px 15px; scroll-margin-top: 120px; }
         .sec-header h3 { font-size: 18px; font-weight: 900; color: #1f2937; }
         .sec-line { flex: 1; height: 2px; background: #f3f4f6; border-radius: 2px; }
     </style>
 </head>
 <body class="bg-gray-50">
+
+    <div class="splash-screen" id="splash">
+        <img src="images/logo.png" class="splash-logo">
+    </div>
+
+    <div class="toast-box" id="toast">
+        <i class="fa-solid fa-circle-check toast-icon"></i> <span id="toast-msg">تمت الإضافة للسلة</span>
+    </div>
 
     <div class="marquee-strip"><div class="marquee-content" id="marquee-txt">...</div></div>
 
@@ -279,6 +294,19 @@
     </div>
 
     <script>
+        // Init Splash Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => { document.getElementById('splash').classList.add('hidden'); }, 2000);
+        });
+
+        // Toast
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
         const translations = {
             ar: {
                 menuTitle: 'قائمة الطعام', offersTitle: 'العروض', catOffers: 'عروض التوفير', catPlates: 'أطباق', catClay: 'فخار', catSweets: 'حلا', catDrinks: 'مشروبات',
@@ -296,7 +324,6 @@
             }
         };
 
-        // --- CORE LOGIC ---
         let currentItem = {}; let currentQty = 1; let cart = []; let total = 0; let selectedPayment = 'كاش 💵';
 
         function openProduct(title, price, img, cals, allergens = [], desc = "") {
@@ -319,6 +346,7 @@
             const note = document.getElementById('item-note').value;
             addToCart(currentItem.title, currentItem.price * currentQty, currentQty, note);
             closeModal();
+            showToast('تمت الإضافة للسلة');
         }
 
         function addToCart(name, price, qty, note) {
@@ -391,7 +419,6 @@
             window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
-        // Standard
         function toggleLang() {
             const html = document.documentElement; const btn = document.getElementById('lang-btn'); const isRTL = html.dir === 'rtl';
             if (isRTL) { html.dir = 'ltr'; html.lang = 'en'; btn.innerText = 'AR'; updateContent('en'); } else { html.dir = 'rtl'; html.lang = 'ar'; btn.innerText = 'EN'; updateContent('ar'); }
