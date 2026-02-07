@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, arrayUnion, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, updateEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAHw9aNyLuZZ-_90OK0xIgRZ62SPawEthc",
@@ -16,4 +16,5 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-export { db, auth, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, arrayUnion, query, where, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged };
+// هنا كان النقص، ضفتلك updatePassword في التصدير
+export { db, auth, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, arrayUnion, query, where, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, updateEmail };
