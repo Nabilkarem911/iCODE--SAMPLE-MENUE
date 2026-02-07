@@ -30,16 +30,30 @@
     
     <style>
         body { font-family: 'Tajawal', sans-serif; overflow: hidden; }
+        
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f3f4f6; }
         .dark ::-webkit-scrollbar-track { background: #181b21; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+        
+        /* Navigation Active State */
         .nav-link { transition: all 0.2s ease-in-out; cursor: pointer; }
         .nav-link:hover { background-color: rgba(59, 130, 246, 0.05); color: #3b82f6; }
         .nav-link.active { background: rgba(59,130,246,0.1); border-right: 3px solid #3b82f6; color: #3b82f6; }
+        
+        /* Upload Box */
         .upload-box { border: 2px dashed #d1d5db; transition: 0.3s; position: relative; background: #f9fafb; cursor: pointer; }
         .dark .upload-box { border-color: #374151; background: #1f2937; }
+        .upload-box:hover { border-color: #3b82f6; }
+        
+        /* File Input Overlay (Fixes Click Issue) */
         .file-input-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 50; }
+
+        /* Allergens Selection */
+        .allergen-tag { cursor: pointer; transition: 0.2s; opacity: 0.6; filter: grayscale(100%); border: 1px solid #e5e7eb; }
+        .dark .allergen-tag { border-color: #374151; }
+        .allergen-tag.selected { opacity: 1; filter: grayscale(0%); border-color: #3b82f6; background-color: rgba(59,130,246,0.1); color: #3b82f6; }
     </style>
 </head>
 <body class="flex h-screen bg-gray-50 dark:bg-dark text-gray-800 dark:text-gray-100 transition-colors duration-300">
@@ -49,8 +63,8 @@
             <div class="relative w-20 h-20 mx-auto mb-3">
                 <img id="dash-logo" src="images/logo.png" class="w-full h-full rounded-2xl object-cover border dark:border-gray-700 p-1 bg-white dark:bg-transparent" onerror="this.src='https://via.placeholder.com/150'">
             </div>
-            <h2 id="dash-name" class="font-bold text-lg truncate">جار التحميل...</h2>
-            <span id="plan-badge" class="text-[10px] bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full uppercase font-bold text-gray-500">...</span>
+            <h2 id="dash-name" class="font-bold text-lg truncate">...</h2>
+            <span id="plan-badge" class="text-[10px] bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full uppercase font-bold text-gray-500">Loading</span>
         </div>
 
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
@@ -88,8 +102,10 @@
         </div>
 
         <div class="flex-1 overflow-y-auto p-6 md:p-10">
+            
             <div id="tab-home" class="space-y-6">
                 <h1 class="text-3xl font-black mb-6 text-gray-800 dark:text-white" data-i18n="home_title">ملخص الأداء</h1>
+                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white dark:bg-surface p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <div class="flex justify-between mb-4">
@@ -98,6 +114,7 @@
                         </div>
                         <p class="text-3xl font-black text-gray-800 dark:text-white" id="stat-views-count">0</p>
                     </div>
+                    
                     <div class="bg-white dark:bg-surface p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <div class="flex justify-between mb-4">
                             <h3 class="text-gray-500 text-xs font-bold uppercase" data-i18n="stat_products">المنتجات</h3>
@@ -106,12 +123,14 @@
                         <p class="text-3xl font-black text-gray-800 dark:text-white" id="stat-prods-count">0</p>
                         <p class="text-[10px] text-gray-400 mt-1" id="stat-limit">Limit: ...</p>
                     </div>
+
                     <div class="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-6 rounded-2xl shadow-lg">
                         <h3 class="text-xs font-bold uppercase opacity-80 mb-4" data-i18n="stat_plan">باقتك الحالية</h3>
                         <p class="text-2xl font-black mb-1" id="stat-plan-name">...</p>
                         <p class="text-[10px] opacity-80" id="stat-expiry">...</p>
                     </div>
                 </div>
+
                 <div class="bg-white dark:bg-surface p-6 rounded-2xl border border-gray-100 dark:border-gray-800 h-80 shadow-sm">
                     <canvas id="viewsChart"></canvas>
                 </div>
@@ -124,11 +143,13 @@
                         <i class="fa-solid fa-plus"></i> <span data-i18n="btn_add_prod">منتج جديد</span>
                     </button>
                 </div>
+                
                 <div id="products-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
             </div>
 
             <div id="tab-settings" class="hidden space-y-6">
                 <h1 class="text-2xl font-black text-gray-800 dark:text-white" data-i18n="settings_title">إعدادات المطعم</h1>
+                
                 <div class="bg-white dark:bg-surface p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm max-w-2xl">
                     <div class="flex items-center gap-6 mb-8">
                         <div class="w-24 h-24 relative group cursor-pointer upload-box rounded-2xl overflow-hidden">
@@ -143,6 +164,7 @@
                             <p class="text-xs text-gray-500">Max 2MB (PNG/JPG)</p>
                         </div>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="lbl_name">اسم المطعم</label>
@@ -153,6 +175,7 @@
                             <input id="set-phone" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none focus:border-primary dark:text-white">
                         </div>
                     </div>
+
                     <div class="mb-6">
                         <label class="block text-xs font-bold text-gray-500 mb-2" data-i18n="lbl_color">لون الهوية</label>
                         <div class="flex items-center gap-4">
@@ -160,12 +183,15 @@
                             <span id="color-lock" class="text-xs text-red-500 font-bold hidden flex items-center gap-1"><i class="fa-solid fa-lock"></i> <span data-i18n="msg_upgrade">ترقية مطلوبة</span></span>
                         </div>
                     </div>
+
                     <hr class="border-gray-200 dark:border-gray-700 my-6">
+
                     <div class="mb-6">
                         <h3 class="font-bold text-sm mb-4 text-red-400" data-i18n="lbl_security">الأمان</h3>
                         <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="lbl_new_pass">كلمة مرور جديدة</label>
                         <input id="set-pass" type="password" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none focus:border-primary dark:text-white" placeholder="******">
                     </div>
+
                     <button onclick="window.app.saveSettings()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition shadow-lg" data-i18n="btn_save">حفظ التغييرات</button>
                 </div>
             </div>
@@ -200,6 +226,7 @@
                         </div>
                         <input type="file" id="prod-img-input" accept="image/*" class="file-input-overlay" onchange="window.app.handleProdImg(this)">
                     </div>
+                    <p class="text-[10px] text-gray-400 text-center mt-2">سيتم ضغط الصورة تلقائياً</p>
                 </div>
 
                 <div class="md:col-span-2 space-y-4">
@@ -215,6 +242,18 @@
                     </div>
 
                     <textarea id="prod-desc" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none h-20 resize-none dark:text-white" placeholder="وصف المنتج"></textarea>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-2">مسببات الحساسية (اضغط للاختيار)</label>
+                        <div class="flex flex-wrap gap-2">
+                            <div class="allergen-tag px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1" onclick="window.app.toggleAllergen(this)" data-val="حار">🌶️ حار</div>
+                            <div class="allergen-tag px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1" onclick="window.app.toggleAllergen(this)" data-val="جلوتين">🍞 جلوتين</div>
+                            <div class="allergen-tag px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1" onclick="window.app.toggleAllergen(this)" data-val="مكسرات">🥜 مكسرات</div>
+                            <div class="allergen-tag px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1" onclick="window.app.toggleAllergen(this)" data-val="ألبان">🥛 ألبان</div>
+                            <div class="allergen-tag px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1" onclick="window.app.toggleAllergen(this)" data-val="بيض">🥚 بيض</div>
+                            <div class="allergen-tag px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1" onclick="window.app.toggleAllergen(this)" data-val="بحري">🐟 بحري</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -226,7 +265,6 @@
     </div>
 
     <script type="module">
-        // Import updatePassword here
         import { db, auth, doc, getDoc, updateDoc, arrayUnion, updatePassword } from './firebase-config.js';
 
         // Global App Scope
@@ -246,7 +284,7 @@
         let tempImg = ""; 
         let tempLogo = "";
 
-        // Translations (Keeping it simple for logic focus)
+        // Translations
         const i18n = {
             ar: {
                 nav_home: "نظرة عامة", nav_products: "المنتجات", nav_settings: "الإعدادات", nav_qr: "الباركود", btn_logout: "خروج",
@@ -268,15 +306,15 @@
 
         // Initialize
         app.init = async () => {
-            // Language & Theme
+            // Language
             document.documentElement.lang = currentLang;
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             app.applyTrans();
             
+            // Force Light Mode Default
             if(localStorage.theme === 'dark') document.documentElement.classList.add('dark');
             else document.documentElement.classList.remove('dark');
 
-            // Load Data
             try {
                 const snap = await getDoc(doc(db, "restaurants", restId));
                 if(snap.exists()) {
@@ -295,18 +333,15 @@
             const plan = PLANS[currentData.plan || 'free'];
             const products = currentData.products || [];
 
-            // Header & Sidebar
             document.getElementById('dash-name').innerText = currentData.name;
             document.getElementById('dash-logo').src = currentData.logo || 'images/logo.png';
             document.getElementById('plan-badge').innerText = plan.name[currentLang];
 
-            // Stats
             document.getElementById('stat-views-count').innerText = currentData.stats?.views || 0;
             document.getElementById('stat-prods-count').innerText = products.length;
             document.getElementById('stat-limit').innerText = `Limit: ${plan.limit}`;
             document.getElementById('stat-plan-name').innerText = plan.name[currentLang];
             
-            // Expiry
             if(currentData.expiryDate) {
                 const days = Math.ceil((new Date(currentData.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
                 document.getElementById('stat-expiry').innerText = days < 0 ? "Expired" : `${days} Days`;
@@ -316,7 +351,6 @@
 
             app.renderChart(currentData.stats?.views || 0);
 
-            // Products Grid
             const grid = document.getElementById('products-grid');
             if(products.length === 0) {
                 grid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10">لا توجد منتجات</div>`;
@@ -324,8 +358,11 @@
                 grid.innerHTML = products.map((p, i) => `
                     <div class="bg-white dark:bg-surface rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden relative group">
                         <button onclick="window.app.deleteProd(${i})" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-lg z-20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center shadow-lg cursor-pointer"><i class="fa-solid fa-trash"></i></button>
-                        <div class="h-40 bg-gray-100 dark:bg-black/20">
+                        <div class="h-40 bg-gray-100 dark:bg-black/20 relative">
                             <img src="${p.image}" class="w-full h-full object-cover" onerror="this.src='images/logo.png'">
+                            <div class="absolute bottom-2 right-2 flex gap-1">
+                                ${p.allergens ? p.allergens.map(a => `<span class="bg-black/50 text-white text-[10px] px-1 rounded">${a}</span>`).join('') : ''}
+                            </div>
                         </div>
                         <div class="p-4">
                             <h3 class="font-bold mb-1 text-gray-800 dark:text-white">${p.name}</h3>
@@ -338,7 +375,6 @@
                 `).join('');
             }
 
-            // Settings
             document.getElementById('set-name').value = currentData.name;
             document.getElementById('set-phone').value = currentData.phone || "";
             document.getElementById('set-color').value = currentData.themeColor || "#3b82f6";
@@ -352,23 +388,21 @@
                 document.getElementById('color-lock').classList.add('hidden');
             }
 
-            // QR Code
             const url = `${window.location.origin}${window.location.pathname.replace('client_dashboard.html','')}menu.html?id=${restId}`;
             document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
             document.getElementById('menu-link').href = url;
 
-            // Categories
             const cats = [...new Set(products.map(p => p.category))];
             document.getElementById('cats-list').innerHTML = cats.map(c => `<option value="${c}">`).join('');
         };
 
-        // Actions attached to window.app
+        // Actions
         app.saveProduct = async () => {
             const plan = PLANS[currentData.plan || 'free'];
             const products = currentData.products || [];
             
             if(products.length >= plan.limit) {
-                alert(currentLang==='ar' ? "الحد الأقصى" : "Limit Reached");
+                alert(currentLang==='ar' ? "عفواً، لقد وصلت للحد الأقصى" : "Plan limit reached");
                 return;
             }
 
@@ -377,13 +411,18 @@
             
             if(!name || !price) return alert("اكتب الاسم والسعر");
 
+            // Collect Allergens
+            const selectedAllergens = [];
+            document.querySelectorAll('.allergen-tag.selected').forEach(tag => selectedAllergens.push(tag.getAttribute('data-val')));
+
             const newProd = {
                 name, 
                 price: Number(price),
                 category: document.getElementById('prod-cat').value || "General",
                 calories: document.getElementById('prod-cal').value,
                 description: document.getElementById('prod-desc').value,
-                image: tempImg || "images/logo.png"
+                image: tempImg || "images/logo.png",
+                allergens: selectedAllergens
             };
 
             try {
@@ -391,12 +430,12 @@
                     products: arrayUnion(newProd)
                 });
                 app.closeModal();
-                app.init(); // Refresh
+                app.init(); 
             } catch(e) { alert(e.message); }
         };
 
         app.deleteProd = async (index) => {
-            if(!confirm("Hapus?")) return;
+            if(!confirm(currentLang==='ar'?"هل أنت متأكد من الحذف؟":"Are you sure?")) return;
             const products = currentData.products;
             products.splice(index, 1);
             await updateDoc(doc(db, "restaurants", restId), { products });
@@ -414,38 +453,58 @@
 
             try {
                 await updateDoc(doc(db, "restaurants", restId), updates);
-                
                 if(pass && auth.currentUser) {
                     await updatePassword(auth.currentUser, pass);
-                    alert("تم تغيير الباسورد");
+                    alert("تم تحديث كلمة المرور");
                 }
-                alert("تم الحفظ");
+                alert("تم الحفظ بنجاح");
                 app.init();
             } catch(e) { alert(e.message); }
         };
 
+        // --- IMAGE COMPRESSION LOGIC (The Fix) ---
+        function compressImage(file, callback) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800; // Resize to 800px max
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7); // Compress quality 70%
+                    callback(dataUrl);
+                }
+            }
+        }
+
         app.handleProdImg = (input) => {
             if(input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    tempImg = e.target.result;
+                compressImage(input.files[0], (base64) => {
+                    tempImg = base64;
                     document.getElementById('prod-preview').src = tempImg;
                     document.getElementById('prod-preview').classList.remove('hidden');
-                };
-                reader.readAsDataURL(input.files[0]);
+                });
             }
         };
 
         app.handleLogo = (input) => {
             if(input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    tempLogo = e.target.result;
+                compressImage(input.files[0], (base64) => {
+                    tempLogo = base64;
                     document.getElementById('preview-logo').src = tempLogo;
-                };
-                reader.readAsDataURL(input.files[0]);
+                });
             }
         };
+
+        app.toggleAllergen = (el) => {
+            el.classList.toggle('selected');
+        }
 
         app.toggleLang = () => {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
@@ -481,10 +540,11 @@
             tempImg = "";
             document.getElementById('prod-preview').classList.add('hidden');
             document.querySelectorAll('#modal input').forEach(i => i.value = "");
+            document.querySelectorAll('.allergen-tag').forEach(t => t.classList.remove('selected'));
             document.getElementById('modal').classList.remove('hidden');
             document.getElementById('modal').classList.add('flex');
         };
-
+        
         app.closeModal = () => {
             document.getElementById('modal').classList.add('hidden');
             document.getElementById('modal').classList.remove('flex');
@@ -498,7 +558,7 @@
                 data: {
                     labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
                     datasets: [{
-                        label: 'Views',
+                        label: currentLang === 'ar' ? 'الزيارات' : 'Views',
                         data: [0, 0, 0, 0, 0, 0, total],
                         borderColor: '#3b82f6',
                         backgroundColor: 'rgba(59,130,246,0.1)',
@@ -510,7 +570,6 @@
             });
         };
 
-        // Start App
         app.init();
     </script>
 </body>
