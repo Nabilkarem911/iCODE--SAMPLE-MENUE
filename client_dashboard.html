@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-menu Dashboard | لوحة التحكم</title>
+    <title>AI-menu | لوحة التحكم</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -45,18 +45,21 @@
         .upload-box:hover { border-color: #2563eb; }
         .file-input-overlay { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 10; width: 100%; height: 100%; }
 
-        /* Tags Selection */
         .select-tag { cursor: pointer; user-select: none; transition: 0.2s; border: 1px solid #e5e7eb; background: white; opacity: 0.7; filter: grayscale(1); }
         .dark .select-tag { border-color: #374151; background: #1f2937; color: white; }
-        .select-tag.selected { opacity: 1; filter: grayscale(0); border-color: #2563eb; background: rgba(37, 99, 235, 0.1); color: #2563eb; }
+        .select-tag.selected { opacity: 1; filter: grayscale(0); border-color: #2563eb; background: rgba(37, 99, 235, 0.1); color: #2563eb; transform: scale(1.05); }
 
-        /* Stock Switch */
-        .toggle-checkbox:checked { right: 0; border-color: #10b981; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
+        /* Stock Switch Styles */
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #10b981; }
+        input:checked + .slider:before { transform: translateX(20px); }
         
-        /* Layout Radio */
-        .layout-radio:checked + div { border-color: #2563eb; background-color: rgba(37, 99, 235, 0.05); }
-        .dark .layout-radio:checked + div { background-color: rgba(37, 99, 235, 0.2); }
+        /* Fix for LTR Switch */
+        html[dir="ltr"] input:checked + .slider:before { transform: translateX(20px); }
+        html[dir="ltr"] .slider:before { left: 2px; }
     </style>
 </head>
 <body class="flex h-screen bg-gray-50 dark:bg-dark text-gray-800 dark:text-gray-100 transition-colors duration-300">
@@ -92,10 +95,6 @@
         </nav>
 
         <div class="p-4 space-y-2 border-t border-gray-100 dark:border-gray-800">
-            <a href="https://wa.me/966582084647" target="_blank" id="btn-upgrade" class="w-full py-2.5 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-yellow-500/20 transition flex items-center justify-center gap-2 hidden">
-                <i class="fa-solid fa-crown"></i> <span data-i18n="btn_upgrade">ترقية الباقة</span>
-            </a>
-
             <div class="flex gap-2">
                 <button onclick="window.app.toggleLang()" class="flex-1 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition">EN/AR</button>
                 <button onclick="window.app.toggleTheme()" class="flex-1 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition">
@@ -144,8 +143,8 @@
                 <div class="flex flex-wrap justify-between items-center gap-4">
                     <h1 class="text-2xl font-black text-gray-800 dark:text-white" data-i18n="title_products">قائمة الطعام</h1>
                     <div class="flex gap-2">
-                        <button onclick="window.app.openCatModal()" class="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl font-bold text-sm shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700" data-i18n="btn_cats">إدارة الأقسام</button>
-                        <button onclick="window.app.openModal()" class="bg-primary text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg hover:bg-blue-600 flex items-center gap-2"><i class="fa-solid fa-plus"></i> <span data-i18n="btn_add">جديد</span></button>
+                        <button onclick="window.app.openCatModal()" class="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl font-bold text-sm shadow-sm" data-i18n="btn_cats">إدارة الأقسام</button>
+                        <button onclick="window.app.openModal()" class="bg-primary text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> <span data-i18n="btn_add">جديد</span></button>
                     </div>
                 </div>
                 <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
@@ -182,7 +181,6 @@
 
             <div id="tab-settings" class="hidden space-y-6">
                 <h1 class="text-2xl font-black text-gray-800 dark:text-white" data-i18n="title_settings">إعدادات المطعم</h1>
-                
                 <div class="bg-white dark:bg-surface p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm max-w-3xl">
                     <h3 class="font-bold text-sm text-primary mb-4 uppercase tracking-wider" data-i18n="sec_brand">البيانات</h3>
                     <div class="flex items-center gap-6 mb-6">
@@ -199,7 +197,7 @@
                     <h3 class="font-bold text-sm text-purple-600 mb-4 uppercase tracking-wider border-t border-gray-100 dark:border-gray-700 pt-4" data-i18n="sec_appearance">المظهر</h3>
                     
                     <div class="mb-4">
-                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_theme">نمط التصميم (Style)</label>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_theme">نمط التصميم</label>
                         <select id="set-style" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white">
                             <option value="modern" data-i18n="opt_modern">مودرن (Modern)</option>
                             <option value="classic" data-i18n="opt_classic">كلاسيك (Classic)</option>
@@ -311,6 +309,15 @@
                     </div>
 
                     <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_badges">شارات التميز</label>
+                        <div class="flex gap-2">
+                            <div class="select-tag badge-select px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="new">✨ <span data-i18n="bg_new">جديد</span></div>
+                            <div class="select-tag badge-select px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="bestseller">🔥 <span data-i18n="bg_best">الأكثر مبيعاً</span></div>
+                            <div class="select-tag badge-select px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="promo">🏷️ <span data-i18n="bg_offer">عرض</span></div>
+                        </div>
+                    </div>
+
+                    <div>
                         <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_allergens">مسببات الحساسية</label>
                         <div class="flex flex-wrap gap-2" id="allergen-container">
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="حار">🌶️ <span data-i18n="al_spicy">حار</span></div>
@@ -318,7 +325,7 @@
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="بيض">🥚 <span data-i18n="al_egg">بيض</span></div>
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="ألبان">🥛 <span data-i18n="al_milk">ألبان</span></div>
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="مكسرات">🌰 <span data-i18n="al_nuts">مكسرات</span></div>
-                            <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="فول سوداني">🥜 <span data-i18n="al_peanuts">فول سوداني</span></div>
+                            <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="فول سوداني">🥜 <span data-i18n="al_peanuts">سوداني</span></div>
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="سمسم">🌱 <span data-i18n="al_sesame">سمسم</span></div>
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="بحري">🐟 <span data-i18n="al_fish">بحري</span></div>
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="صويا">🫘 <span data-i18n="al_soy">صويا</span></div>
@@ -327,15 +334,6 @@
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="ترمس">🌿 <span data-i18n="al_lupin">ترمس</span></div>
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="رخويات">🐌 <span data-i18n="al_molluscs">رخويات</span></div>
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="قشريات">🦞 <span data-i18n="al_crustaceans">قشريات</span></div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_badges">شارات التميز</label>
-                        <div class="flex gap-2">
-                            <div class="select-tag badge-select px-3 py-1 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="new">✨ <span data-i18n="bg_new">جديد</span></div>
-                            <div class="select-tag badge-select px-3 py-1 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="bestseller">🔥 <span data-i18n="bg_best">الأكثر مبيعاً</span></div>
-                            <div class="select-tag badge-select px-3 py-1 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="promo">🏷️ <span data-i18n="bg_offer">عرض</span></div>
                         </div>
                     </div>
                 </div>
@@ -374,7 +372,7 @@
         let currentLang = localStorage.getItem('lang') || 'ar';
         let tempImg = "", tempLogo = "";
 
-        // Dictionary
+        // Translation Dictionary
         const i18n = {
             ar: {
                 nav_home: "نظرة عامة", nav_products: "المنتجات", nav_marketing: "التسويق", nav_tables: "الطاولات", nav_settings: "الإعدادات", nav_qr: "الباركود", btn_upgrade: "ترقية الباقة", btn_logout: "خروج", mob_header: "لوحة التحكم",
@@ -404,8 +402,8 @@
             }
         };
 
+        // --- Core ---
         app.init = async () => {
-            // Setup Lang & Theme
             document.documentElement.lang = currentLang;
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             app.translate();
@@ -438,7 +436,7 @@
             const products = currentData.products || [];
             const banners = currentData.banners || [];
 
-            // Stats
+            // Stats & IDs
             document.getElementById('val-views').innerText = currentData.stats?.views || 0;
             document.getElementById('val-prods').innerText = products.length;
             document.getElementById('val-tables').innerText = currentData.tables || 0;
@@ -446,8 +444,6 @@
             document.getElementById('dash-name').innerText = currentData.name;
             document.getElementById('dash-logo').src = currentData.logo || 'images/logo.png';
             document.getElementById('plan-badge').innerText = plan.name[currentLang];
-
-            if(currentData.plan !== 'vip') document.getElementById('btn-upgrade').classList.remove('hidden');
 
             // Products Grid
             const grid = document.getElementById('products-grid');
@@ -459,12 +455,14 @@
                             <button onclick="window.app.openModal(${i})" class="bg-white text-blue-600 w-8 h-8 rounded-lg shadow flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="window.app.deleteProd(${i})" class="bg-white text-red-500 w-8 h-8 rounded-lg shadow flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
                         </div>
+                        
                         <div class="absolute top-2 left-2 z-10">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer toggle-checkbox" ${p.stock !== false ? 'checked' : ''} onchange="window.app.toggleStock(${i})">
-                                <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer toggle-label after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                            <label class="switch">
+                                <input type="checkbox" ${p.stock !== false ? 'checked' : ''} onchange="window.app.toggleStock(${i})">
+                                <span class="slider"></span>
                             </label>
                         </div>
+
                         <div class="h-40 bg-gray-100 dark:bg-black/20 relative ${p.stock === false ? 'grayscale opacity-50' : ''}">
                             <img src="${p.image}" class="w-full h-full object-cover">
                         </div>
@@ -495,16 +493,12 @@
             document.getElementById('set-color').value = currentData.themeColor || "#2563eb";
             document.getElementById('preview-logo').src = currentData.logo || "images/logo.png";
             document.getElementById('set-style').value = currentData.style || 'modern';
+            
+            // Layout Logic Fix
             const layout = currentData.layout || 'grid';
             document.querySelector(`input[name="layout"][value="${layout}"]`).checked = true;
 
-            if(!plan.color) {
-                document.getElementById('set-color').disabled = true;
-                document.getElementById('color-lock').classList.remove('hidden');
-            } else {
-                document.getElementById('set-color').disabled = false;
-                document.getElementById('color-lock').classList.add('hidden');
-            }
+            if(!plan.color) document.getElementById('set-color').disabled = true;
 
             // Tables & QR
             document.getElementById('tables-count').value = currentData.tables || 0;
@@ -520,13 +514,12 @@
             app.renderChart(currentData.stats?.views || 0);
         };
 
-        // --- Actions ---
+        // --- Products Logic ---
         app.saveProduct = async () => {
             const products = [...(currentData.products || [])];
             const editIndex = parseInt(document.getElementById('edit-index').value);
             const name = document.getElementById('prod-name').value;
             const price = document.getElementById('prod-price').value;
-            
             if(!name || !price) return alert("Required fields missing");
 
             const allergens = [], badges = [];
@@ -601,7 +594,6 @@
 
         app.handleProdImg = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempImg=r; document.getElementById('prod-preview').src=r; document.getElementById('prod-preview').classList.remove('hidden'); });
         app.handleLogo = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempLogo=r; document.getElementById('preview-logo').src=r; });
-        
         app.handleBannerUpload = (i) => i.files[0] && compressImage(i.files[0], async (r) => {
             await updateDoc(doc(db, "restaurants", restId), { banners: arrayUnion(r) });
             app.init();
@@ -628,7 +620,7 @@
             }
         };
 
-        // --- Category Manager ---
+        // --- Categories ---
         app.openCatModal = () => {
             const cats = [...new Set((currentData.products || []).map(p => p.category))];
             document.getElementById('cat-list-container').innerHTML = cats.map(c => `
@@ -684,12 +676,14 @@
         app.toggleLang = () => { currentLang = currentLang === 'ar' ? 'en' : 'ar'; localStorage.setItem('lang', currentLang); location.reload(); };
         app.toggleTheme = () => { document.documentElement.classList.toggle('dark'); localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'; };
         app.logout = () => { localStorage.removeItem('admin_rest_id'); window.location.href='index.html'; };
+        
         app.renderChart = (total) => {
             const ctx = document.getElementById('viewsChart');
             if(window.myChart) window.myChart.destroy();
+            const data = [0, 0, 0, 0, 0, 0, total];
             window.myChart = new Chart(ctx, {
                 type: 'line',
-                data: { labels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], datasets: [{ label: 'Views', data: [0,0,0,0,0,0, total], borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, tension: 0.4 }] },
+                data: { labels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], datasets: [{ label: 'Views', data: data, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, tension: 0.4 }] },
                 options: { responsive: true, maintainAspectRatio: false }
             });
         };
