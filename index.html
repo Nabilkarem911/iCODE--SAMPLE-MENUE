@@ -14,7 +14,6 @@
     <nav class="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
         <div class="flex items-center gap-3">
             <img src="images/logo.png" class="w-12 h-12 rounded-xl bg-white/10 p-1 border border-blue-500/30 object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2082/2082691.png'">
-            
             <span class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">AI-menu</span>
         </div>
         <button onclick="document.getElementById('login-modal').classList.remove('hidden')" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-xl font-bold transition shadow-lg shadow-blue-500/30">تسجيل الدخول</button>
@@ -83,26 +82,30 @@
                 await signInWithEmailAndPassword(auth, email, pass);
 
                 // 2. التوجيه حسب نوع المستخدم
-                if(email === "nabilkarem@gmail.com") {
-                    // ✅ لو ده الأدمن -> روح لصفحة السوبر أدمن
+                if(email === "admin@icode.com") {
                     window.location.href = "super_admin.html";
                 } else {
-                    // ✅ لو ده مشترك -> ابحث عن مطعمه وروح للوحة التحكم
                     const q = query(collection(db, "restaurants"), where("email", "==", email));
                     const querySnapshot = await getDocs(q);
                     
                     if(!querySnapshot.empty) {
                         const docData = querySnapshot.docs[0];
+                        // التحقق من صلاحية الاشتراك
+                        if(docData.data().isActive === false) {
+                            alert("⛔ عذراً، اشتراكك موقف حالياً. تواصل مع الإدارة.");
+                            btn.innerText = "دخول";
+                            return;
+                        }
                         localStorage.setItem('admin_rest_id', docData.id); 
                         window.location.href = "client_dashboard.html";
                     } else {
                         alert("تم الدخول، ولكن لا يوجد مطعم مرتبط بهذا الحساب!");
-                        window.location.href = "index.html"; // رجعه تاني
+                        window.location.href = "index.html";
                     }
                 }
             } catch (error) {
                 console.error(error);
-                alert("❌ خطأ: تأكد من الإيميل والباسورد، وتفعيل Authentication في الفايربيز.");
+                alert("❌ خطأ: تأكد من الإيميل والباسورد.");
                 btn.innerText = "دخول";
             }
         }
