@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرحباً بك</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: 'var(--brand-color, #f97316)', // برتقالي افتراضي
+                    },
+                    fontFamily: {
+                        tajawal: ['Tajawal', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; }
+        .hero-pattern { background-color: var(--brand-color, #f97316); background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        #loader { position: fixed; inset: 0; background: white; z-index: 50; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <div id="loader"><div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-orange-500"></div></div>
+
+    <header class="hero-pattern text-white p-8 rounded-b-[3rem] shadow-xl text-center relative z-10">
+        <img id="rest-logo" src="" class="w-24 h-24 rounded-full mx-auto border-4 border-white/20 shadow-lg object-cover mb-4 hidden bg-white">
+        <h1 id="rest-name" class="text-3xl font-black mb-2">جاري التحميل...</h1>
+        <p id="rest-desc" class="text-white/90 text-sm max-w-md mx-auto line-clamp-2"></p>
+    </header>
+
+    <main class="flex-1 p-6 -mt-10 relative z-20 space-y-4 max-w-md mx-auto w-full">
+        
+        <button id="btn-menu" class="w-full bg-white p-4 rounded-2xl shadow-lg flex items-center justify-between group hover:scale-[1.02] transition">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 group-hover:bg-orange-500 group-hover:text-white transition">
+                    <i class="fa-solid fa-utensils text-xl"></i>
+                </div>
+                <div class="text-right">
+                    <h3 class="font-bold text-gray-800 text-lg">قائمة الطعام</h3>
+                    <p class="text-xs text-gray-400">تصفح المنيو واطلب الآن</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-left text-gray-300"></i>
+        </button>
+
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+            <div class="flex items-center gap-3 mb-3">
+                <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                <h3 class="font-bold text-gray-800">نقاط الولاء</h3>
+            </div>
+            <div class="bg-gray-100 rounded-xl p-3 text-center">
+                <p class="text-gray-500 text-xs">سجل دخولك لتجميع النقاط</p>
+                <button class="mt-2 bg-gray-800 text-white px-4 py-1.5 rounded-lg text-xs font-bold w-full">تسجيل الدخول</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
+                <i class="fa-solid fa-clock text-blue-500 text-2xl mb-2"></i>
+                <h4 class="font-bold text-sm text-gray-700">مواعيد العمل</h4>
+                <p class="text-[10px] text-gray-400 mt-1">يومياً: 1م - 1ص</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
+                <i class="fa-solid fa-location-dot text-red-500 text-2xl mb-2"></i>
+                <h4 class="font-bold text-sm text-gray-700">الفروع</h4>
+                <p class="text-[10px] text-gray-400 mt-1">الرياض - جدة</p>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+            <h3 class="font-bold text-gray-800 mb-2 border-b pb-2">عن المطعم</h3>
+            <p id="about-text" class="text-sm text-gray-500 leading-relaxed">
+                نقدم لكم أشهى المأكولات المحضرة بعناية وشغف. نسعى دائماً لتقديم تجربة طعام لا تُنسى.
+            </p>
+        </div>
+
+    </main>
+
+    <footer class="text-center p-6 text-gray-300 text-[10px]">
+        Powered by <span class="font-bold text-gray-400">AI-Menu</span>
+    </footer>
+
+    <script type="module">
+        import { db, doc, getDoc } from './firebase-config.js';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const restId = urlParams.get('id');
+        const table = urlParams.get('table');
+
+        async function init() {
+            if(!restId) return alert("رابط غير صالح");
+
+            try {
+                const snap = await getDoc(doc(db, "restaurants", restId));
+                if(snap.exists()) {
+                    const data = snap.data();
+                    
+                    // Update UI
+                    document.getElementById('rest-name').innerText = data.name;
+                    document.getElementById('rest-desc').innerText = data.desc || "";
+                    if(data.logo) {
+                        const img = document.getElementById('rest-logo');
+                        img.src = data.logo;
+                        img.classList.remove('hidden');
+                    }
+                    if(data.themeColor) {
+                        document.documentElement.style.setProperty('--brand-color', data.themeColor);
+                    }
+                    if(data.desc) {
+                        document.getElementById('about-text').innerText = data.desc;
+                    }
+
+                    // Setup Menu Link
+                    let menuLink = `menu.html?id=${restId}`;
+                    if(table) menuLink += `&table=${table}`;
+                    
+                    const btn = document.getElementById('btn-menu');
+                    btn.onclick = () => window.location.href = menuLink;
+
+                }
+            } catch(e) { console.error(e); }
+            
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        init();
+    </script>
+</body>
+</html>
