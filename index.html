@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-menu | القوائم الرقمية الذكية</title>
+    <title>AI-menu | الحل الرقمي المتكامل</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,17 +12,17 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#6366f1', /* لون نيلي فخم */
-                        secondary: '#ec4899', /* لون وردي عصري */
-                        dark: '#0B0F19', /* لون خلفية أعمق */
-                        light: '#ffffff'
+                        primary: '#6366f1', 
+                        secondary: '#ec4899',
+                        dark: '#0f172a', 
+                        light: '#f8fafc' 
                     },
                     fontFamily: {
                         tajawal: ['Tajawal', 'sans-serif'],
                     },
                     animation: {
-                        'blob': 'blob 7s infinite',
-                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'blob': 'blob 10s infinite',
+                        'float': 'float 6s ease-in-out infinite',
                     },
                     keyframes: {
                         blob: {
@@ -31,63 +31,61 @@
                             '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
                             '100%': { transform: 'translate(0px, 0px) scale(1)' },
                         },
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
                         }
                     }
                 }
             }
         }
     </script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        body { font-family: 'Tajawal', sans-serif; overflow-x: hidden; }
-        .glass-nav { background: rgba(11, 15, 25, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.3s; }
-        .glass-card:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(99, 102, 241, 0.5); transform: translateY(-5px); }
+        body { font-family: 'Tajawal', sans-serif; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
         
-        /* Animated Background */
-        .bg-mesh {
-            background-color: #0B0F19;
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
-        }
+        /* الوضع النهاري: كروت بيضاء بظلال ناعمة */
+        .card-light { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1); }
+        
+        /* الوضع الليلي: كروت غامقة بحدود مضيئة */
+        .dark .card-dark { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 0 0 0 transparent; }
+        .dark .card-dark:hover { border-color: rgba(99, 102, 241, 0.3); box-shadow: 0 0 20px rgba(99, 102, 241, 0.1); }
+
+        .gradient-text { background-clip: text; -webkit-background-clip: text; color: transparent; background-image: linear-gradient(to right, #6366f1, #ec4899); }
     </style>
 </head>
-<body class="bg-light text-gray-800 dark:bg-dark dark:text-white transition-colors duration-300">
+<body class="bg-gray-50 text-gray-900 dark:bg-[#0B0F19] dark:text-white">
 
     <div class="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
-        <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div class="absolute top-0 right-1/4 w-96 h-96 bg-secondary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div class="absolute -bottom-32 left-1/3 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-[100px] opacity-0 dark:opacity-40 animate-blob transition-opacity duration-700"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-[100px] opacity-0 dark:opacity-40 animate-blob animation-delay-2000 transition-opacity duration-700"></div>
+        
+        <div class="absolute top-20 right-20 w-72 h-72 bg-blue-200/40 rounded-full filter blur-[80px] opacity-60 dark:opacity-0 animate-blob"></div>
+        <div class="absolute bottom-20 left-20 w-72 h-72 bg-pink-200/40 rounded-full filter blur-[80px] opacity-60 dark:opacity-0 animate-blob animation-delay-4000"></div>
     </div>
 
-    <nav class="fixed w-full z-50 transition-all duration-300 glass-nav" id="navbar">
+    <nav class="fixed w-full z-50 transition-all duration-300 border-b border-transparent" id="navbar">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <img src="images/logo.png" class="w-10 h-10 object-contain drop-shadow-lg"> 
-                <span class="text-2xl font-black tracking-tight text-white">AI-menu</span>
+                <img src="images/logo.png" class="w-12 h-12 object-contain drop-shadow-md"> 
+                <span class="text-2xl font-black tracking-tight text-gray-800 dark:text-white">AI-menu</span>
             </div>
 
-            <div class="hidden md:flex gap-8 font-medium text-sm text-gray-300">
-                <a href="#hero" class="hover:text-white transition">الرئيسية</a>
-                <a href="#features" class="hover:text-white transition">المميزات</a>
-                <a href="#pricing" class="hover:text-white transition">الباقات</a>
+            <div class="hidden md:flex gap-8 font-bold text-sm text-gray-600 dark:text-gray-300">
+                <a href="#hero" class="hover:text-primary transition">الرئيسية</a>
+                <a href="#features" class="hover:text-primary transition">المميزات</a>
+                <a href="#pricing" class="hover:text-primary transition">الباقات</a>
             </div>
 
             <div class="flex items-center gap-3">
-                <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition text-yellow-400">
-                    <i id="theme-icon" class="fa-solid fa-sun"></i>
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-white dark:bg-white/10 shadow-sm border border-gray-200 dark:border-white/5 flex items-center justify-center hover:bg-gray-50 transition">
+                    <i id="theme-icon" class="fa-solid fa-moon text-gray-600 dark:text-yellow-400"></i>
                 </button>
-                <button onclick="toggleLang()" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition text-xs font-bold text-gray-300">EN</button>
-                <button onclick="openModal()" class="bg-white/10 hover:bg-white/20 border border-white/10 text-white px-5 py-2 rounded-xl font-bold text-sm transition backdrop-blur-md">
-                    تسجيل الدخول
+                <button onclick="toggleLang()" class="w-10 h-10 rounded-full bg-white dark:bg-white/10 shadow-sm border border-gray-200 dark:border-white/5 flex items-center justify-center font-bold text-xs hover:bg-gray-50 transition">EN</button>
+                <button onclick="openModal()" class="bg-primary hover:bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition shadow-lg shadow-primary/30">
+                    دخول المشتركين
                 </button>
             </div>
         </div>
@@ -95,33 +93,35 @@
 
     <section id="hero" class="min-h-screen flex items-center justify-center pt-20 relative z-10">
         <div class="max-w-5xl mx-auto text-center px-6">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-blue-400 text-xs font-bold mb-8 animate-fade-in-up">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-md text-primary text-xs font-bold mb-8 shadow-sm">
                 <span class="relative flex h-2 w-2">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                 </span>
-                نظام إدارة القوائم الرقمية الأحدث
+                نظام الإدارة الرقمية الشامل
             </div>
             
-            <h1 class="text-5xl md:text-8xl font-black mb-6 leading-tight animate-fade-in-up" style="animation-delay: 0.1s;">
-                أدر <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">مشروعك</span> <br>
-                بذكاء واحترافية
+            <h1 class="text-5xl md:text-8xl font-black mb-6 leading-tight text-gray-900 dark:text-white">
+                حول نشاطك <br>
+                <span class="gradient-text">لعالم رقمي ذكي</span>
             </h1>
             
-            <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style="animation-delay: 0.2s;">
-                سواء كنت تمتلك مطعماً، كافيهاً، صالوناً، أو فندقاً. امتلك قائمة خدمات رقمية (QR) متكاملة، استقبل الطلبات، وتابع تقارير المبيعات في مكان واحد.
+            <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                سواء كنت تملك مطعماً، كافيهاً، صالوناً، أو فندقاً. امتلك قائمة خدمات (QR) احترافية، استقبل الحجوزات والطلبات، وضاعف مبيعاتك بنظام واحد.
             </p>
             
-            <div class="flex flex-col md:flex-row gap-4 justify-center animate-fade-in-up" style="animation-delay: 0.3s;">
-                <a href="https://wa.me/966582084647?text=مرحباً، أرغب في الاشتراك في خدمة AI-menu وتجربة النظام." target="_blank" class="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white px-10 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-primary/25 transition transform hover:scale-105 flex items-center justify-center gap-2">
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="https://wa.me/966582084647?text=مرحباً، أرغب في الاشتراك في خدمة AI-menu" target="_blank" class="bg-gray-900 dark:bg-primary hover:opacity-90 text-white px-10 py-4 rounded-2xl font-bold text-lg shadow-xl transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
                     <i class="fa-brands fa-whatsapp text-xl"></i> اشترك الآن
                 </a>
-                <a href="#features" class="bg-white/5 text-white border border-white/10 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-white/10 transition">اكتشف المميزات</a>
+                <a href="#features" class="bg-white dark:bg-white/5 text-gray-800 dark:text-white border border-gray-200 dark:border-white/10 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 dark:hover:bg-white/10 transition shadow-sm">
+                    اكتشف المزايا
+                </a>
             </div>
 
-            <div class="mt-20 relative mx-auto max-w-4xl animate-fade-in-up" style="animation-delay: 0.5s;">
-                <div class="absolute inset-0 bg-gradient-to-t from-dark via-transparent to-transparent z-20 h-40 bottom-0 top-auto w-full"></div>
-                <img src="https://assets.menux.app/website/home/dashboard-preview.png" class="rounded-2xl border border-white/10 shadow-2xl" onerror="this.src='https://via.placeholder.com/1000x500/1e293b/ffffff?text=AI-Menu+System'">
+            <div class="mt-20 relative mx-auto max-w-4xl animate-float">
+                <div class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-2xl blur opacity-20 dark:opacity-40"></div>
+                <img src="https://assets.menux.app/website/home/dashboard-preview.png" class="relative rounded-2xl border border-gray-200 dark:border-white/10 shadow-2xl dark:shadow-none bg-white dark:bg-dark" onerror="this.src='https://via.placeholder.com/1000x500/1e293b/ffffff?text=AI-Menu+System'">
             </div>
         </div>
     </section>
@@ -129,116 +129,110 @@
     <section id="features" class="py-24 relative z-10">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-black mb-4">حلول لكل الأنشطة</h2>
-                <p class="text-gray-400">صمم ليدعم نمو المطاعم، المقاهي، ومقدمي الخدمات.</p>
+                <h2 class="text-4xl font-black mb-4 text-gray-900 dark:text-white">صمم لخدمة الجميع</h2>
+                <p class="text-gray-500 dark:text-gray-400">حلول تقنية تناسب جميع أنواع الأنشطة التجارية والخدمية.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-card p-8 rounded-3xl">
-                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 shadow-lg shadow-blue-500/20">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 rounded-3xl card-light dark:card-dark transition group">
+                    <div class="w-14 h-14 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition">
                         <i class="fa-solid fa-qrcode"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">باركود QR لا تلامسي</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">تخلص من القوائم الورقية. عملاؤك سيصلون لخدماتك بمسحة كاميرا واحدة، مع تحديث فوري للأسعار.</p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">منيو QR ذكي</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">وداعاً للقوائم الورقية. عملاؤك سيصلون لخدماتك بمسحة كاميرا واحدة، مع إمكانية تحديث الأسعار والصور في أي لحظة.</p>
                 </div>
 
-                <div class="glass-card p-8 rounded-3xl">
-                    <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 shadow-lg shadow-green-500/20">
+                <div class="p-8 rounded-3xl card-light dark:card-dark transition group">
+                    <div class="w-14 h-14 bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition">
                         <i class="fa-brands fa-whatsapp"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">نظام طلبات ذكي</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">استقبل طلبات وحجوزات عملائك مباشرة على واتساب النشاط، منظمة وجاهزة للتنفيذ.</p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">طلبات واتساب</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">استقبل الطلبات والحجوزات مكتوبة ومنظمة مباشرة على واتساب النشاط، مما يسهل عملية التواصل والتنفيذ.</p>
                 </div>
 
-                <div class="glass-card p-8 rounded-3xl">
-                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 shadow-lg shadow-purple-500/20">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <div class="p-8 rounded-3xl card-light dark:card-dark transition group">
+                    <div class="w-14 h-14 bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-chart-pie"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">هوية بصرية متكاملة</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">تحكم في ألوان المنيو، اللوجو، والصور لتعكس هوية علامتك التجارية بدقة واحترافية.</p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">تحكم كامل</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">لوحة تحكم شاملة تمكنك من متابعة عدد الزيارات، تعديل المنتجات، وتخصيص ألوان المنيو لتناسب هويتك.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="pricing" class="py-24 relative z-10 bg-black/20">
+    <section id="pricing" class="py-24 relative z-10 bg-gray-100 dark:bg-black/20">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-black mb-4">باقات تناسب حجم عملك</h2>
-                <p class="text-gray-400">اختر الخطة المناسبة وابدأ في تطوير مشروعك اليوم.</p>
+                <h2 class="text-4xl font-black mb-4 text-gray-900 dark:text-white">اختر خطتك وابدأ</h2>
+                <p class="text-gray-500 dark:text-gray-400">باقات مرنة تناسب حجم نشاطك، مع إمكانية الترقية في أي وقت.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                 
-                <div class="glass-card p-8 rounded-3xl border-t-4 border-gray-500">
-                    <h3 class="text-gray-400 font-bold text-lg">الباقة الأساسية</h3>
-                    <div class="my-4"><span class="text-4xl font-black">99</span> <span class="text-sm text-gray-500">ر.س / شهر</span></div>
-                    <p class="text-xs text-gray-500 mb-6">للمشاريع الناشئة والأسر المنتجة</p>
-                    <ul class="space-y-3 mb-8 text-sm text-gray-300">
-                        <li class="flex gap-2"><i class="fa-solid fa-check text-gray-500"></i> 10 أصناف/خدمات</li>
-                        <li class="flex gap-2"><i class="fa-solid fa-check text-gray-500"></i> باركود QR أساسي</li>
-                        <li class="flex gap-2"><i class="fa-solid fa-check text-gray-500"></i> استقبال طلبات واتساب</li>
+                <div class="p-8 rounded-3xl bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl transition">
+                    <h3 class="text-gray-500 font-bold text-lg">الباقة الأساسية</h3>
+                    <div class="my-4 text-gray-900 dark:text-white"><span class="text-4xl font-black">99</span> <span class="text-sm text-gray-500">ر.س / شهر</span></div>
+                    <p class="text-xs text-gray-400 mb-6">للمشاريع الصغيرة والأسر المنتجة</p>
+                    <ul class="space-y-4 mb-8 text-sm text-gray-600 dark:text-gray-300">
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-green-500"></i> 10 منتجات/خدمات</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-green-500"></i> باركود QR أساسي</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-green-500"></i> استقبال طلبات واتساب</li>
                     </ul>
-                    <a href="https://wa.me/966582084647?text=أرغب في الاشتراك في الباقة الأساسية" target="_blank" class="block w-full py-3 rounded-xl border border-white/10 hover:bg-white/5 text-center font-bold transition">اشترك الآن</a>
+                    <a href="https://wa.me/966582084647?text=أرغب في الباقة الأساسية" target="_blank" class="block w-full py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-primary hover:text-primary font-bold text-center transition text-gray-500 dark:text-gray-300">اشترك الآن</a>
                 </div>
 
-                <div class="glass-card p-8 rounded-3xl border-t-4 border-primary bg-primary/5 relative transform md:-translate-y-4">
+                <div class="p-8 rounded-3xl bg-gray-900 dark:bg-gray-800 border-2 border-primary shadow-2xl relative transform md:-translate-y-4 text-white">
                     <div class="absolute top-0 right-0 bg-primary text-white text-xs font-bold px-3 py-1 rounded-bl-xl">الأكثر مبيعاً</div>
-                    <h3 class="text-primary font-bold text-lg">الباقة المتقدمة</h3>
-                    <div class="my-4"><span class="text-5xl font-black">199</span> <span class="text-sm text-gray-500">ر.س / شهر</span></div>
-                    <p class="text-xs text-gray-500 mb-6">للمطاعم، الكافيهات، والصالونات</p>
-                    <ul class="space-y-3 mb-8 text-sm text-white font-medium">
-                        <li class="flex gap-2"><i class="fa-solid fa-check text-primary"></i> 100 صنف/خدمة</li>
-                        <li class="flex gap-2"><i class="fa-solid fa-check text-primary"></i> تخصيص الألوان والهوية</li>
-                        <li class="flex gap-2"><i class="fa-solid fa-check text-primary"></i> لوحة تحكم كاملة</li>
-                        <li class="flex gap-2"><i class="fa-solid fa-check text-primary"></i> تقارير الزيارات</li>
+                    <h3 class="text-blue-300 font-bold text-lg">الباقة المتقدمة</h3>
+                    <div class="my-4"><span class="text-5xl font-black">199</span> <span class="text-sm text-gray-400">ر.س / شهر</span></div>
+                    <p class="text-xs text-gray-400 mb-6">للمطاعم، الكافيهات، والصالونات</p>
+                    <ul class="space-y-4 mb-8 text-sm text-gray-300">
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-primary"></i> 100 منتج/خدمة</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-primary"></i> تغيير ألوان المنيو (الهوية)</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-primary"></i> لوحة تحكم كاملة</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-primary"></i> تقارير الزيارات</li>
                     </ul>
-                    <a href="https://wa.me/966582084647?text=أرغب في الاشتراك في الباقة المتقدمة" target="_blank" class="block w-full py-3 rounded-xl bg-primary hover:bg-blue-600 text-white text-center font-bold transition shadow-lg shadow-primary/30">اشترك الآن</a>
+                    <a href="https://wa.me/966582084647?text=أرغب في الباقة المتقدمة" target="_blank" class="block w-full py-3 rounded-xl bg-primary hover:bg-blue-600 text-white text-center font-bold transition shadow-lg shadow-primary/30">اشترك الآن</a>
                 </div>
 
-                <div class="glass-card p-8 rounded-3xl border-t-4 border-secondary">
+                <div class="p-8 rounded-3xl bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl transition">
                     <h3 class="text-secondary font-bold text-lg">باقة المؤسسات</h3>
-                    <div class="my-4"><span class="text-4xl font-black">299</span> <span class="text-sm text-gray-500">ر.س / شهر</span></div>
-                    <p class="text-xs text-gray-500 mb-6">للفنادق والسلاسل التجارية</p>
-                    <ul class="space-y-3 mb-8 text-sm text-gray-300">
-                        <li class="flex gap-2"><i class="fa-solid fa-check text-secondary"></i> منتجات غير محدودة</li>
-                        <li class="flex gap-2"><i class="fa-solid fa-check text-secondary"></i> دومين خاص (اسمك.com)</li>
-                        <li class="flex gap-2"><i class="fa-solid fa-check text-secondary"></i> إزالة شعار النظام</li>
-                        <li class="flex gap-2"><i class="fa-solid fa-check text-secondary"></i> مدير حساب خاص</li>
+                    <div class="my-4 text-gray-900 dark:text-white"><span class="text-4xl font-black">299</span> <span class="text-sm text-gray-500">ر.س / شهر</span></div>
+                    <p class="text-xs text-gray-400 mb-6">للفنادق والسلاسل التجارية</p>
+                    <ul class="space-y-4 mb-8 text-sm text-gray-600 dark:text-gray-300">
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-secondary"></i> منتجات غير محدودة</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-secondary"></i> دومين خاص (YourName.com)</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-secondary"></i> إزالة شعار النظام</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-secondary"></i> مدير حساب خاص</li>
                     </ul>
-                    <a href="https://wa.me/966582084647?text=أرغب في الاستفسار عن باقة المؤسسات" target="_blank" class="block w-full py-3 rounded-xl border border-white/10 hover:bg-white/5 text-center font-bold transition">تواصل معنا</a>
+                    <a href="https://wa.me/966582084647?text=استفسار عن باقة المؤسسات" target="_blank" class="block w-full py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-secondary hover:text-secondary font-bold text-center transition text-gray-500 dark:text-gray-300">تواصل معنا</a>
                 </div>
 
             </div>
         </div>
     </section>
 
-    <footer class="py-10 border-t border-white/5 text-center text-gray-500 text-sm relative z-10">
+    <footer class="py-10 border-t border-gray-200 dark:border-gray-800 text-center text-gray-500 text-sm bg-white dark:bg-dark relative z-10">
         <p>© 2026 AI-menu. جميع الحقوق محفوظة.</p>
     </footer>
 
-    <div id="login-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[100] backdrop-blur-md transition-opacity duration-300">
-        <div class="bg-gray-900 p-8 rounded-3xl w-full max-w-md border border-gray-800 shadow-2xl relative transform transition-transform duration-300 scale-95" id="modal-content">
-            <button onclick="closeModal()" class="absolute top-5 right-5 text-gray-500 hover:text-white transition"><i class="fa-solid fa-times text-xl"></i></button>
+    <div id="login-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[100] backdrop-blur-sm transition-opacity duration-300 opacity-0 pointer-events-none">
+        <div class="bg-white dark:bg-gray-900 p-8 rounded-3xl w-full max-w-md border border-gray-200 dark:border-gray-800 shadow-2xl relative transform scale-95 transition-transform duration-300" id="modal-content">
+            <button onclick="closeModal()" class="absolute top-5 right-5 text-gray-400 hover:text-red-500 transition"><i class="fa-solid fa-times text-xl"></i></button>
             
             <div class="text-center mb-8">
                 <img src="images/logo.png" class="w-16 h-16 mx-auto mb-4 object-contain">
-                <h2 class="text-2xl font-bold text-white">تسجيل الدخول</h2>
-                <p class="text-gray-500 text-sm">لوحة تحكم المشتركين</p>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">تسجيل الدخول</h2>
+                <p class="text-gray-500 text-sm">إدارة حسابك</p>
             </div>
             
             <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-1">البريد الإلكتروني</label>
-                    <input type="email" id="email" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 outline-none focus:border-primary text-white transition text-left" dir="ltr">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-1">كلمة المرور</label>
-                    <input type="password" id="password" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 outline-none focus:border-primary text-white transition text-left" dir="ltr">
-                </div>
+                <input type="email" id="email" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none focus:border-primary text-gray-900 dark:text-white transition text-left" placeholder="Email" dir="ltr">
+                <input type="password" id="password" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none focus:border-primary text-gray-900 dark:text-white transition text-left" placeholder="Password" dir="ltr">
             </div>
 
-            <button onclick="login()" id="login-btn" class="w-full bg-primary hover:bg-blue-600 text-white py-3 rounded-xl font-bold mt-8 transition shadow-lg shadow-primary/20">دخول</button>
+            <button onclick="login()" id="login-btn" class="w-full bg-primary hover:bg-indigo-600 text-white py-3 rounded-xl font-bold mt-8 transition shadow-lg shadow-primary/20">دخول</button>
         </div>
     </div>
 
@@ -250,72 +244,79 @@
             const pass = document.getElementById('password').value;
             const btn = document.getElementById('login-btn');
 
-            if(!email || !pass) return alert("فضلاً أدخل البيانات");
-            
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق...';
+            if(!email || !pass) return alert("الرجاء إدخال البيانات");
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
             
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
-
                 if(email.toLowerCase() === "nabilkarem@gmail.com") {
                     window.location.href = "super_admin.html";
                 } else {
                     const q = query(collection(db, "restaurants"), where("email", "==", email));
                     const querySnapshot = await getDocs(q);
-                    
                     if(!querySnapshot.empty) {
                         const docData = querySnapshot.docs[0];
                         if(docData.data().isActive === false) {
-                            alert("⛔ الاشتراك متوقف، يرجى التواصل مع الإدارة للتجديد.");
-                            btn.innerText = "دخول"; return;
+                            alert("⛔ الاشتراك متوقف"); btn.innerText = "دخول"; return;
                         }
                         localStorage.setItem('admin_rest_id', docData.id); 
                         window.location.href = "client_dashboard.html";
                     } else {
-                        alert("لا يوجد حساب مرتبط بهذا البريد.");
-                        btn.innerText = "دخول";
+                        alert("حساب غير مسجل"); btn.innerText = "دخول";
                     }
                 }
             } catch (error) {
                 console.error(error);
-                alert("❌ بيانات الدخول غير صحيحة");
-                btn.innerText = "دخول";
+                alert("بيانات خطأ"); btn.innerText = "دخول";
             }
         }
     </script>
 
     <script>
-        // Modal Logic
+        // Modal & Theme Logic
         const modal = document.getElementById('login-modal');
-        const modalContent = document.getElementById('modal-content');
-        
-        window.openModal = () => {
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modalContent.classList.remove('scale-95');
-                modalContent.classList.add('scale-100');
-            }, 10);
-        }
+        const content = document.getElementById('modal-content');
 
+        window.openModal = () => {
+            modal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => { content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
+        }
         window.closeModal = () => {
-            modalContent.classList.remove('scale-100');
-            modalContent.classList.add('scale-95');
+            content.classList.remove('scale-100'); content.classList.add('scale-95');
+            modal.classList.add('opacity-0', 'pointer-events-none');
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // Navbar Scroll Effect
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if(window.scrollY > 50) nav.classList.add('bg-dark/90', 'shadow-lg');
-            else nav.classList.remove('bg-dark/90', 'shadow-lg');
-        });
+        // Auto Theme Detect
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-icon').className = "fa-solid fa-sun text-yellow-400";
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-icon').className = "fa-solid fa-moon text-gray-600";
+        }
 
-        // Theme Toggle (Simplified for Dark Mode default)
         window.toggleTheme = () => {
             document.documentElement.classList.toggle('dark');
-            const icon = document.getElementById('theme-icon');
-            icon.className = document.documentElement.classList.contains('dark') ? "fa-solid fa-sun" : "fa-solid fa-moon";
+            if(document.documentElement.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+                document.getElementById('theme-icon').className = "fa-solid fa-sun text-yellow-400";
+            } else {
+                localStorage.theme = 'light';
+                document.getElementById('theme-icon').className = "fa-solid fa-moon text-gray-600";
+            }
         }
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if(window.scrollY > 50) {
+                nav.classList.add('bg-white/80', 'dark:bg-[#0B0F19]/80', 'backdrop-blur-md', 'shadow-sm', 'border-gray-200', 'dark:border-white/5');
+                nav.classList.remove('border-transparent');
+            } else {
+                nav.classList.remove('bg-white/80', 'dark:bg-[#0B0F19]/80', 'backdrop-blur-md', 'shadow-sm', 'border-gray-200', 'dark:border-white/5');
+                nav.classList.add('border-transparent');
+            }
+        });
     </script>
 </body>
 </html>
