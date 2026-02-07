@@ -2,102 +2,155 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>لوحة التحكم | إدارة المطعم</title>
+    <title>لوحة التحكم</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>body { font-family: 'Tajawal', sans-serif; background-color: #f3f4f6; }</style>
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background-color: #f3f4f6; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .nav-btn.active { background-color: #fff7ed; color: #ea580c; border-right: 4px solid #ea580c; }
+    </style>
 </head>
-<body class="bg-gray-100 flex h-screen overflow-hidden">
-    <aside class="w-64 bg-white hidden md:flex flex-col border-l p-6 text-center">
-        <img id="rest-logo" src="images/logo.png" class="w-16 h-16 mx-auto rounded-xl mb-2 bg-gray-50 p-1">
-        <h2 id="rest-name" class="font-bold text-lg mb-6">جاري التحميل...</h2>
-        <a href="#" class="bg-orange-50 text-orange-600 px-4 py-3 rounded-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-burger"></i> المنتجات</a>
-        <a id="menu-link" href="#" target="_blank" class="text-gray-600 hover:bg-gray-50 px-4 py-3 rounded-xl font-bold flex items-center gap-2"><i class="fa-solid fa-eye"></i> معاينة المنيو</a>
+<body class="flex h-screen overflow-hidden">
+
+    <aside class="w-64 bg-white border-l hidden md:flex flex-col">
+        <div class="p-6 text-center border-b">
+            <img id="d-logo" src="images/logo.png" class="w-20 h-20 mx-auto rounded-xl mb-2 object-contain border p-1">
+            <h2 id="d-name" class="font-bold text-gray-800">...</h2>
+        </div>
+        <nav class="p-4 space-y-1 flex-1">
+            <button onclick="switchTab('products', this)" class="nav-btn active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 font-bold hover:bg-gray-50"><i class="fa-solid fa-burger"></i> المنتجات</button>
+            <button onclick="switchTab('settings', this)" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 font-bold hover:bg-gray-50"><i class="fa-solid fa-gear"></i> الإعدادات</button>
+            <button onclick="switchTab('qr', this)" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 font-bold hover:bg-gray-50"><i class="fa-solid fa-qrcode"></i> الباركود</button>
+        </nav>
+        <div class="p-4">
+            <a href="index.html" class="block w-full text-center bg-red-50 text-red-500 py-2 rounded-xl font-bold">خروج</a>
+        </div>
     </aside>
 
-    <main class="flex-1 overflow-y-auto p-8">
-        <h1 class="text-3xl font-black text-gray-800 mb-8">إدارة المنيو 🍔</h1>
+    <main class="flex-1 overflow-y-auto p-8 bg-gray-50">
         
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8 h-64">
-            <canvas id="statsChart"></canvas>
+        <div id="tab-products" class="tab-content active">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-black">المنتجات 🍔</h1>
+                <button onclick="document.getElementById('p-modal').style.display='flex'" class="bg-orange-500 text-white px-6 py-2 rounded-xl font-bold hover:bg-orange-600"><i class="fa-solid fa-plus"></i> منتج جديد</button>
+            </div>
+            <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
 
-        <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div onclick="openModal()" class="bg-white border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center p-10 cursor-pointer hover:border-orange-500 hover:bg-orange-50 transition min-h-[200px]">
-                <i class="fa-solid fa-plus text-4xl text-gray-300 mb-2"></i><span class="text-gray-500 font-bold">إضافة منتج</span>
+        <div id="tab-settings" class="tab-content">
+            <h1 class="text-2xl font-black mb-6">إعدادات المنيو ⚙️</h1>
+            <div class="bg-white p-8 rounded-2xl shadow-sm max-w-2xl space-y-4">
+                <div><label class="block font-bold mb-1">اسم المطعم</label><input type="text" id="s-name" class="w-full border rounded-xl p-3"></div>
+                <div><label class="block font-bold mb-1">واتساب الطلبات (966..)</label><input type="text" id="s-phone" class="w-full border rounded-xl p-3"></div>
+                <div><label class="block font-bold mb-1">رابط اللوجو</label><input type="text" id="s-logo" class="w-full border rounded-xl p-3"></div>
+                <div><label class="block font-bold mb-1">اللون الرئيسي</label><input type="color" id="s-color" class="w-full h-12 rounded-xl cursor-pointer"></div>
+                <button onclick="saveSettings()" class="w-full bg-gray-900 text-white py-3 rounded-xl font-bold mt-4">حفظ التغييرات</button>
             </div>
         </div>
+
+        <div id="tab-qr" class="tab-content">
+            <h1 class="text-2xl font-black mb-6">الباركود 📱</h1>
+            <div class="bg-white p-10 rounded-2xl shadow-sm text-center max-w-md mx-auto">
+                <img id="qr-img" src="" class="w-48 h-48 mx-auto mb-4 border-2 p-2 rounded-xl">
+                <a id="menu-link" href="#" target="_blank" class="text-blue-500 font-bold underline mb-6 block">فتح رابط المنيو</a>
+                <button onclick="window.print()" class="bg-blue-50 text-blue-600 px-6 py-2 rounded-xl font-bold"><i class="fa-solid fa-print"></i> طباعة</button>
+            </div>
+        </div>
+
     </main>
 
-    <div id="product-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm px-4">
-        <div class="bg-white p-6 rounded-2xl w-full max-w-lg shadow-2xl space-y-3">
-            <h3 class="text-xl font-bold mb-4">بيانات المنتج</h3>
-            <input id="p_name" type="text" class="w-full bg-gray-50 border rounded-lg p-3 outline-none" placeholder="اسم المنتج">
-            <div class="grid grid-cols-2 gap-3">
-                <input id="p_price" type="number" class="w-full bg-gray-50 border rounded-lg p-3 outline-none" placeholder="السعر">
-                <select id="p_cat" class="w-full bg-gray-50 border rounded-lg p-3 outline-none"><option>عروض</option><option>أطباق</option><option>حلا</option><option>مشروبات</option></select>
+    <div id="p-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-3xl w-full max-w-md relative">
+            <button onclick="document.getElementById('p-modal').style.display='none'" class="absolute top-5 right-5 text-gray-400 hover:text-black"><i class="fa-solid fa-times text-xl"></i></button>
+            <h3 class="text-xl font-bold mb-4">إضافة منتج</h3>
+            <div class="space-y-3">
+                <input id="prod-name" class="w-full border rounded-xl p-3" placeholder="اسم المنتج">
+                <div class="flex gap-3">
+                    <input id="prod-price" type="number" class="w-full border rounded-xl p-3" placeholder="السعر">
+                    <select id="prod-cat" class="w-full border rounded-xl p-3"><option>عروض</option><option>أطباق</option><option>حلا</option><option>مشروبات</option></select>
+                </div>
+                <input id="prod-img" class="w-full border rounded-xl p-3" placeholder="رابط الصورة">
+                <textarea id="prod-desc" class="w-full border rounded-xl p-3" placeholder="الوصف"></textarea>
             </div>
-            <input id="p_img" type="text" class="w-full bg-gray-50 border rounded-lg p-3 outline-none" placeholder="رابط الصورة">
-            <textarea id="p_desc" class="w-full bg-gray-50 border rounded-lg p-3 outline-none h-20" placeholder="وصف المنتج"></textarea>
-            <div class="flex gap-3 mt-4">
-                <button onclick="saveProduct()" class="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold">حفظ</button>
-                <button onclick="closeModal()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-bold">إلغاء</button>
-            </div>
+            <button onclick="addProduct()" class="w-full bg-orange-500 text-white py-3 rounded-xl font-bold mt-4">حفظ</button>
         </div>
     </div>
 
     <script type="module">
         import { db, doc, getDoc, updateDoc, arrayUnion } from './firebase-config.js';
-        
-        // 🔴 هام: غير ده لو عايز تجرب مطعم تاني، بس خليه كده عشان يشتغل مع اللي انشأته في السوبر أدمن
-        const restaurantId = "wow-bechamel"; 
 
-        async function loadData() {
-            const docRef = doc(db, "restaurants", restaurantId);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                document.getElementById('rest-name').innerText = data.name;
-                document.getElementById('menu-link').href = `menu.html?id=${restaurantId}`;
-                renderChart(data.stats);
-                renderProducts(data.products || []);
+        const restId = localStorage.getItem('admin_rest_id');
+        if(!restId) window.location.href = "index.html"; // حماية
+
+        async function init() {
+            const snap = await getDoc(doc(db, "restaurants", restId));
+            if(snap.exists()) {
+                const data = snap.data();
+                
+                // Sidebar Info
+                document.getElementById('d-name').innerText = data.name;
+                document.getElementById('d-logo').src = data.logo;
+
+                // Products
+                const grid = document.getElementById('products-grid');
+                grid.innerHTML = (data.products || []).map(p => `
+                    <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                        <img src="${p.image}" class="h-40 w-full object-cover" onerror="this.src='images/logo.png'">
+                        <div class="p-4">
+                            <div class="flex justify-between font-bold"><h3>${p.name}</h3><span class="text-orange-500">${p.price} ر.س</span></div>
+                            <p class="text-xs text-gray-400 mt-1">${p.category}</p>
+                        </div>
+                    </div>`).join('');
+
+                // Settings Fill
+                document.getElementById('s-name').value = data.name;
+                document.getElementById('s-phone').value = data.phone;
+                document.getElementById('s-logo').value = data.logo;
+                document.getElementById('s-color').value = data.themeColor;
+
+                // QR Code
+                const link = window.location.origin + window.location.pathname.replace('client_dashboard.html', '') + `menu.html?id=${restId}`;
+                document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(link)}`;
+                document.getElementById('menu-link').href = link;
             }
         }
 
-        function renderProducts(products) {
-            const grid = document.getElementById('products-grid');
-            const addBtn = grid.firstElementChild.outerHTML;
-            grid.innerHTML = addBtn;
-            products.forEach(p => {
-                grid.innerHTML += `<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"><img src="${p.image}" class="h-40 w-full object-cover" onerror="this.src='images/logo.png'"><div class="p-4"><div class="flex justify-between font-bold"><h3>${p.name}</h3><span class="text-orange-500">${p.price} ر.س</span></div><p class="text-xs text-gray-400 mt-1">${p.category}</p></div></div>`;
-            });
-        }
-
-        window.saveProduct = async function() {
-            const newProd = {
-                name: document.getElementById('p_name').value,
-                price: Number(document.getElementById('p_price').value),
-                category: document.getElementById('p_cat').value,
-                image: document.getElementById('p_img').value || "images/logo.png",
-                description: document.getElementById('p_desc').value
+        window.addProduct = async () => {
+            const p = {
+                name: document.getElementById('prod-name').value,
+                price: Number(document.getElementById('prod-price').value),
+                category: document.getElementById('prod-cat').value,
+                image: document.getElementById('prod-img').value || 'images/logo.png',
+                description: document.getElementById('prod-desc').value
             };
-            try {
-                await updateDoc(doc(db, "restaurants", restaurantId), { products: arrayUnion(newProd) });
-                alert("✅ تم الحفظ!"); closeModal(); loadData();
-            } catch (e) { alert("خطأ: " + e.message); }
+            await updateDoc(doc(db, "restaurants", restId), { products: arrayUnion(p) });
+            alert("✅ تم الحفظ");
+            document.getElementById('p-modal').style.display='none';
+            init();
         }
 
-        function renderChart(stats) {
-            new Chart(document.getElementById('statsChart').getContext('2d'), {
-                type: 'line', data: { labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'], datasets: [{ label: 'الزيارات', data: [0, 0, 0, 0, 0, 0, stats?.views || 0], borderColor: '#FF9F1C', fill: true }] }
+        window.saveSettings = async () => {
+            await updateDoc(doc(db, "restaurants", restId), {
+                name: document.getElementById('s-name').value,
+                phone: document.getElementById('s-phone').value,
+                logo: document.getElementById('s-logo').value,
+                themeColor: document.getElementById('s-color').value
             });
+            alert("✅ تم تحديث الإعدادات");
+            init();
         }
 
-        window.openModal = () => document.getElementById('product-modal').style.display = 'flex';
-        window.closeModal = () => document.getElementById('product-modal').style.display = 'none';
-        loadData();
+        window.switchTab = (tab, btn) => {
+            document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(e => e.classList.remove('active'));
+            document.getElementById('tab-'+tab).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        init();
     </script>
 </body>
 </html>
