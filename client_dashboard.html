@@ -196,6 +196,20 @@
                         </div>
                     </div>
 
+                    <h3 class="font-bold text-sm text-orange-600 mb-4 uppercase tracking-wider border-t border-gray-100 dark:border-gray-700 pt-4" data-i18n="sec_branches">إدارة الفروع</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-gray-500" data-i18n="lbl_br1">الفرع الأول</label>
+                            <input id="br1-name" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white" placeholder="اسم الفرع">
+                            <input id="br1-link" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white" placeholder="رابط خرائط جوجل">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-gray-500" data-i18n="lbl_br2">الفرع الثاني</label>
+                            <input id="br2-name" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white" placeholder="اسم الفرع">
+                            <input id="br2-link" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white" placeholder="رابط خرائط جوجل">
+                        </div>
+                    </div>
+
                     <h3 class="font-bold text-sm text-green-600 mb-4 uppercase tracking-wider border-t border-gray-100 dark:border-gray-700 pt-4" data-i18n="sec_finance">المالية والضريبة</h3>
                     <div class="grid grid-cols-2 gap-4 mb-6">
                         <div>
@@ -395,7 +409,7 @@
                 title_qr: "باركود القائمة", btn_print: "طباعة", btn_open: "فتح",
                 modal_prod: "بيانات المنتج", lbl_p_name: "الاسم", lbl_p_price: "السعر", lbl_p_cal: "السعرات", lbl_p_cat: "القسم", lbl_p_desc: "الوصف", lbl_allergens: "الحساسية", lbl_badges: "شارات التميز", btn_cancel: "إلغاء",
                 title_cats: "إدارة الأقسام", btn_close: "إغلاق",
-                sec_finance: "المالية والضريبة", lbl_tax: "الضريبة (%)", lbl_fees: "رسوم الخدمة", sec_seo: "محركات البحث", lbl_desc: "وصف المطعم", ph_desc: "وصف مختصر للمطعم",
+                sec_finance: "المالية والضريبة", lbl_tax: "الضريبة (%)", lbl_fees: "رسوم الخدمة", sec_seo: "محركات البحث", lbl_desc: "وصف المطعم", ph_desc: "وصف مختصر للمطعم", sec_branches: "إدارة الفروع", lbl_br1: "الفرع الأول", lbl_br2: "الفرع الثاني",
                 al_spicy: "حار", al_gluten: "جلوتين", al_egg: "بيض", al_milk: "ألبان", al_nuts: "مكسرات", al_peanuts: "فول سوداني", al_sesame: "سمسم", al_fish: "بحري", al_soy: "صويا", al_sulphites: "كبريتيت", al_mustard: "خردل", al_lupin: "ترمس", al_molluscs: "رخويات", al_crustaceans: "قشريات",
                 bg_new: "جديد", bg_best: "مبيعاً", bg_offer: "عرض",
                 msg_req: "يرجى ملء الحقول المطلوبة", msg_saved: "تم الحفظ بنجاح", msg_del: "هل أنت متأكد من الحذف؟", msg_pass_up: "تم تحديث كلمة المرور", msg_limit: "عفواً، وصلت للحد الأقصى", msg_cat_change: "تغيير اسم القسم؟"
@@ -410,7 +424,7 @@
                 title_qr: "Menu QR", btn_print: "Print", btn_open: "Open",
                 modal_prod: "Product Details", lbl_p_name: "Name", lbl_p_price: "Price", lbl_p_cal: "Calories", lbl_p_cat: "Category", lbl_p_desc: "Description", lbl_allergens: "Allergens", lbl_badges: "Badges", btn_cancel: "Cancel",
                 title_cats: "Manage Categories", btn_close: "Close",
-                sec_finance: "Finance & Tax", lbl_tax: "VAT (%)", lbl_fees: "Service Fees", sec_seo: "SEO", lbl_desc: "Description", ph_desc: "Short restaurant description",
+                sec_finance: "Finance & Tax", lbl_tax: "VAT (%)", lbl_fees: "Service Fees", sec_seo: "SEO", lbl_desc: "Description", ph_desc: "Short restaurant description", sec_branches: "Manage Branches", lbl_br1: "Branch 1", lbl_br2: "Branch 2",
                 al_spicy: "Spicy", al_gluten: "Gluten", al_egg: "Egg", al_milk: "Dairy", al_nuts: "Nuts", al_peanuts: "Peanuts", al_sesame: "Sesame", al_fish: "Seafood", al_soy: "Soy", al_sulphites: "Sulphites", al_mustard: "Mustard", al_lupin: "Lupin", al_molluscs: "Molluscs", al_crustaceans: "Crustaceans",
                 bg_new: "New", bg_best: "Bestseller", bg_offer: "Offer",
                 msg_req: "Missing required fields", msg_saved: "Saved successfully", msg_del: "Are you sure?", msg_pass_up: "Password updated", msg_limit: "Plan limit reached", msg_cat_change: "Change category name?"
@@ -515,6 +529,12 @@
             document.getElementById('preview-logo').src = currentData.logo || "images/logo.png";
             document.getElementById('set-style').value = currentData.style || 'modern';
             
+            // New: Branches Fields
+            document.getElementById('br1-name').value = currentData.branch1_name || "";
+            document.getElementById('br1-link').value = currentData.branch1_link || "";
+            document.getElementById('br2-name').value = currentData.branch2_name || "";
+            document.getElementById('br2-link').value = currentData.branch2_link || "";
+            
             const layout = currentData.layout || 'grid';
             const radio = document.querySelector(`input[name="layout"][value="${layout}"]`);
             if(radio) radio.checked = true;
@@ -530,7 +550,7 @@
             
             // FIX: Get current path including subfolder if exists
             const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
-            const url = `${currentPath}/landing.html?id=${restId}...`;
+            const url = `${currentPath}/landing.html?id=${restId}`;
             
             document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
             document.getElementById('menu-link').href = url;
@@ -602,7 +622,12 @@
                 desc: document.getElementById('set-desc').value,
                 themeColor: document.getElementById('set-color').value,
                 style: document.getElementById('set-style').value,
-                layout: layoutEl ? layoutEl.value : 'grid'
+                layout: layoutEl ? layoutEl.value : 'grid',
+                // Saving Branches
+                branch1_name: document.getElementById('br1-name').value,
+                branch1_link: document.getElementById('br1-link').value,
+                branch2_name: document.getElementById('br2-name').value,
+                branch2_link: document.getElementById('br2-link').value
             };
             if(tempLogo) updates.logo = tempLogo;
             const pass = document.getElementById('set-pass').value;
@@ -664,7 +689,8 @@
             const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
             
             for(let i=1; i<=count; i++) {
-                const url = `${currentPath}/landing.html?id=${restId}...`;
+                // Link points to landing page now
+                const url = `${currentPath}/landing.html?id=${restId}&table=${i}`;
                 const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
                 container.innerHTML += `<div class="text-center p-3 border rounded-xl bg-gray-50 dark:bg-gray-800"><p class="text-xs font-bold mb-2 dark:text-white">T${i}</p><img src="${qr}" class="w-full rounded mb-2"><a href="${qr}" download="T${i}.png" class="text-[10px] text-blue-600 font-bold">DL</a></div>`;
             }
