@@ -3,20 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مرحباً بك</title>
+    <title>Welcome</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; padding-bottom: 80px; }
-        .header-bg { background: linear-gradient(135deg, #FF9F1C 0%, #FF5400 100%); border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 15px 35px rgba(255, 84, 0, 0.25); color: white; padding-top: 40px; padding-bottom: 60px; text-align: center; }
+        .header-bg { background: linear-gradient(135deg, #FF9F1C 0%, #FF5400 100%); border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 15px 35px rgba(255, 84, 0, 0.25); color: white; padding-top: 40px; padding-bottom: 60px; text-align: center; position: relative; }
         
-        .status-pulse { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; }
+        /* Status Pulse */
+        .status-pulse { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; margin-right: 5px; }
         .pulse-green { background-color: #22c55e; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); animation: pulse-green 2s infinite; }
-        .pulse-red { background-color: #ef4444; animation: pulse-red 2s infinite; }
+        .pulse-red { background-color: #ef4444; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); animation: pulse-red 2s infinite; }
+        
         @keyframes pulse-green { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
         @keyframes pulse-red { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        /* Social Heartbeat */
+        .social-beat { animation: heartbeat 1.5s infinite; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .social-beat:hover { animation: none; transform: scale(1.1); }
+        @keyframes heartbeat { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
         .logo-container { width: 120px; height: 120px; background: white; border-radius: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin: -60px auto 20px auto; position: relative; z-index: 20; border: 4px solid rgba(255,255,255,0.95); }
         .sidebar { position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100%; background: white; z-index: 100; transition: 0.3s; box-shadow: -5px 0 20px rgba(0,0,0,0.1); padding: 20px; }
@@ -24,10 +31,9 @@
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; display: none; }
         .overlay.active { display: block; }
         
-        /* Accordion Style */
         .accordion-btn { cursor: pointer; transition: 0.3s; }
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .accordion-content.open { max-height: 1000px; } /* Increased height for many branches */
+        .accordion-content.open { max-height: 1000px; }
         .rotate-icon { transition: 0.3s; }
         .accordion-btn.active .rotate-icon { transform: rotate(180deg); }
     </style>
@@ -36,19 +42,28 @@
 
     <div class="overlay" onclick="toggleSidebar()"></div>
     <div class="sidebar" id="sidebar">
-        <h2 class="text-xl font-bold mb-6 text-gray-800">القائمة</h2>
-        <a id="side-login" href="login.html" class="block bg-orange-500 text-white text-center py-3 rounded-xl font-bold mb-4 shadow-lg hover:bg-orange-600 transition">تسجيل الدخول</a>
-        <button onclick="toggleSidebar()" class="block w-full text-center py-3 border rounded-xl font-bold text-gray-600">إغلاق</button>
+        <h2 class="text-xl font-bold mb-6 text-gray-800" data-i18n="menu">القائمة</h2>
+        <a id="side-login" href="login.html" class="block bg-orange-500 text-white text-center py-3 rounded-xl font-bold mb-4 shadow-lg hover:bg-orange-600 transition" data-i18n="login">تسجيل الدخول</a>
+        <button onclick="toggleSidebar()" class="block w-full text-center py-3 border rounded-xl font-bold text-gray-600" data-i18n="close">إغلاق</button>
     </div>
 
     <header class="header-bg relative">
-        <button onclick="toggleSidebar()" class="absolute top-6 left-6 bg-white/20 w-10 h-10 rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-bars"></i></button>
-        <div class="absolute top-6 right-6 bg-white/20 px-3 py-1 rounded-full flex items-center gap-2">
-            <span class="status-pulse pulse-green" id="status-dot"></span>
-            <span class="text-xs font-bold" id="status-text">مفتوح الآن</span>
+        <div class="flex justify-between items-start px-6">
+            <button onclick="toggleSidebar()" class="bg-white/20 w-10 h-10 rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-bars"></i></button>
+            
+            <div class="flex gap-2">
+                <button onclick="toggleLang()" class="bg-white/20 w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-xs">EN/AR</button>
+                <div class="bg-white/20 px-3 py-1 rounded-xl flex items-center h-10">
+                    <span class="status-pulse pulse-green" id="status-dot"></span>
+                    <span class="text-xs font-bold" id="status-text" data-i18n="open">مفتوح الآن</span>
+                </div>
+            </div>
         </div>
-        <h1 class="text-3xl font-black mb-1 drop-shadow-md" id="rest-name">...</h1>
-        <p class="text-xs opacity-90 font-light" id="rest-desc">...</p>
+        
+        <div class="mt-4">
+            <h1 class="text-3xl font-black mb-1 drop-shadow-md" id="rest-name">...</h1>
+            <p class="text-xs opacity-90 font-light" id="rest-desc">...</p>
+        </div>
     </header>
 
     <div class="logo-container">
@@ -60,20 +75,20 @@
             <div class="bg-gray-800 rounded-[20px] p-5 flex items-center justify-between border border-gray-700">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 bg-orange-500 rounded-full flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition">🍽️</div>
-                    <div><h2 class="text-xl font-bold">قائمة الطعام</h2><p class="text-xs text-gray-400">تصفح المنيو واطلب الآن</p></div>
+                    <div><h2 class="text-xl font-bold" data-i18n="food_menu">قائمة الطعام</h2><p class="text-xs text-gray-400" data-i18n="browse_menu">تصفح المنيو واطلب الآن</p></div>
                 </div>
-                <div class="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center"><i class="fa-solid fa-arrow-left"></i></div>
+                <div class="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center"><i class="fa-solid fa-arrow-left ltr:rotate-180"></i></div>
             </div>
         </a>
 
         <div class="flex gap-4">
             <a id="loyalty-btn" href="#" class="flex-1 bg-white p-4 rounded-2xl shadow-sm text-center border block hover:shadow-md transition">
                 <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-crown"></i></div>
-                <h4 class="font-bold text-sm text-gray-800">نقاط الولاء</h4>
+                <h4 class="font-bold text-sm text-gray-800" data-i18n="loyalty">نقاط الولاء</h4>
             </a>
             <a id="rate-btn" href="#" class="flex-1 bg-white p-4 rounded-2xl shadow-sm text-center border block hover:shadow-md transition">
                 <div class="w-10 h-10 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-star"></i></div>
-                <h4 class="font-bold text-sm text-gray-800">قيم تجربتك</h4>
+                <h4 class="font-bold text-sm text-gray-800" data-i18n="rate">قيم تجربتك</h4>
             </a>
         </div>
 
@@ -81,25 +96,34 @@
             <div class="accordion-btn flex items-center justify-between" onclick="toggleBranches(this)">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-store text-orange-500"></i>
-                    <h3 class="font-bold text-lg text-gray-800">فروعنا</h3>
+                    <h3 class="font-bold text-lg text-gray-800" data-i18n="branches">فروعنا</h3>
                 </div>
                 <i class="fa-solid fa-chevron-down text-gray-400 rotate-icon"></i>
             </div>
             
-            <div id="branches-container" class="accordion-content mt-0 space-y-3 pt-2">
-            </div>
-            <p id="no-branches" class="text-center text-gray-400 text-sm hidden mt-2">لا توجد فروع مضافة</p>
+            <div id="branches-container" class="accordion-content mt-0 space-y-3 pt-2"></div>
+            <p id="no-branches" class="text-center text-gray-400 text-sm hidden mt-2" data-i18n="no_branches">لا توجد فروع مضافة</p>
         </div>
     </main>
 
-    <div class="flex justify-center gap-4 py-6">
-        <a href="#" class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition"><i class="fa-brands fa-tiktok"></i></a>
-        <a href="#" class="w-10 h-10 bg-yellow-400 text-black rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition"><i class="fa-brands fa-snapchat"></i></a>
-        <a href="#" class="w-10 h-10 bg-gradient-to-tr from-yellow-500 to-purple-600 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition"><i class="fa-brands fa-instagram"></i></a>
-    </div>
+    <div class="flex flex-wrap justify-center gap-4 py-6" id="socials-container"></div>
 
     <script type="module">
         import { db, doc, getDoc } from './firebase-config.js';
+
+        let currentLang = localStorage.getItem('lang') || 'ar';
+        const i18n = {
+            ar: { 
+                menu: "القائمة", login: "تسجيل الدخول", close: "إغلاق", open: "مفتوح الآن", closed: "مغلق حالياً",
+                food_menu: "قائمة الطعام", browse_menu: "تصفح المنيو واطلب الآن", loyalty: "نقاط الولاء", rate: "قيم تجربتك",
+                branches: "فروعنا", no_branches: "لا توجد فروع مضافة", loc: "الموقع", call: "اتصال"
+            },
+            en: { 
+                menu: "Menu", login: "Login", close: "Close", open: "Open Now", closed: "Closed Now",
+                food_menu: "Food Menu", browse_menu: "Browse & Order", loyalty: "Loyalty Points", rate: "Rate Us",
+                branches: "Our Branches", no_branches: "No branches added", loc: "Location", call: "Call"
+            }
+        };
 
         window.toggleSidebar = () => { 
             document.getElementById('sidebar').classList.toggle('active');
@@ -109,25 +133,39 @@
             btn.classList.toggle('active');
             document.getElementById('branches-container').classList.toggle('open');
         }
+        window.toggleLang = () => {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('lang', currentLang);
+            updatePageLang();
+        }
+
+        function updatePageLang() {
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if(i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
+            });
+            const arrow = document.querySelector('.fa-arrow-left');
+            if(currentLang === 'en') arrow.classList.add('rotate-180');
+            else arrow.classList.remove('rotate-180');
+        }
 
         async function init() {
+            updatePageLang();
             const params = new URLSearchParams(window.location.search);
-            // 👇👇👇 هنا الإصلاح السحري: بنشيل النقط لو موجودة 👇👇👇
             let restId = params.get('id');
-            if (restId && restId.includes('...')) {
-                restId = restId.replace(/\.+$/, ''); // يحذف النقط من الآخر
-            }
-            
+            // Clean Link
+            if (restId && restId.includes('...')) restId = restId.replace(/\.+$/, '');
             const table = params.get('table');
 
-            if(!restId) return alert("خطأ: رابط غير صالح");
+            if(!restId) return alert("Error: Invalid Link");
 
-            // 1. Fix ALL Links dynamically
             let linkSuffix = `?id=${restId}`;
             if(table) linkSuffix += `&table=${table}`;
 
             document.getElementById('menu-btn').href = `menu.html${linkSuffix}`;
-            document.getElementById('loyalty-btn').href = `loyalty.html${linkSuffix}`; 
+            document.getElementById('loyalty-btn').href = `loyalty.html${linkSuffix}`;
             document.getElementById('rate-btn').href = `rate.html${linkSuffix}`;
             document.getElementById('side-login').href = `login.html${linkSuffix}`;
 
@@ -136,33 +174,27 @@
                 if(snap.exists()) {
                     const data = snap.data();
                     
-                    // Basic UI
-                    document.getElementById('rest-name').innerText = data.name || "المطعم";
-                    document.getElementById('rest-desc').innerText = data.desc || "أهلاً بكم";
+                    document.getElementById('rest-name').innerText = data.name || "Restaurant";
+                    document.getElementById('rest-desc').innerText = data.desc || "";
                     if(data.logo) document.getElementById('rest-logo').src = data.logo;
-                    if(data.themeColor) {
-                        document.querySelector('.header-bg').style.background = `linear-gradient(135deg, ${data.themeColor} 0%, #000 100%)`;
-                    }
+                    if(data.themeColor) document.querySelector('.header-bg').style.background = `linear-gradient(135deg, ${data.themeColor} 0%, #000 100%)`;
 
-                    // Render Branches Dynamically
+                    checkStatus(data.openTime, data.closeTime);
+
+                    // Render Branches
                     const container = document.getElementById('branches-container');
-                    const branches = data.branches || []; // بيقرأ الفروع الديناميكية
-                    
+                    const branches = data.branches || [];
                     if(branches.length > 0) {
                         container.innerHTML = branches.map(br => `
                             <div class="bg-gray-50 p-3 rounded-xl">
                                 <div class="flex justify-between items-center mb-2">
                                     <h4 class="font-bold text-gray-800 text-sm">${br.name}</h4>
-                                    <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded">مفتوح</span>
                                 </div>
                                 <div class="flex gap-2">
                                     <a href="${br.link || '#'}" target="_blank" class="flex-1 flex items-center justify-center bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">
-                                        <i class="fa-solid fa-location-dot ml-2 text-red-500"></i> الموقع
+                                        <i class="fa-solid fa-location-dot text-red-500 mx-1"></i> <span data-i18n="loc">${i18n[currentLang].loc}</span>
                                     </a>
-                                    ${br.phone ? `
-                                    <a href="tel:${br.phone}" class="flex-1 flex items-center justify-center bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">
-                                        <i class="fa-solid fa-phone ml-2 text-green-500"></i> اتصال
-                                    </a>` : ''}
+                                    ${br.phone ? `<a href="tel:${br.phone}" class="flex-1 flex items-center justify-center bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100"><i class="fa-solid fa-phone text-green-500 mx-1"></i> <span data-i18n="call">${i18n[currentLang].call}</span></a>` : ''}
                                 </div>
                             </div>
                         `).join('');
@@ -171,19 +203,49 @@
                         document.getElementById('no-branches').classList.remove('hidden');
                     }
 
-                    // Status Logic
-                    const h = new Date().getHours();
-                    const isOpen = (h >= 13 || h < 2);
-                    if(!isOpen) {
-                        const dot = document.getElementById('status-dot');
-                        const txt = document.getElementById('status-text');
-                        dot.classList.remove('pulse-green');
-                        dot.classList.add('pulse-red');
-                        dot.style.backgroundColor = "#ef4444";
-                        txt.innerText = "مغلق حالياً";
+                    // --- Dynamic Socials (Fully Custom) ---
+                    const sContainer = document.getElementById('socials-container');
+                    const socialLinks = data.socialLinks || [];
+                    
+                    if(socialLinks.length > 0) {
+                        sContainer.innerHTML = socialLinks.map(link => `
+                            <a href="${link.url}" target="_blank" class="social-beat w-12 h-12 rounded-full overflow-hidden shadow-lg border-2 border-white bg-white flex items-center justify-center">
+                                <img src="${link.icon}" alt="social" class="w-full h-full object-cover">
+                            </a>
+                        `).join('');
                     }
                 }
             } catch(e) { console.error(e); }
+        }
+
+        function checkStatus(open, close) {
+            const dot = document.getElementById('status-dot');
+            const txt = document.getElementById('status-text');
+            
+            if(!open || !close) return; 
+
+            const now = new Date();
+            const currentMins = now.getHours() * 60 + now.getMinutes();
+            
+            const [oh, om] = open.split(':').map(Number);
+            const [ch, cm] = close.split(':').map(Number);
+            const openMins = oh * 60 + om;
+            let closeMins = ch * 60 + cm;
+
+            if (closeMins < openMins) closeMins += 24 * 60; 
+            
+            let displayCurrent = currentMins;
+            if (displayCurrent < openMins && closeMins > 24 * 60) displayCurrent += 24 * 60; 
+
+            const isOpen = displayCurrent >= openMins && displayCurrent < closeMins;
+
+            if(isOpen) {
+                dot.className = "status-pulse pulse-green";
+                txt.innerText = i18n[currentLang].open;
+            } else {
+                dot.className = "status-pulse pulse-red";
+                txt.innerText = i18n[currentLang].closed;
+            }
         }
 
         init();
