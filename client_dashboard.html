@@ -524,11 +524,14 @@
                 document.getElementById('color-lock').classList.remove('hidden');
             }
 
-            // 5. Tables
+            // 5. Tables & QRs - FIXED LINK
             document.getElementById('tables-count').value = currentData.tables || 0;
             if(currentData.tables > 0) app.generateTableQRs(currentData.tables);
             
-            const url = `${window.location.origin}/menu.html?id=${restId}`;
+            // FIX: Get current path including subfolder if exists
+            const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+            const url = `${currentPath}/menu.html?id=${restId}`;
+            
             document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
             document.getElementById('menu-link').href = url;
 
@@ -652,11 +655,16 @@
         }
         app.handleProdImg = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempImg=r; document.getElementById('prod-preview').src=r; document.getElementById('prod-preview').classList.remove('hidden'); });
         app.handleLogo = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempLogo=r; document.getElementById('preview-logo').src=r; });
+        
         app.generateTableQRs = (count) => {
             const container = document.getElementById('qr-list');
             container.innerHTML = '';
+            
+            // FIX: Use current path for correct subfolder handling
+            const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+            
             for(let i=1; i<=count; i++) {
-                const url = `${window.location.origin}/menu.html?id=${restId}&table=${i}`;
+                const url = `${currentPath}/menu.html?id=${restId}&table=${i}`;
                 const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
                 container.innerHTML += `<div class="text-center p-3 border rounded-xl bg-gray-50 dark:bg-gray-800"><p class="text-xs font-bold mb-2 dark:text-white">T${i}</p><img src="${qr}" class="w-full rounded mb-2"><a href="${qr}" download="T${i}.png" class="text-[10px] text-blue-600 font-bold">DL</a></div>`;
             }
