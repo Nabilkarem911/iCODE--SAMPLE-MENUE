@@ -27,7 +27,7 @@
         /* Accordion Style */
         .accordion-btn { cursor: pointer; transition: 0.3s; }
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .accordion-content.open { max-height: 500px; }
+        .accordion-content.open { max-height: 1000px; } /* Increased height for many branches */
         .rotate-icon { transition: 0.3s; }
         .accordion-btn.active .rotate-icon { transform: rotate(180deg); }
     </style>
@@ -87,7 +87,7 @@
             </div>
             
             <div id="branches-container" class="accordion-content mt-0 space-y-3 pt-2">
-                </div>
+            </div>
             <p id="no-branches" class="text-center text-gray-400 text-sm hidden mt-2">لا توجد فروع مضافة</p>
         </div>
     </main>
@@ -101,7 +101,6 @@
     <script type="module">
         import { db, doc, getDoc } from './firebase-config.js';
 
-        // Expose toggle functions to global scope
         window.toggleSidebar = () => { 
             document.getElementById('sidebar').classList.toggle('active');
             document.querySelector('.overlay').classList.toggle('active');
@@ -113,7 +112,12 @@
 
         async function init() {
             const params = new URLSearchParams(window.location.search);
-            const restId = params.get('id');
+            // 👇👇👇 هنا الإصلاح السحري: بنشيل النقط لو موجودة 👇👇👇
+            let restId = params.get('id');
+            if (restId && restId.includes('...')) {
+                restId = restId.replace(/\.+$/, ''); // يحذف النقط من الآخر
+            }
+            
             const table = params.get('table');
 
             if(!restId) return alert("خطأ: رابط غير صالح");
@@ -123,7 +127,7 @@
             if(table) linkSuffix += `&table=${table}`;
 
             document.getElementById('menu-btn').href = `menu.html${linkSuffix}`;
-            document.getElementById('loyalty-btn').href = `loyalty.html${linkSuffix}`; // Assuming these pages exist
+            document.getElementById('loyalty-btn').href = `loyalty.html${linkSuffix}`; 
             document.getElementById('rate-btn').href = `rate.html${linkSuffix}`;
             document.getElementById('side-login').href = `login.html${linkSuffix}`;
 
@@ -142,7 +146,7 @@
 
                     // Render Branches Dynamically
                     const container = document.getElementById('branches-container');
-                    const branches = data.branches || [];
+                    const branches = data.branches || []; // بيقرأ الفروع الديناميكية
                     
                     if(branches.length > 0) {
                         container.innerHTML = branches.map(br => `
@@ -162,6 +166,7 @@
                                 </div>
                             </div>
                         `).join('');
+                        document.getElementById('no-branches').classList.add('hidden');
                     } else {
                         document.getElementById('no-branches').classList.remove('hidden');
                     }
