@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-menu | لوحة القيادة</title>
+    <title>AI-menu Dashboard</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -49,7 +49,7 @@
         .dark .select-tag { border-color: #374151; background: #1f2937; color: white; }
         .select-tag.selected { opacity: 1; filter: grayscale(0); border-color: #2563eb; background: rgba(37, 99, 235, 0.1); color: #2563eb; transform: scale(1.05); }
 
-        /* Stock Switch Styles */
+        /* Switch & Radio */
         .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
@@ -59,7 +59,6 @@
         html[dir="ltr"] input:checked + .slider:before { transform: translateX(20px); }
         html[dir="ltr"] .slider:before { left: 2px; }
         
-        /* Layout Radio */
         .layout-radio:checked + div { border-color: #2563eb; background-color: rgba(37, 99, 235, 0.05); }
         .dark .layout-radio:checked + div { background-color: rgba(37, 99, 235, 0.2); }
     </style>
@@ -174,7 +173,7 @@
                 <div class="bg-white dark:bg-surface p-8 rounded-3xl border border-gray-100 dark:border-gray-800 max-w-2xl">
                     <label class="block text-sm font-bold text-gray-600 dark:text-gray-300 mb-2" data-i18n="lbl_tables_count">عدد الطاولات</label>
                     <div class="flex gap-4 mb-6">
-                        <input type="number" id="tables-count" class="flex-1 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none focus:border-primary dark:text-white">
+                        <input type="number" id="tables-count" min="0" class="flex-1 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none focus:border-primary dark:text-white">
                         <button onclick="window.app.saveTables()" class="bg-primary text-white px-6 rounded-xl font-bold" data-i18n="btn_generate">توليد</button>
                     </div>
                     <div id="qr-list" class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6"></div>
@@ -201,15 +200,15 @@
                     <div class="grid grid-cols-2 gap-4 mb-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1" data-i18n="lbl_tax">الضريبة (%)</label>
-                            <input id="set-tax" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white">
+                            <input id="set-tax" type="number" min="0" step="0.1" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1" data-i18n="lbl_fees">رسوم الخدمة</label>
-                            <input id="set-fees" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white">
+                            <input id="set-fees" type="number" min="0" step="0.5" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white">
                         </div>
                     </div>
 
-                    <h3 class="font-bold text-sm text-blue-600 mb-4 uppercase tracking-wider border-t border-gray-100 dark:border-gray-700 pt-4" data-i18n="sec_seo">محركات البحث (SEO)</h3>
+                    <h3 class="font-bold text-sm text-blue-600 mb-4 uppercase tracking-wider border-t border-gray-100 dark:border-gray-700 pt-4" data-i18n="sec_seo">محركات البحث</h3>
                     <div class="mb-6">
                         <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_desc">وصف المطعم</label>
                         <input id="set-desc" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white" data-ph="ph_desc">
@@ -219,9 +218,9 @@
                     <div class="mb-4">
                         <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_theme">نمط التصميم</label>
                         <select id="set-style" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white">
-                            <option value="modern" data-i18n="opt_modern">مودرن (Modern)</option>
-                            <option value="classic" data-i18n="opt_classic">كلاسيك (Classic)</option>
-                            <option value="minimal" data-i18n="opt_minimal">بسيط (Minimal)</option>
+                            <option value="modern" data-i18n="opt_modern">مودرن</option>
+                            <option value="classic" data-i18n="opt_classic">كلاسيك</option>
+                            <option value="minimal" data-i18n="opt_minimal">بسيط</option>
                         </select>
                     </div>
 
@@ -231,13 +230,13 @@
                             <label class="cursor-pointer relative">
                                 <input type="radio" name="layout" value="grid" class="sr-only layout-radio" checked>
                                 <div class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <span class="text-sm font-bold dark:text-white" data-i18n="opt_grid">شبكة (Grid)</span>
+                                    <span class="text-sm font-bold dark:text-white" data-i18n="opt_grid">شبكة</span>
                                 </div>
                             </label>
                             <label class="cursor-pointer relative">
                                 <input type="radio" name="layout" value="list" class="sr-only layout-radio">
                                 <div class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <span class="text-sm font-bold dark:text-white" data-i18n="opt_list">قائمة (List)</span>
+                                    <span class="text-sm font-bold dark:text-white" data-i18n="opt_list">قائمة</span>
                                 </div>
                             </label>
                         </div>
@@ -284,10 +283,8 @@
                 </h3>
                 <button onclick="window.app.closeModal()" class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-red-500 hover:text-white transition flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
             </div>
-            
             <div class="p-8 overflow-y-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <input type="hidden" id="edit-index" value="-1">
-
                 <div class="lg:col-span-1">
                     <div class="upload-box w-full aspect-square rounded-2xl flex flex-col items-center justify-center text-gray-400 group overflow-hidden relative">
                         <img id="prod-preview" class="absolute inset-0 w-full h-full object-cover hidden z-10">
@@ -298,7 +295,6 @@
                         <input type="file" id="prod-img-input" accept="image/*" class="file-input-overlay" onchange="window.app.handleProdImg(this)">
                     </div>
                 </div>
-
                 <div class="lg:col-span-2 space-y-5">
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2">
@@ -307,14 +303,13 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1" data-i18n="lbl_p_price">السعر</label>
-                            <input id="prod-price" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3.5 outline-none dark:text-white">
+                            <input id="prod-price" type="number" min="0" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3.5 outline-none dark:text-white">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1" data-i18n="lbl_p_cal">السعرات</label>
-                            <input id="prod-cal" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3.5 outline-none dark:text-white">
+                            <input id="prod-cal" type="number" min="0" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3.5 outline-none dark:text-white">
                         </div>
                     </div>
-                    
                     <div>
                         <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1" data-i18n="lbl_p_cat">القسم</label>
                         <div class="relative">
@@ -322,21 +317,18 @@
                             <datalist id="cats-list"></datalist>
                         </div>
                     </div>
-
                     <div>
                         <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1" data-i18n="lbl_p_desc">الوصف</label>
                         <textarea id="prod-desc" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3.5 outline-none h-24 resize-none dark:text-white"></textarea>
                     </div>
-
                     <div>
                         <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_badges">شارات التميز</label>
                         <div class="flex gap-2">
                             <div class="select-tag badge-select px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="new">✨ <span data-i18n="bg_new">جديد</span></div>
-                            <div class="select-tag badge-select px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="bestseller">🔥 <span data-i18n="bg_best">الأكثر مبيعاً</span></div>
+                            <div class="select-tag badge-select px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="bestseller">🔥 <span data-i18n="bg_best">مبيعاً</span></div>
                             <div class="select-tag badge-select px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="promo">🏷️ <span data-i18n="bg_offer">عرض</span></div>
                         </div>
                     </div>
-
                     <div>
                         <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_allergens">مسببات الحساسية</label>
                         <div class="flex flex-wrap gap-2" id="allergen-container">
@@ -358,7 +350,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="p-5 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3 bg-gray-50 dark:bg-black/20">
                 <button onclick="window.app.closeModal()" class="px-6 py-2.5 rounded-xl bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 text-sm font-bold" data-i18n="btn_cancel">إلغاء</button>
                 <button onclick="window.app.saveProduct()" class="px-8 py-2.5 rounded-xl bg-primary hover:bg-blue-600 text-white text-sm font-bold shadow-lg" data-i18n="btn_save">حفظ</button>
@@ -392,26 +383,27 @@
         let currentLang = localStorage.getItem('lang') || 'ar';
         let tempImg = "", tempLogo = "";
 
-        // Dictionary
+        // Dictionaries
         const i18n = {
             ar: {
                 nav_home: "نظرة عامة", nav_products: "المنتجات", nav_marketing: "التسويق", nav_tables: "الطاولات", nav_settings: "الإعدادات", nav_qr: "الباركود", btn_upgrade: "ترقية الباقة", btn_logout: "خروج", mob_header: "لوحة التحكم",
                 stat_views: "الزيارات", stat_prods: "المنتجات", stat_tables: "الطاولات", stat_plan: "الباقة",
-                title_products: "قائمة الطعام", btn_cats: "الأقسام", btn_add: "جديد",
+                title_products: "قائمة الطعام", btn_cats: "الأقسام", btn_add: "جديد", msg_no_prods: "لا توجد منتجات",
                 title_marketing: "التسويق", lbl_banners: "البانرات", btn_upload: "رفع صورة",
                 title_tables: "إدارة الطاولات", lbl_tables_count: "عدد الطاولات", btn_generate: "توليد",
                 title_settings: "الإعدادات", sec_brand: "البيانات", ph_name: "اسم المطعم", ph_phone: "رقم الواتساب", sec_appearance: "المظهر", lbl_theme: "نمط التصميم", opt_modern: "مودرن", opt_classic: "كلاسيك", opt_minimal: "بسيط", lbl_layout: "تخطيط المنيو", opt_grid: "شبكة", opt_list: "قائمة", lbl_color: "لون الهوية", msg_vip_only: "للباقة الذهبية", sec_security: "الأمان", lbl_pass: "كلمة المرور الجديدة", ph_pass: "اتركه فارغاً لعدم التغيير", btn_save: "حفظ",
                 title_qr: "باركود القائمة", btn_print: "طباعة", btn_open: "فتح",
                 modal_prod: "بيانات المنتج", lbl_p_name: "الاسم", lbl_p_price: "السعر", lbl_p_cal: "السعرات", lbl_p_cat: "القسم", lbl_p_desc: "الوصف", lbl_allergens: "الحساسية", lbl_badges: "شارات التميز", btn_cancel: "إلغاء",
                 title_cats: "إدارة الأقسام", btn_close: "إغلاق",
-                sec_finance: "المالية والضريبة", lbl_tax: "الضريبة (%)", lbl_fees: "رسوم الخدمة", sec_seo: "محركات البحث (SEO)", lbl_desc: "وصف المطعم", ph_desc: "وصف مختصر للمطعم",
+                sec_finance: "المالية والضريبة", lbl_tax: "الضريبة (%)", lbl_fees: "رسوم الخدمة", sec_seo: "محركات البحث", lbl_desc: "وصف المطعم", ph_desc: "وصف مختصر للمطعم",
                 al_spicy: "حار", al_gluten: "جلوتين", al_egg: "بيض", al_milk: "ألبان", al_nuts: "مكسرات", al_peanuts: "فول سوداني", al_sesame: "سمسم", al_fish: "بحري", al_soy: "صويا", al_sulphites: "كبريتيت", al_mustard: "خردل", al_lupin: "ترمس", al_molluscs: "رخويات", al_crustaceans: "قشريات",
-                bg_new: "جديد", bg_best: "الأكثر مبيعاً", bg_offer: "عرض"
+                bg_new: "جديد", bg_best: "مبيعاً", bg_offer: "عرض",
+                msg_req: "يرجى ملء الحقول المطلوبة", msg_saved: "تم الحفظ بنجاح", msg_del: "هل أنت متأكد من الحذف؟", msg_pass_up: "تم تحديث كلمة المرور", msg_limit: "عفواً، وصلت للحد الأقصى", msg_cat_change: "تغيير اسم القسم؟"
             },
             en: {
                 nav_home: "Overview", nav_products: "Products", nav_marketing: "Marketing", nav_tables: "Tables", nav_settings: "Settings", nav_qr: "QR Code", btn_upgrade: "Upgrade", btn_logout: "Logout", mob_header: "Dashboard",
                 stat_views: "Total Views", stat_prods: "Products", stat_tables: "Tables", stat_plan: "Plan",
-                title_products: "Menu Items", btn_cats: "Categories", btn_add: "New",
+                title_products: "Menu Items", btn_cats: "Categories", btn_add: "New", msg_no_prods: "No products available",
                 title_marketing: "Marketing", lbl_banners: "Banners", btn_upload: "Upload",
                 title_tables: "Tables", lbl_tables_count: "Table Count", btn_generate: "Generate",
                 title_settings: "Settings", sec_brand: "Brand Info", ph_name: "Restaurant Name", ph_phone: "WhatsApp Number", sec_appearance: "Appearance", lbl_theme: "Theme Style", opt_modern: "Modern", opt_classic: "Classic", opt_minimal: "Minimal", lbl_layout: "Layout", opt_grid: "Grid", opt_list: "List", lbl_color: "Brand Color", msg_vip_only: "Gold Plan Only", sec_security: "Security", lbl_pass: "New Password", ph_pass: "Leave empty to keep current", btn_save: "Save",
@@ -420,12 +412,13 @@
                 title_cats: "Manage Categories", btn_close: "Close",
                 sec_finance: "Finance & Tax", lbl_tax: "VAT (%)", lbl_fees: "Service Fees", sec_seo: "SEO", lbl_desc: "Description", ph_desc: "Short restaurant description",
                 al_spicy: "Spicy", al_gluten: "Gluten", al_egg: "Egg", al_milk: "Dairy", al_nuts: "Nuts", al_peanuts: "Peanuts", al_sesame: "Sesame", al_fish: "Seafood", al_soy: "Soy", al_sulphites: "Sulphites", al_mustard: "Mustard", al_lupin: "Lupin", al_molluscs: "Molluscs", al_crustaceans: "Crustaceans",
-                bg_new: "New", bg_best: "Bestseller", bg_offer: "Offer"
+                bg_new: "New", bg_best: "Bestseller", bg_offer: "Offer",
+                msg_req: "Missing required fields", msg_saved: "Saved successfully", msg_del: "Are you sure?", msg_pass_up: "Password updated", msg_limit: "Plan limit reached", msg_cat_change: "Change category name?"
             }
         };
 
-        // --- Core ---
         app.init = async () => {
+            // Localization & Theme Init
             document.documentElement.lang = currentLang;
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             app.translate();
@@ -433,13 +426,16 @@
             if(localStorage.theme === 'dark') document.documentElement.classList.add('dark');
             else document.documentElement.classList.remove('dark');
 
-            try {
-                const snap = await getDoc(doc(db, "restaurants", restId));
-                if(snap.exists()) {
-                    currentData = snap.data();
-                    app.renderAll();
-                }
-            } catch(e) { console.error(e); }
+            // Auth Check (Basic) & Data Load
+            if(auth.currentUser || restId) {
+                try {
+                    const snap = await getDoc(doc(db, "restaurants", restId));
+                    if(snap.exists()) {
+                        currentData = snap.data();
+                        app.renderAll();
+                    }
+                } catch(e) { console.error("Load Error:", e); }
+            }
         };
 
         app.translate = () => {
@@ -458,42 +454,39 @@
             const products = currentData.products || [];
             const banners = currentData.banners || [];
 
-            // Stats & IDs
+            // 1. Stats
             document.getElementById('val-views').innerText = currentData.stats?.views || 0;
             document.getElementById('val-prods').innerText = products.length;
             document.getElementById('val-tables').innerText = currentData.tables || 0;
             document.getElementById('val-plan').innerText = (currentData.plan || 'Free').toUpperCase();
-            document.getElementById('dash-name').innerText = currentData.name;
+            document.getElementById('dash-name').innerText = currentData.name || "My Restaurant";
             document.getElementById('dash-logo').src = currentData.logo || 'images/logo.png';
             document.getElementById('plan-badge').innerText = plan.name[currentLang];
 
-            if(currentData.plan !== 'vip') document.getElementById('btn-upgrade').classList.remove('hidden');
-
-            // Products Grid
+            // 2. Products Grid
             const grid = document.getElementById('products-grid');
-            if(products.length === 0) grid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10">No products</div>`;
-            else {
+            if(products.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10">${i18n[currentLang]['msg_no_prods']}</div>`;
+            } else {
                 grid.innerHTML = products.map((p, i) => `
                     <div class="bg-white dark:bg-surface rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden relative group">
                         <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition">
                             <button onclick="window.app.openModal(${i})" class="bg-white text-blue-600 w-8 h-8 rounded-lg shadow flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="window.app.deleteProd(${i})" class="bg-white text-red-500 w-8 h-8 rounded-lg shadow flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
                         </div>
-                        
                         <div class="absolute top-2 left-2 z-10">
                             <label class="switch">
                                 <input type="checkbox" ${p.stock !== false ? 'checked' : ''} onchange="window.app.toggleStock(${i})">
                                 <span class="slider"></span>
                             </label>
                         </div>
-
                         <div class="h-40 bg-gray-100 dark:bg-black/20 relative ${p.stock === false ? 'grayscale opacity-50' : ''}">
                             <img src="${p.image}" class="w-full h-full object-cover">
                         </div>
                         <div class="p-4">
                             <h3 class="font-bold mb-1 text-gray-800 dark:text-white line-clamp-1">${p.name}</h3>
                             <div class="flex justify-between text-sm text-gray-500">
-                                <span class="bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-xs text-gray-600 dark:text-gray-300">${p.category}</span>
+                                <span class="bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-xs dark:text-gray-300">${p.category}</span>
                                 <span class="text-primary font-black">${p.price}</span>
                             </div>
                         </div>
@@ -501,8 +494,9 @@
                 `).join('');
             }
 
-            // Banners
+            // 3. Banners
             const bannerGrid = document.getElementById('banners-container');
+            // Keep upload button, remove others
             while(bannerGrid.children.length > 1) bannerGrid.removeChild(bannerGrid.lastChild);
             banners.forEach((b, i) => {
                 const div = document.createElement('div');
@@ -511,8 +505,8 @@
                 bannerGrid.appendChild(div);
             });
 
-            // Settings
-            document.getElementById('set-name').value = currentData.name;
+            // 4. Settings
+            document.getElementById('set-name').value = currentData.name || "";
             document.getElementById('set-phone').value = currentData.phone || "";
             document.getElementById('set-tax').value = currentData.tax || "";
             document.getElementById('set-fees').value = currentData.fees || "";
@@ -522,11 +516,15 @@
             document.getElementById('set-style').value = currentData.style || 'modern';
             
             const layout = currentData.layout || 'grid';
-            document.querySelector(`input[name="layout"][value="${layout}"]`).checked = true;
+            const radio = document.querySelector(`input[name="layout"][value="${layout}"]`);
+            if(radio) radio.checked = true;
 
-            if(!plan.color) document.getElementById('set-color').disabled = true;
+            if(!plan.color) {
+                document.getElementById('set-color').disabled = true;
+                document.getElementById('color-lock').classList.remove('hidden');
+            }
 
-            // Tables & QR
+            // 5. Tables
             document.getElementById('tables-count').value = currentData.tables || 0;
             if(currentData.tables > 0) app.generateTableQRs(currentData.tables);
             
@@ -540,22 +538,27 @@
             app.renderChart(currentData.stats?.views || 0);
         };
 
-        // --- Actions ---
+        // --- Operations ---
         app.saveProduct = async () => {
             const products = [...(currentData.products || [])];
             const editIndex = parseInt(document.getElementById('edit-index').value);
+            const plan = PLANS[currentData.plan || 'free'];
+
+            if(editIndex === -1 && products.length >= plan.limit) return alert(i18n[currentLang]['msg_limit']);
+
             const name = document.getElementById('prod-name').value;
             const price = document.getElementById('prod-price').value;
-            if(!name || !price) return alert("Required fields missing");
+            if(!name || !price) return alert(i18n[currentLang]['msg_req']);
 
             const allergens = [], badges = [];
             document.querySelectorAll('.allergen-tag.selected').forEach(t => allergens.push(t.dataset.val));
             document.querySelectorAll('.badge-select.selected').forEach(t => badges.push(t.dataset.val));
 
             const prodObj = {
-                name, price: Number(price),
+                name, 
+                price: parseFloat(price) || 0, // Validation
                 category: document.getElementById('prod-cat').value || "General",
-                calories: document.getElementById('prod-cal').value,
+                calories: parseInt(document.getElementById('prod-cal').value) || 0,
                 description: document.getElementById('prod-desc').value,
                 image: tempImg || (editIndex > -1 ? products[editIndex].image : "images/logo.png"),
                 allergens, badges, stock: true
@@ -565,11 +568,13 @@
             else products.push(prodObj);
 
             await updateDoc(doc(db, "restaurants", restId), { products });
-            app.closeModal(); app.init();
+            app.closeModal(); 
+            // Re-fetch data to sync
+            app.init();
         };
 
         app.deleteProd = async (i) => {
-            if(!confirm("Delete?")) return;
+            if(!confirm(i18n[currentLang]['msg_del'])) return;
             const products = currentData.products;
             products.splice(i, 1);
             await updateDoc(doc(db, "restaurants", restId), { products });
@@ -580,49 +585,36 @@
             const products = currentData.products;
             products[i].stock = products[i].stock === false ? true : false;
             await updateDoc(doc(db, "restaurants", restId), { products });
-            app.init();
+            // Visual toggle is handled by checkbox, no full reload needed for speed
+            // app.init(); // Optional if you want full sync
         };
 
-        // --- Settings & Banners ---
         app.saveSettings = async () => {
-            const layout = document.querySelector('input[name="layout"]:checked').value;
+            const layoutEl = document.querySelector('input[name="layout"]:checked');
             const updates = { 
                 name: document.getElementById('set-name').value,
                 phone: document.getElementById('set-phone').value,
-                tax: document.getElementById('set-tax').value,
-                fees: document.getElementById('set-fees').value,
+                tax: parseFloat(document.getElementById('set-tax').value) || 0,
+                fees: parseFloat(document.getElementById('set-fees').value) || 0,
                 desc: document.getElementById('set-desc').value,
                 themeColor: document.getElementById('set-color').value,
                 style: document.getElementById('set-style').value,
-                layout: layout
+                layout: layoutEl ? layoutEl.value : 'grid'
             };
             if(tempLogo) updates.logo = tempLogo;
             const pass = document.getElementById('set-pass').value;
 
             try {
                 await updateDoc(doc(db, "restaurants", restId), updates);
-                if(pass && auth.currentUser) await updatePassword(auth.currentUser, pass);
-                alert("Saved"); app.init();
+                if(pass && auth.currentUser) {
+                    await updatePassword(auth.currentUser, pass);
+                    alert(i18n[currentLang]['msg_pass_up']);
+                }
+                alert(i18n[currentLang]['msg_saved']);
+                app.init();
             } catch(e) { alert(e.message); }
         };
 
-        function compressImage(file, cb) {
-            const reader = new FileReader(); reader.readAsDataURL(file);
-            reader.onload = (e) => {
-                const img = new Image(); img.src = e.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const scale = 800 / img.width;
-                    canvas.width = 800; canvas.height = img.height * scale;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    cb(canvas.toDataURL('image/jpeg', 0.8));
-                }
-            }
-        }
-
-        app.handleProdImg = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempImg=r; document.getElementById('prod-preview').src=r; document.getElementById('prod-preview').classList.remove('hidden'); });
-        app.handleLogo = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempLogo=r; document.getElementById('preview-logo').src=r; });
         app.handleBannerUpload = (i) => i.files[0] && compressImage(i.files[0], async (r) => {
             await updateDoc(doc(db, "restaurants", restId), { banners: arrayUnion(r) });
             app.init();
@@ -633,12 +625,33 @@
             app.init();
         };
 
-        // --- Tables ---
         app.saveTables = async () => {
-            const count = parseInt(document.getElementById('tables-count').value);
+            const count = parseInt(document.getElementById('tables-count').value) || 0;
             await updateDoc(doc(db, "restaurants", restId), { tables: count });
             app.init();
         };
+
+        // --- Utils ---
+        function compressImage(file, cb) {
+            const reader = new FileReader(); reader.readAsDataURL(file);
+            reader.onload = (e) => {
+                const img = new Image(); img.src = e.target.result;
+                img.onload = () => {
+                    // Logic fix: Don't upscale small images
+                    const MAX_WIDTH = 800;
+                    if(img.width <= MAX_WIDTH) { cb(e.target.result); return; }
+                    
+                    const canvas = document.createElement('canvas');
+                    const scale = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    cb(canvas.toDataURL('image/jpeg', 0.8));
+                }
+            }
+        }
+        app.handleProdImg = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempImg=r; document.getElementById('prod-preview').src=r; document.getElementById('prod-preview').classList.remove('hidden'); });
+        app.handleLogo = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempLogo=r; document.getElementById('preview-logo').src=r; });
         app.generateTableQRs = (count) => {
             const container = document.getElementById('qr-list');
             container.innerHTML = '';
@@ -649,20 +662,21 @@
             }
         };
 
-        // --- Categories ---
+        // --- Categories (Fixed ID spacing bug) ---
         app.openCatModal = () => {
             const cats = [...new Set((currentData.products || []).map(p => p.category))];
-            document.getElementById('cat-list-container').innerHTML = cats.map(c => `
+            document.getElementById('cat-list-container').innerHTML = cats.map((c, idx) => `
                 <div class="flex gap-2 items-center mb-2">
-                    <input type="text" value="${c}" id="cat-${c}" class="flex-1 bg-gray-50 dark:bg-black/20 dark:text-white border p-2 rounded text-sm">
-                    <button onclick="window.app.updateCat('${c}')" class="bg-blue-100 text-blue-600 px-3 py-2 rounded text-xs font-bold">Save</button>
+                    <input type="text" value="${c}" id="cat-input-${idx}" class="flex-1 bg-gray-50 dark:bg-black/20 dark:text-white border p-2 rounded text-sm">
+                    <button onclick="window.app.updateCat('${c}', ${idx})" class="bg-blue-100 text-blue-600 px-3 py-2 rounded text-xs font-bold">Save</button>
                 </div>`).join('');
             document.getElementById('cat-modal').classList.remove('hidden');
             document.getElementById('cat-modal').classList.add('flex');
         };
-        app.updateCat = async (oldName) => {
-            const newName = document.getElementById(`cat-${oldName}`).value;
+        app.updateCat = async (oldName, idx) => {
+            const newName = document.getElementById(`cat-input-${idx}`).value;
             if(newName && newName !== oldName) {
+                if(!confirm(i18n[currentLang]['msg_cat_change'])) return;
                 const products = currentData.products.map(p => { if(p.category === oldName) p.category = newName; return p; });
                 await updateDoc(doc(db, "restaurants", restId), { products });
                 app.closeCatModal(); app.init();
@@ -670,7 +684,7 @@
         };
         app.closeCatModal = () => document.getElementById('cat-modal').classList.add('hidden');
 
-        // --- UI ---
+        // --- UI & Nav ---
         app.toggleTag = (el) => el.classList.toggle('selected');
         app.openModal = (editIdx = -1) => {
             tempImg = "";
@@ -705,14 +719,12 @@
         app.toggleLang = () => { currentLang = currentLang === 'ar' ? 'en' : 'ar'; localStorage.setItem('lang', currentLang); location.reload(); };
         app.toggleTheme = () => { document.documentElement.classList.toggle('dark'); localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'; };
         app.logout = () => { localStorage.removeItem('admin_rest_id'); window.location.href='index.html'; };
-        
         app.renderChart = (total) => {
             const ctx = document.getElementById('viewsChart');
             if(window.myChart) window.myChart.destroy();
-            const data = [0, 0, 0, 0, 0, 0, total];
             window.myChart = new Chart(ctx, {
                 type: 'line',
-                data: { labels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], datasets: [{ label: 'Views', data: data, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, tension: 0.4 }] },
+                data: { labels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], datasets: [{ label: 'Views', data: [0,0,0,0,0,0, total], borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, tension: 0.4 }] },
                 options: { responsive: true, maintainAspectRatio: false }
             });
         };
