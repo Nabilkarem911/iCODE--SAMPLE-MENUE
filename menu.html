@@ -2,241 +2,417 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قائمة الطعام</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Menu Loading...</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: 'var(--brand-color)',
+                        brandLight: 'var(--brand-light)',
+                    },
+                    fontFamily: {
+                        tajawal: ['Tajawal', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
-        /* تعريف المتغير الرئيسي للألوان */
-        :root { --primary-color: #FF9F1C; }
+        :root { --brand-color: #2563eb; --brand-light: #eff6ff; }
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; -webkit-tap-highlight-color: transparent; padding-bottom: 100px; }
         
-        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; padding-bottom: 120px; }
-        
-        /* كلاسات تعتمد على المتغير */
-        .bg-primary { background-color: var(--primary-color); }
-        .text-primary { color: var(--primary-color); }
-        .border-primary { border-color: var(--primary-color); }
-        .ring-primary { --tw-ring-color: var(--primary-color); }
-        
-        .cat-btn.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
-        
-        .loader { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .spin { width: 50px; height: 50px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Hide Scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 150%); width: 90%; max-width: 500px; background: #1f2937; color: white; padding: 12px 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; justify-content: space-between; align-items: center; transition: 0.4s; z-index: 100; cursor: pointer; }
-        .cart-bar.show { transform: translate(-50%, 0); }
+        /* Animations */
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Sticky Categories */
+        .sticky-cats { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); }
+
+        /* Loader */
+        #loader { position: fixed; inset: 0; bg-white; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--brand-color); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
 
-    <div id="loader" class="loader"><div class="spin"></div></div>
+    <div id="loader" class="bg-white"><div class="spinner"></div></div>
 
-    <header class="bg-white p-4 sticky top-0 z-40 shadow-sm flex justify-between items-center">
-        <div>
-            <h1 id="m-name" class="font-black text-xl text-gray-800">...</h1>
-            <p class="text-xs text-gray-400 mt-1">مرحباً بكم 👋</p>
+    <header class="bg-white shadow-sm p-4 relative z-20">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img id="rest-logo" src="" class="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm hidden">
+                <div>
+                    <h1 id="rest-name" class="font-bold text-lg text-gray-800">...</h1>
+                    <p id="table-info" class="text-xs text-gray-500 hidden"><i class="fa-solid fa-chair text-brand"></i> طاولة رقم <span id="table-num"></span></p>
+                </div>
+            </div>
+            <button onclick="app.toggleLang()" class="bg-gray-100 px-3 py-1 rounded-lg text-xs font-bold">EN/AR</button>
         </div>
-        <img id="m-logo" src="images/logo.png" class="w-12 h-12 rounded-xl bg-gray-50 object-contain p-1 border border-gray-100">
+        <p id="rest-desc" class="text-xs text-gray-400 mt-2 line-clamp-2"></p>
     </header>
 
-    <div class="sticky top-[76px] z-30 bg-white/95 backdrop-blur border-b border-gray-100 py-3">
-        <div id="cats-container" class="flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-hide">
+    <div id="banners-area" class="p-4 hidden">
+        <div class="flex overflow-x-auto gap-3 no-scrollbar snap-x snap-mandatory" id="banners-wrapper">
             </div>
     </div>
 
-    <main id="menu-container" class="p-4 space-y-4 min-h-screen">
-        </main>
+    <div class="sticky-cats border-b border-gray-100 shadow-sm">
+        <div class="flex overflow-x-auto gap-2 p-3 no-scrollbar" id="cats-wrapper">
+            </div>
+    </div>
 
-    <div id="cart-bar" class="cart-bar" onclick="openCartModal()">
+    <main class="p-4 min-h-[60vh]">
+        <div id="products-container" class="grid gap-4">
+            </div>
+    </main>
+
+    <div id="cart-btn" class="fixed bottom-4 left-4 right-4 bg-brand text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center cursor-pointer z-50 transform translate-y-20 transition-all duration-300" onclick="app.openCart()">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold text-yellow-400" id="cart-count">0</div>
-            <div>
-                <p class="text-[10px] text-gray-400">الإجمالي</p>
-                <p class="font-bold leading-none"><span id="cart-total">0</span> ر.س</p>
+            <div class="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center font-bold" id="cart-count">0</div>
+            <span class="font-bold text-sm">عرض السلة</span>
+        </div>
+        <span class="font-bold text-lg" id="cart-total">0.00</span>
+    </div>
+
+    <div id="prod-modal" class="fixed inset-0 bg-black/80 z-[60] hidden items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm transition-all">
+        <div class="bg-white w-full sm:max-w-md h-[90vh] sm:h-auto sm:rounded-3xl rounded-t-3xl overflow-y-auto relative animate-slide-up">
+            <button onclick="app.closeModal()" class="absolute top-4 right-4 z-10 bg-white/80 p-2 rounded-full shadow-md"><i class="fa-solid fa-times"></i></button>
+            <img id="modal-img" class="w-full h-64 object-cover bg-gray-100">
+            <div class="p-6 pb-24">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 id="modal-name" class="text-2xl font-black text-gray-800"></h2>
+                    <span id="modal-price" class="text-xl font-bold text-brand"></span>
+                </div>
+                
+                <div id="modal-badges" class="flex gap-2 mb-4"></div>
+                
+                <p id="modal-desc" class="text-gray-500 text-sm leading-relaxed mb-4"></p>
+                
+                <div class="flex gap-4 text-xs text-gray-400 mb-6 border-y py-3">
+                    <span id="modal-cal" class="flex items-center gap-1"><i class="fa-solid fa-fire text-orange-500"></i> <span></span> Kcal</span>
+                    <div id="modal-allergens" class="flex gap-2"></div>
+                </div>
+
+                <div class="flex items-center justify-between bg-gray-50 p-2 rounded-xl border">
+                    <div class="flex items-center gap-4">
+                        <button onclick="app.adjustQty(-1)" class="w-10 h-10 bg-white rounded-lg shadow text-gray-600 font-bold">-</button>
+                        <span id="modal-qty" class="font-bold text-lg w-4 text-center">1</span>
+                        <button onclick="app.adjustQty(1)" class="w-10 h-10 bg-white rounded-lg shadow text-brand font-bold">+</button>
+                    </div>
+                    <button onclick="app.addToCart()" class="bg-brand text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30">إضافة</button>
+                </div>
             </div>
         </div>
-        <div class="bg-yellow-500 text-gray-900 px-4 py-2 rounded-lg font-bold text-sm">عرض السلة</div>
     </div>
 
-    <div id="cart-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div class="bg-white w-full max-w-md rounded-3xl p-6 relative">
-            <button onclick="document.getElementById('cart-modal').style.display='none'" class="absolute top-5 right-5 text-gray-400 hover:text-black"><i class="fa-solid fa-times text-xl"></i></button>
-            <h2 class="text-xl font-bold mb-4 border-b pb-2">سلة الطلبات 🛒</h2>
+    <div id="cart-modal" class="fixed inset-0 bg-black/80 z-[70] hidden justify-end transition-opacity">
+        <div class="bg-white w-full sm:max-w-md h-full ml-auto flex flex-col relative shadow-2xl">
+            <div class="p-5 border-b bg-gray-50 flex justify-between items-center">
+                <h3 class="font-bold text-lg"><i class="fa-solid fa-basket-shopping text-brand"></i> سلة الطلبات</h3>
+                <button onclick="app.closeCart()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-times text-xl"></i></button>
+            </div>
             
-            <div id="cart-items" class="max-h-64 overflow-y-auto space-y-3 mb-4">
-                </div>
-            
-            <div class="space-y-3 pt-2 border-t">
-                <textarea id="cart-note" class="w-full bg-gray-50 border rounded-xl p-3 text-sm outline-none focus:ring-2 ring-primary" placeholder="أي ملاحظات إضافية؟"></textarea>
-                
-                <div class="flex justify-between items-center font-bold text-lg">
-                    <span>المجموع النهائي:</span>
-                    <span class="text-primary"><span id="modal-total">0</span> ر.س</span>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4">
                 </div>
 
-                <button onclick="checkout()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-green-700 transition">
-                    <span>إرسال الطلب واتساب</span>
-                    <i class="fa-brands fa-whatsapp text-xl"></i>
+            <div class="p-6 border-t bg-gray-50 space-y-3">
+                <div class="flex justify-between text-sm text-gray-500"><span>المجموع</span><span id="bill-sub">0</span></div>
+                <div class="flex justify-between text-sm text-gray-500"><span>الضريبة (<span id="tax-rate">0</span>%)</span><span id="bill-tax">0</span></div>
+                <div class="flex justify-between text-sm text-gray-500"><span>الخدمة</span><span id="bill-fees">0</span></div>
+                <div class="flex justify-between text-xl font-black text-gray-800 border-t pt-2"><span>الإجمالي</span><span id="bill-total" class="text-brand">0</span></div>
+                
+                <input type="text" id="cust-name" placeholder="الاسم (اختياري)" class="w-full border p-3 rounded-xl text-sm outline-none focus:border-brand">
+                <textarea id="cust-note" placeholder="ملاحظات..." class="w-full border p-3 rounded-xl text-sm outline-none focus:border-brand h-16 resize-none"></textarea>
+                
+                <button onclick="app.checkout()" class="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i> إرسال الطلب
                 </button>
             </div>
         </div>
     </div>
 
     <script type="module">
-        import { db, doc, getDoc, updateDoc } from './firebase-config.js';
+        import { db, doc, getDoc, updateDoc, increment } from './firebase-config.js';
 
-        const restId = new URLSearchParams(window.location.search).get('id');
+        window.app = {};
+        
+        // State
+        let restaurant = {};
         let products = [];
         let cart = [];
-        let restaurantData = {};
+        let currentModalProd = null;
+        let modalQty = 1;
+        
+        // Params
+        const urlParams = new URLSearchParams(window.location.search);
+        const restId = urlParams.get('id');
+        const tableNum = urlParams.get('table');
+        const lang = localStorage.getItem('menu_lang') || 'ar';
 
-        async function initMenu() {
-            if (!restId) {
-                document.body.innerHTML = `<div class="h-screen flex items-center justify-center font-bold text-xl text-gray-400">رابط غير صالح ❌</div>`;
-                return;
-            }
+        // --- Core ---
+        app.init = async () => {
+            if(!restId) return document.body.innerHTML = "<div class='p-10 text-center'>Error: No Restaurant ID provided in URL</div>";
+            
+            // Set Lang
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
             try {
-                const docRef = doc(db, "restaurants", restId);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    restaurantData = docSnap.data();
+                const snap = await getDoc(doc(db, "restaurants", restId));
+                if(snap.exists()) {
+                    restaurant = snap.data();
+                    products = restaurant.products || [];
                     
-                    // 1. Update UI Info
-                    document.title = restaurantData.name;
-                    document.getElementById('m-name').innerText = restaurantData.name;
-                    document.getElementById('m-logo').src = restaurantData.logo || 'images/logo.png';
-
-                    // 2. Apply Theme Color (Dynamic CSS Variable)
-                    if (restaurantData.themeColor) {
-                        document.documentElement.style.setProperty('--primary-color', restaurantData.themeColor);
-                    }
-
-                    // 3. Render Content
-                    products = restaurantData.products || [];
-                    renderCategories();
-                    renderProducts('all');
-
-                    // 4. Increment Views
-                    updateDoc(docRef, { "stats.views": (restaurantData.stats?.views || 0) + 1 });
-
+                    // Increment Views (Analytics)
+                    updateDoc(doc(db, "restaurants", restId), { "stats.views": increment(1) });
+                    
+                    app.renderUI();
                 } else {
-                    document.body.innerHTML = `<div class="h-screen flex items-center justify-center font-bold text-xl text-gray-400">المطعم غير موجود 🤷‍♂️</div>`;
+                    document.body.innerHTML = "<div class='p-10 text-center'>Restaurant not found</div>";
                 }
-            } catch (error) {
-                console.error(error);
-            } finally {
-                document.getElementById('loader').style.display = 'none';
-            }
-        }
-
-        function renderCategories() {
-            const cats = [...new Set(products.map(p => p.category))];
-            const container = document.getElementById('cats-container');
+            } catch(e) { console.error(e); }
             
-            container.innerHTML = `
-                <button onclick="filterCat('all', this)" class="cat-btn active border border-gray-200 bg-white text-gray-600 px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition">الكل</button>
-                ${cats.map(c => `
-                    <button onclick="filterCat('${c}', this)" class="cat-btn border border-gray-200 bg-white text-gray-600 px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition hover:border-gray-300">${c}</button>
-                `).join('')}
-            `;
-        }
-
-        window.filterCat = (cat, btn) => {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderProducts(cat);
+            document.getElementById('loader').style.display = 'none';
         };
 
-        function renderProducts(filter) {
-            const container = document.getElementById('menu-container');
-            const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+        app.renderUI = () => {
+            // 1. Branding
+            document.title = restaurant.name;
+            document.getElementById('rest-name').innerText = restaurant.name;
+            document.getElementById('rest-desc').innerText = restaurant.desc || "";
+            if(restaurant.logo) {
+                document.getElementById('rest-logo').src = restaurant.logo;
+                document.getElementById('rest-logo').classList.remove('hidden');
+            }
+            if(tableNum) {
+                document.getElementById('table-info').classList.remove('hidden');
+                document.getElementById('table-num').innerText = tableNum;
+            }
+            
+            // Colors
+            if(restaurant.themeColor) document.documentElement.style.setProperty('--brand-color', restaurant.themeColor);
 
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-20 text-gray-400">لا توجد منتجات في هذا القسم</div>`;
+            // 2. Banners
+            if(restaurant.banners && restaurant.banners.length > 0) {
+                const bWrapper = document.getElementById('banners-wrapper');
+                bWrapper.innerHTML = restaurant.banners.map(b => `<img src="${b}" class="w-80 h-40 object-cover rounded-xl shadow-sm snap-center flex-shrink-0">`).join('');
+                document.getElementById('banners-area').classList.remove('hidden');
+            }
+
+            // 3. Categories
+            const cats = ["الكل", ...new Set(products.map(p => p.category))];
+            const cWrapper = document.getElementById('cats-wrapper');
+            cWrapper.innerHTML = cats.map((c, i) => `
+                <button onclick="app.filterCats(this, '${c}')" class="cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition ${i===0 ? 'bg-brand text-white shadow-lg' : 'bg-white text-gray-600 border border-gray-100'}">
+                    ${c}
+                </button>
+            `).join('');
+
+            // 4. Products
+            app.renderProducts("الكل");
+        };
+
+        app.renderProducts = (cat) => {
+            const container = document.getElementById('products-container');
+            const layout = restaurant.layout || 'grid'; // grid or list
+            
+            // Set Layout Class
+            container.className = layout === 'grid' ? "grid grid-cols-2 gap-4" : "flex flex-col gap-4";
+
+            const filtered = cat === "الكل" ? products : products.filter(p => p.category === cat);
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10">لا توجد منتجات في هذا القسم</div>`;
                 return;
             }
 
-            container.innerHTML = `<div class="grid grid-cols-2 gap-4">` + filtered.map(p => `
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer" onclick="addToCart('${p.name}', ${p.price})">
-                    <div class="h-36 w-full relative">
-                        <img src="${p.image}" class="w-full h-full object-cover" onerror="this.src='images/logo.png'">
+            container.innerHTML = filtered.map((p, i) => {
+                const isStock = p.stock !== false;
+                const badgesHtml = p.badges ? p.badges.map(b => `<span class="bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded shadow">${getBadgeName(b)}</span>`).join('') : '';
+                
+                return `
+                <div onclick="app.openProdModal(${products.indexOf(p)})" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative cursor-pointer active:scale-95 transition fade-in ${!isStock ? 'opacity-60 grayscale' : ''}">
+                    ${!isStock ? '<div class="absolute inset-0 z-10 flex items-center justify-center bg-black/10"><span class="bg-gray-800 text-white px-3 py-1 rounded-full text-xs font-bold">نفذت الكمية</span></div>' : ''}
+                    <div class="absolute top-2 right-2 flex flex-col gap-1 z-0">${badgesHtml}</div>
+                    
+                    <div class="${layout === 'grid' ? 'h-32' : 'h-48 w-full'} bg-gray-100">
+                        <img src="${p.image}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300?text=No+Image'">
                     </div>
+                    
                     <div class="p-3">
-                        <h3 class="font-bold text-sm text-gray-800 line-clamp-1 mb-1">${p.name}</h3>
-                        <p class="text-[10px] text-gray-400 line-clamp-1 mb-2">${p.description || ''}</p>
-                        <div class="flex justify-between items-center">
-                            <span class="font-black text-primary">${p.price} ر.س</span>
-                            <div class="bg-primary w-7 h-7 rounded-full flex items-center justify-center text-white shadow-md transform active:scale-90 transition">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                            </div>
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-gray-800 text-sm line-clamp-1">${p.name}</h3>
+                            <span class="text-brand font-black text-sm">${p.price}</span>
                         </div>
+                        ${layout === 'list' ? `<p class="text-xs text-gray-400 line-clamp-2 mt-1">${p.description || ''}</p>` : ''}
                     </div>
                 </div>
-            `).join('') + `</div>`;
-        }
-
-        window.addToCart = (name, price) => {
-            const existing = cart.find(i => i.name === name);
-            if(existing) existing.qty++;
-            else cart.push({ name, price, qty: 1 });
-            updateCartUI();
+            `}).join('');
         };
 
-        function updateCartUI() {
-            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+        app.filterCats = (btn, cat) => {
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                b.className = "cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition bg-white text-gray-600 border border-gray-100";
+            });
+            btn.className = "cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition bg-brand text-white shadow-lg";
+            app.renderProducts(cat);
+        };
+
+        // --- Interaction ---
+        app.openProdModal = (idx) => {
+            const p = products[idx];
+            if(p.stock === false) return; // Can't open out of stock
+
+            currentModalProd = p;
+            modalQty = 1;
             
-            document.getElementById('cart-count').innerText = cart.length;
-            document.getElementById('cart-total').innerText = total;
-            document.getElementById('modal-total').innerText = total;
+            document.getElementById('modal-img').src = p.image || '';
+            document.getElementById('modal-name').innerText = p.name;
+            document.getElementById('modal-price').innerText = p.price + ' ر.س';
+            document.getElementById('modal-desc').innerText = p.description || '';
+            document.getElementById('modal-cal').innerHTML = p.calories ? `<i class="fa-solid fa-fire text-orange-500"></i> ${p.calories} Kcal` : '';
+            document.getElementById('modal-qty').innerText = 1;
 
-            const bar = document.getElementById('cart-bar');
-            if (cart.length > 0) bar.classList.add('show');
-            else {
-                bar.classList.remove('show');
-                document.getElementById('cart-modal').style.display = 'none';
-            }
+            // Badges
+            document.getElementById('modal-badges').innerHTML = (p.badges||[]).map(b => `<span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs font-bold">${getBadgeName(b)}</span>`).join('');
+            
+            // Allergens
+            document.getElementById('modal-allergens').innerHTML = (p.allergens||[]).map(a => `<span class="bg-gray-100 px-2 py-1 rounded text-[10px]">${a}</span>`).join('');
 
-            document.getElementById('cart-items').innerHTML = cart.map((i, idx) => `
-                <div class="flex justify-between items-center border-b border-gray-50 pb-2 last:border-0">
+            document.getElementById('prod-modal').classList.remove('hidden');
+            document.getElementById('prod-modal').classList.add('flex');
+        };
+
+        app.adjustQty = (d) => {
+            modalQty += d;
+            if(modalQty < 1) modalQty = 1;
+            document.getElementById('modal-qty').innerText = modalQty;
+        };
+
+        app.addToCart = () => {
+            const existing = cart.find(i => i.name === currentModalProd.name);
+            if(existing) existing.qty += modalQty;
+            else cart.push({ ...currentModalProd, qty: modalQty });
+            
+            app.closeModal();
+            app.updateCartBtn();
+            
+            // Visual feedback
+            const btn = document.getElementById('cart-btn');
+            btn.classList.add('scale-110');
+            setTimeout(() => btn.classList.remove('scale-110'), 200);
+        };
+
+        app.closeModal = () => {
+            document.getElementById('prod-modal').classList.add('hidden');
+            document.getElementById('prod-modal').classList.remove('flex');
+        };
+
+        // --- Cart Logic ---
+        app.updateCartBtn = () => {
+            const count = cart.reduce((a,b) => a+b.qty, 0);
+            const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
+            
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('cart-total').innerText = total.toFixed(2);
+            
+            if(count > 0) document.getElementById('cart-btn').classList.remove('translate-y-20');
+            else document.getElementById('cart-btn').classList.add('translate-y-20');
+        };
+
+        app.openCart = () => {
+            const wrapper = document.getElementById('cart-items');
+            wrapper.innerHTML = cart.map((item, i) => `
+                <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100">
                     <div class="flex items-center gap-3">
-                        <div class="bg-gray-100 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-gray-600">${i.qty}x</div>
+                        <div class="bg-gray-100 w-12 h-12 rounded-lg flex items-center justify-center font-bold text-gray-500">${item.qty}x</div>
                         <div>
-                            <p class="font-bold text-sm text-gray-800">${i.name}</p>
-                            <p class="text-[10px] text-gray-400">${i.price * i.qty} ر.س</p>
+                            <h4 class="font-bold text-sm text-gray-800">${item.name}</h4>
+                            <p class="text-xs text-brand font-bold">${item.price * item.qty} ر.س</p>
                         </div>
                     </div>
-                    <button onclick="removeFromCart(${idx})" class="text-red-400 hover:text-red-600 p-2"><i class="fa-solid fa-trash"></i></button>
+                    <button onclick="app.removeFromCart(${i})" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `).join('');
-        }
 
-        window.removeFromCart = (idx) => {
-            cart.splice(idx, 1);
-            updateCartUI();
+            // Financials
+            const sub = cart.reduce((a,b) => a+(b.price*b.qty), 0);
+            const taxRate = restaurant.tax || 0;
+            const fees = restaurant.fees || 0;
+            const taxVal = sub * (taxRate / 100);
+            const total = sub + taxVal + fees;
+
+            document.getElementById('bill-sub').innerText = sub.toFixed(2);
+            document.getElementById('tax-rate').innerText = taxRate;
+            document.getElementById('bill-tax').innerText = taxVal.toFixed(2);
+            document.getElementById('bill-fees').innerText = fees.toFixed(2);
+            document.getElementById('bill-total').innerText = total.toFixed(2) + ' ر.س';
+
+            document.getElementById('cart-modal').classList.remove('hidden');
+            document.getElementById('cart-modal').classList.add('flex');
         };
 
-        window.openCartModal = () => document.getElementById('cart-modal').style.display = 'flex';
+        app.removeFromCart = (i) => {
+            cart.splice(i, 1);
+            app.openCart(); // Re-render cart
+            app.updateCartBtn();
+            if(cart.length === 0) app.closeCart();
+        };
 
-        window.checkout = () => {
-            const phone = restaurantData.phone || "966500000000"; // استخدام رقم المطعم من الداتابيز
-            const note = document.getElementById('cart-note').value;
+        app.closeCart = () => {
+            document.getElementById('cart-modal').classList.add('hidden');
+            document.getElementById('cart-modal').classList.remove('flex');
+        };
+
+        app.checkout = () => {
+            if(cart.length === 0) return;
             
-            let msg = `مرحباً *${restaurantData.name}* 👋\nأرغب في طلب جديد:\n\n`;
-            cart.forEach(i => {
-                msg += `▪️ ${i.qty}x ${i.name} (${i.price * i.qty} ر.س)\n`;
+            const name = document.getElementById('cust-name').value;
+            const note = document.getElementById('cust-note').value;
+            const total = document.getElementById('bill-total').innerText;
+            
+            let msg = `*طلب جديد* 🔔\n`;
+            if(tableNum) msg += `📍 طاولة: *${tableNum}*\n`;
+            msg += `👤 الاسم: ${name || 'غير محدد'}\n`;
+            msg += `----------------\n`;
+            
+            cart.forEach(item => {
+                msg += `▫️ ${item.qty}x ${item.name} (${item.price})\n`;
             });
             
-            msg += `\n💰 *الإجمالي: ${document.getElementById('cart-total').innerText} ر.س*`;
-            if (note) msg += `\n📝 ملاحظات: ${note}`;
+            msg += `----------------\n`;
+            msg += `📝 ملاحظات: ${note}\n`;
+            msg += `💰 *الإجمالي: ${total}*`;
 
+            const phone = restaurant.phone || "";
             window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        initMenu();
+        // --- Helpers ---
+        app.toggleLang = () => {
+            const newLang = lang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('menu_lang', newLang);
+            location.reload();
+        };
+
+        function getBadgeName(key) {
+            const badges = { 'new': 'جديد', 'bestseller': 'الأكثر طلباً', 'promo': 'عرض خاص', 'spicy': 'حار' };
+            return badges[key] || key;
+        }
+
+        app.init();
     </script>
 </body>
 </html>
