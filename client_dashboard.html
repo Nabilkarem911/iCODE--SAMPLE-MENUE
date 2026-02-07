@@ -21,8 +21,10 @@
         .upload-box { border: 2px dashed #e5e7eb; transition: 0.3s; position: relative; background: #f9fafb; cursor: pointer; } .dark .upload-box { border-color: #374151; background: #1f2937; } .upload-box:hover { border-color: #2563eb; }
         .file-input-overlay { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 10; width: 100%; height: 100%; }
         /* Cards Animation */
-        .setting-card { transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
-        .setting-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .setting-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border: 1px solid transparent; }
+        .setting-card:hover { transform: translateY(-5px); border-color: #2563eb; box-shadow: 0 15px 30px rgba(37, 99, 235, 0.1); }
+        .social-icon-preview { transition: 0.2s; }
+        .social-item:hover .social-icon-preview { transform: scale(1.1); }
     </style>
 </head>
 <body class="flex h-screen bg-gray-50 dark:bg-dark text-gray-800 dark:text-gray-100">
@@ -93,114 +95,150 @@
             <div id="tab-settings" class="hidden">
                 <h1 class="text-2xl font-black mb-6">الإعدادات</h1>
                 
-                <div id="settings-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
-                    <div onclick="app.openSettingSection('basic')" class="setting-card bg-white dark:bg-surface p-6 rounded-3xl border border-gray-100 dark:border-gray-800 flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-store"></i></div>
-                        <div><h3 class="font-bold text-lg">البيانات الأساسية</h3><p class="text-xs text-gray-500">الاسم، الشعار، الوصف، مواعيد العمل</p></div>
+                <div id="settings-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+                    <div onclick="app.openSettingSection('basic')" class="setting-card bg-white dark:bg-surface p-8 rounded-[30px] shadow-sm flex items-center gap-6 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-bl-full -mr-4 -mt-4 transition group-hover:scale-110"></div>
+                        <div class="w-16 h-16 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-3xl shadow-sm z-10"><i class="fa-solid fa-id-card"></i></div>
+                        <div class="z-10">
+                            <h3 class="font-bold text-xl mb-1">الملف الشخصي</h3>
+                            <p class="text-xs text-gray-500 leading-relaxed">الاسم، الشعار، الهاتف، SEO، كلمة المرور</p>
+                        </div>
                     </div>
 
-                    <div onclick="app.openSettingSection('branches')" class="setting-card bg-white dark:bg-surface p-6 rounded-3xl border border-gray-100 dark:border-gray-800 flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-map-location-dot"></i></div>
-                        <div><h3 class="font-bold text-lg">الفروع</h3><p class="text-xs text-gray-500">إدارة مواقع الفروع وأرقام التواصل</p></div>
+                    <div onclick="app.openSettingSection('branches')" class="setting-card bg-white dark:bg-surface p-8 rounded-[30px] shadow-sm flex items-center gap-6 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-orange-50 dark:bg-orange-900/20 rounded-bl-full -mr-4 -mt-4 transition group-hover:scale-110"></div>
+                        <div class="w-16 h-16 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-3xl shadow-sm z-10"><i class="fa-solid fa-shop"></i></div>
+                        <div class="z-10">
+                            <h3 class="font-bold text-xl mb-1">الفروع والمواعيد</h3>
+                            <p class="text-xs text-gray-500 leading-relaxed">عناوين الفروع، الخرائط، مواعيد العمل</p>
+                        </div>
                     </div>
 
-                    <div onclick="app.openSettingSection('menu')" class="setting-card bg-white dark:bg-surface p-6 rounded-3xl border border-gray-100 dark:border-gray-800 flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-palette"></i></div>
-                        <div><h3 class="font-bold text-lg">تصميم المنيو</h3><p class="text-xs text-gray-500">الألوان، الضرائب، طريقة العرض</p></div>
+                    <div onclick="app.openSettingSection('menu')" class="setting-card bg-white dark:bg-surface p-8 rounded-[30px] shadow-sm flex items-center gap-6 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-purple-50 dark:bg-purple-900/20 rounded-bl-full -mr-4 -mt-4 transition group-hover:scale-110"></div>
+                        <div class="w-16 h-16 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-3xl shadow-sm z-10"><i class="fa-solid fa-paintbrush"></i></div>
+                        <div class="z-10">
+                            <h3 class="font-bold text-xl mb-1">تصميم المنيو</h3>
+                            <p class="text-xs text-gray-500 leading-relaxed">الهوية (لون/صورة)، الأزرار، الضرائب، العرض</p>
+                        </div>
                     </div>
 
-                    <div onclick="app.openSettingSection('landing')" class="setting-card bg-white dark:bg-surface p-6 rounded-3xl border border-gray-100 dark:border-gray-800 flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-share-nodes"></i></div>
-                        <div><h3 class="font-bold text-lg">الصفحة الرئيسية</h3><p class="text-xs text-gray-500">روابط السوشيال ميديا الديناميكية</p></div>
+                    <div onclick="app.openSettingSection('landing')" class="setting-card bg-white dark:bg-surface p-8 rounded-[30px] shadow-sm flex items-center gap-6 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-green-50 dark:bg-green-900/20 rounded-bl-full -mr-4 -mt-4 transition group-hover:scale-110"></div>
+                        <div class="w-16 h-16 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-3xl shadow-sm z-10"><i class="fa-solid fa-icons"></i></div>
+                        <div class="z-10">
+                            <h3 class="font-bold text-xl mb-1">الصفحة الرئيسية</h3>
+                            <p class="text-xs text-gray-500 leading-relaxed">أيقونات التواصل الديناميكية (تيكتوك، جاهز...)</p>
+                        </div>
                     </div>
                 </div>
 
-                <div id="settings-content" class="hidden mt-4">
-                    <button onclick="app.closeSettingSection()" class="mb-4 flex items-center gap-2 text-gray-500 font-bold hover:text-primary"><i class="fa-solid fa-arrow-right"></i> رجوع للقائمة</button>
+                <div id="settings-content" class="hidden">
+                    <button onclick="app.closeSettingSection()" class="mb-6 flex items-center gap-2 text-gray-500 font-bold hover:text-primary transition bg-white px-4 py-2 rounded-xl shadow-sm w-fit"><i class="fa-solid fa-arrow-right"></i> رجوع للقائمة</button>
                     
-                    <div id="sec-basic" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-3xl shadow-sm max-w-3xl">
-                        <h3 class="font-bold text-xl mb-6">البيانات الأساسية</h3>
-                        <div class="flex items-center gap-6 mb-6">
-                            <div class="w-24 h-24 relative upload-box rounded-2xl overflow-hidden bg-gray-50 dark:bg-black/20">
+                    <div id="sec-basic" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-[30px] shadow-sm max-w-3xl">
+                        <h3 class="font-bold text-xl mb-6 text-blue-600 flex items-center gap-2"><i class="fa-solid fa-id-card"></i> البيانات الشخصية</h3>
+                        <div class="flex items-start gap-6 mb-8">
+                            <div class="w-32 h-32 relative upload-box rounded-2xl overflow-hidden bg-gray-50 dark:bg-black/20 shrink-0">
                                 <img id="preview-logo" src="images/logo.png" class="w-full h-full object-cover">
                                 <input type="file" class="file-input-overlay" accept="image/*" onchange="app.handleLogo(this)">
                             </div>
-                            <div class="flex-1 space-y-3">
-                                <input id="set-name" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3" placeholder="اسم المطعم">
-                                <input id="set-desc" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3" placeholder="وصف مختصر">
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs font-bold text-gray-500 block mb-1">وقت الفتح</label>
-                                <input id="set-open" type="time" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-gray-500 block mb-1">وقت الإغلاق</label>
-                                <input id="set-close" type="time" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
+                            <div class="flex-1 space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label class="text-xs font-bold text-gray-400 mb-1 block">اسم المطعم</label><input id="set-name" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3"></div>
+                                    <div><label class="text-xs font-bold text-gray-400 mb-1 block">رقم الهاتف (واتساب)</label><input id="set-phone" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3"></div>
+                                </div>
+                                <div><label class="text-xs font-bold text-gray-400 mb-1 block">وصف المطعم (SEO)</label><textarea id="set-desc" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 h-20 resize-none"></textarea></div>
+                                <div><label class="text-xs font-bold text-red-400 mb-1 block">تغيير كلمة المرور</label><input id="set-pass" type="password" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3" placeholder="اتركه فارغاً إذا لم تريد التغيير"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div id="sec-branches" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-3xl shadow-sm max-w-3xl">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="font-bold text-xl">إدارة الفروع</h3>
-                            <button onclick="app.addBranchUI()" class="bg-orange-100 text-orange-600 px-4 py-2 rounded-xl font-bold text-sm">+ فرع جديد</button>
+                    <div id="sec-branches" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-[30px] shadow-sm max-w-3xl">
+                        <h3 class="font-bold text-xl mb-6 text-orange-600 flex items-center gap-2"><i class="fa-solid fa-clock"></i> مواعيد العمل الرئيسية</h3>
+                        <div class="grid grid-cols-2 gap-4 mb-8 bg-orange-50 dark:bg-orange-900/10 p-6 rounded-2xl border border-orange-100 dark:border-orange-900/20">
+                            <div>
+                                <label class="text-xs font-bold text-gray-500 block mb-2">وقت الفتح</label>
+                                <input id="set-open" type="time" class="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500 block mb-2">وقت الإغلاق</label>
+                                <input id="set-close" type="time" class="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center mb-6 border-t pt-6 dark:border-gray-700">
+                            <h3 class="font-bold text-xl text-orange-600 flex items-center gap-2"><i class="fa-solid fa-map-location-dot"></i> عناوين الفروع</h3>
+                            <button onclick="app.addBranchUI()" class="bg-orange-600 text-white px-4 py-2 rounded-xl font-bold text-sm shadow hover:bg-orange-700 transition">+ فرع جديد</button>
                         </div>
                         <div id="branches-list" class="space-y-3"></div>
                     </div>
 
-                    <div id="sec-menu" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-3xl shadow-sm max-w-3xl">
-                        <h3 class="font-bold text-xl mb-6">تصميم المنيو والمالية</h3>
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div>
-                                <label class="text-xs font-bold text-gray-500 block mb-1">الضريبة (%)</label>
-                                <input id="set-tax" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3">
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-gray-500 block mb-1">الخدمة</label>
-                                <input id="set-fees" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3">
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label class="text-xs font-bold text-gray-500 block mb-1">لون الهوية</label>
-                            <div class="flex items-center gap-3">
-                                <input id="set-color" type="color" class="h-10 w-20 cursor-pointer bg-transparent">
-                                <span class="text-xs text-gray-400">يستخدم في المنيو والصفحة الرئيسية</span>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label class="text-xs font-bold text-gray-500 block mb-1">طريقة العرض</label>
-                            <select id="set-layout" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3">
-                                <option value="grid">شبكة (Grid)</option>
-                                <option value="list">قائمة (List)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="sec-landing" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-3xl shadow-sm max-w-3xl">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="font-bold text-xl">روابط التواصل (ديناميكي)</h3>
-                            <button onclick="app.addSocialUI()" class="bg-green-100 text-green-600 px-4 py-2 rounded-xl font-bold text-sm">+ رابط جديد</button>
-                        </div>
-                        <p class="text-xs text-gray-500 mb-4">أضف أي منصة: واتساب، تيك توك، هنقرستيشن، جاهز، أو موقعك الخاص.</p>
+                    <div id="sec-menu" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-[30px] shadow-sm max-w-3xl">
+                        <h3 class="font-bold text-xl mb-6 text-purple-600 flex items-center gap-2"><i class="fa-solid fa-palette"></i> هوية المنيو</h3>
                         
-                        <div id="socials-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="mb-6">
+                            <label class="text-xs font-bold text-gray-500 block mb-2">نوع خلفية الهوية</label>
+                            <div class="flex gap-4 p-1 bg-gray-100 dark:bg-black/20 rounded-xl w-fit">
+                                <label class="cursor-pointer px-4 py-2 rounded-lg transition hover:bg-white dark:hover:bg-gray-700 has-[:checked]:bg-white dark:has-[:checked]:bg-gray-700 has-[:checked]:shadow-sm">
+                                    <input type="radio" name="bg-type" value="color" class="hidden" onchange="app.toggleBgType()" checked>
+                                    <span class="text-sm font-bold">لون ثابت</span>
+                                </label>
+                                <label class="cursor-pointer px-4 py-2 rounded-lg transition hover:bg-white dark:hover:bg-gray-700 has-[:checked]:bg-white dark:has-[:checked]:bg-gray-700 has-[:checked]:shadow-sm">
+                                    <input type="radio" name="bg-type" value="image" class="hidden" onchange="app.toggleBgType()">
+                                    <span class="text-sm font-bold">صورة / Texture</span>
+                                </label>
                             </div>
+                        </div>
+
+                        <div id="bg-color-picker" class="mb-6">
+                            <label class="text-xs font-bold text-gray-500 block mb-2">اختر اللون</label>
+                            <div class="flex items-center gap-3">
+                                <input id="set-color" type="color" class="h-12 w-24 cursor-pointer bg-transparent rounded-lg border-2 border-gray-200">
+                                <span class="text-xs text-gray-400">يستخدم كخلفية للهيدر والأزرار</span>
+                            </div>
+                        </div>
+
+                        <div id="bg-image-uploader" class="mb-6 hidden">
+                            <label class="text-xs font-bold text-gray-500 block mb-2">رفع صورة الهوية</label>
+                            <div class="h-32 w-full relative upload-box rounded-xl overflow-hidden bg-gray-50 dark:bg-black/20 flex items-center justify-center">
+                                <img id="preview-bg-image" class="absolute inset-0 w-full h-full object-cover hidden">
+                                <div class="text-center">
+                                    <i class="fa-solid fa-image text-2xl text-gray-300 mb-2"></i>
+                                    <span class="text-xs font-bold text-gray-400 block">اضغط لرفع الصورة</span>
+                                </div>
+                                <input type="file" class="file-input-overlay" accept="image/*" onchange="app.handleBgImage(this)">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 border-t pt-6 dark:border-gray-700">
+                            <div><label class="text-xs font-bold text-gray-400 mb-1 block">الضريبة (%)</label><input id="set-tax" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3"></div>
+                            <div><label class="text-xs font-bold text-gray-400 mb-1 block">الخدمة</label><input id="set-fees" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3"></div>
+                        </div>
                     </div>
 
-                    <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
-                        <button onclick="app.saveSettings()" class="w-full bg-primary text-white py-3 rounded-xl font-bold text-lg shadow-lg hover:bg-blue-600 transition">حفظ التغييرات</button>
+                    <div id="sec-landing" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-[30px] shadow-sm max-w-3xl">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-xl text-green-600 flex items-center gap-2"><i class="fa-solid fa-share-nodes"></i> روابط التواصل الديناميكية</h3>
+                            <button onclick="app.addSocialUI()" class="bg-green-600 text-white px-4 py-2 rounded-xl font-bold text-sm shadow hover:bg-green-700 transition">+ منصة جديدة</button>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-6 bg-gray-50 dark:bg-black/20 p-3 rounded-xl">قم برفع أيقونة المنصة (تيك توك، هنقرستيشن، واتس...) وضع الرابط الخاص بك.</p>
+                        
+                        <div id="socials-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="app.saveSettings()" class="bg-primary text-white px-8 py-3 rounded-xl font-bold text-lg shadow-lg hover:bg-blue-600 transition flex items-center gap-2"><i class="fa-solid fa-save"></i> حفظ كل التغييرات</button>
                     </div>
                 </div>
             </div>
 
             <div id="tab-qr" class="hidden text-center pt-10">
-                <div class="bg-white dark:bg-surface p-10 rounded-3xl shadow-xl inline-block">
+                <div class="bg-white dark:bg-surface p-10 rounded-3xl shadow-xl inline-block border border-gray-100 dark:border-gray-800">
                     <h2 class="text-2xl font-black mb-4">الباركود الرئيسي</h2>
-                    <img id="qr-img" src="" class="w-56 h-56 mx-auto mb-6">
+                    <img id="qr-img" src="" class="w-56 h-56 mx-auto mb-6 p-2 border-2 border-dashed rounded-xl">
                     <div class="flex justify-center gap-4">
-                        <button onclick="window.print()" class="bg-gray-100 dark:bg-gray-700 px-6 py-2 rounded-xl font-bold">طباعة</button>
+                        <button onclick="window.print()" class="bg-gray-100 dark:bg-gray-700 px-6 py-2 rounded-xl font-bold text-gray-600 dark:text-white">طباعة</button>
                         <a id="menu-link" href="#" target="_blank" class="bg-primary text-white px-6 py-2 rounded-xl font-bold">فتح</a>
                     </div>
                 </div>
@@ -210,23 +248,25 @@
     </main>
 
     <div id="modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center p-4 z-50 backdrop-blur-sm">
-        <div class="bg-white dark:bg-surface w-full max-w-lg rounded-2xl p-6">
+        <div class="bg-white dark:bg-surface w-full max-w-lg rounded-3xl p-6 shadow-2xl">
             <h3 class="font-bold text-xl mb-4">منتج جديد</h3>
             <input type="hidden" id="edit-index">
             <div class="space-y-3">
                 <input id="prod-name" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 p-3 rounded-xl" placeholder="اسم المنتج">
-                <input id="prod-price" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 p-3 rounded-xl" placeholder="السعر">
-                <input id="prod-cat" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 p-3 rounded-xl" placeholder="القسم">
-                <textarea id="prod-desc" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 p-3 rounded-xl" placeholder="الوصف"></textarea>
-                <div class="relative h-20 bg-gray-100 dark:bg-black/20 rounded-xl flex items-center justify-center border-2 border-dashed">
-                    <span class="text-xs opacity-50">صورة المنتج</span>
+                <div class="grid grid-cols-2 gap-3">
+                    <input id="prod-price" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 p-3 rounded-xl" placeholder="السعر">
+                    <input id="prod-cat" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 p-3 rounded-xl" placeholder="القسم">
+                </div>
+                <textarea id="prod-desc" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 p-3 rounded-xl h-24 resize-none" placeholder="الوصف"></textarea>
+                <div class="relative h-24 bg-gray-100 dark:bg-black/20 rounded-xl flex items-center justify-center border-2 border-dashed overflow-hidden group">
+                    <span class="text-xs opacity-50 group-hover:text-primary font-bold">صورة المنتج</span>
                     <img id="prod-preview" class="absolute inset-0 w-full h-full object-cover hidden">
                     <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" onchange="app.handleProdImg(this)">
                 </div>
             </div>
             <div class="flex justify-end gap-3 mt-6">
-                <button onclick="app.closeModal()" class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 font-bold">إلغاء</button>
-                <button onclick="app.saveProduct()" class="px-6 py-2 rounded-xl bg-primary text-white font-bold">حفظ</button>
+                <button onclick="app.closeModal()" class="px-6 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 font-bold text-sm">إلغاء</button>
+                <button onclick="app.saveProduct()" class="px-8 py-2.5 rounded-xl bg-primary text-white font-bold text-sm shadow-lg hover:bg-blue-600">حفظ</button>
             </div>
         </div>
     </div>
@@ -240,14 +280,14 @@
     </div>
 
     <script type="module">
-        import { db, auth, doc, getDoc, updateDoc, arrayUnion } from './firebase-config.js';
+        import { db, auth, doc, getDoc, updateDoc, arrayUnion, updatePassword } from './firebase-config.js';
 
         window.app = {};
         const restId = localStorage.getItem('admin_rest_id');
         if(!restId) window.location.href = 'index.html';
 
         let currentData = {};
-        let tempImg = "", tempLogo = "";
+        let tempImg = "", tempLogo = "", tempBgImage = "";
 
         app.init = async () => {
             if(localStorage.theme === 'dark') document.documentElement.classList.add('dark');
@@ -271,9 +311,11 @@
 
             // Products Render
             document.getElementById('products-grid').innerHTML = products.map((p, i) => `
-                <div class="bg-white dark:bg-surface p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 relative">
-                    <button onclick="app.openModal(${i})" class="absolute top-2 right-2 text-blue-600 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
-                    <button onclick="app.deleteProd(${i})" class="absolute top-2 right-12 text-red-500 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
+                <div class="bg-white dark:bg-surface p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 relative group">
+                    <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition z-10">
+                        <button onclick="app.openModal(${i})" class="text-blue-600 w-8 h-8 bg-white rounded-lg shadow flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="app.deleteProd(${i})" class="text-red-500 w-8 h-8 bg-white rounded-lg shadow flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
+                    </div>
                     <div class="h-32 bg-gray-100 dark:bg-black/20 rounded-xl mb-3 overflow-hidden">
                         <img src="${p.image || 'images/logo.png'}" class="w-full h-full object-cover">
                     </div>
@@ -285,30 +327,45 @@
                 </div>
             `).join('');
 
-            // Settings Inputs
+            // --- Fill Settings Fields ---
+            // 1. Basic
             document.getElementById('set-name').value = currentData.name || "";
+            document.getElementById('set-phone').value = currentData.phone || "";
             document.getElementById('set-desc').value = currentData.desc || "";
+            document.getElementById('preview-logo').src = currentData.logo || "images/logo.png";
+            
+            // 2. Times
             document.getElementById('set-open').value = currentData.openTime || "";
             document.getElementById('set-close').value = currentData.closeTime || "";
+
+            // 3. Menu Design
             document.getElementById('set-tax').value = currentData.tax || 0;
             document.getElementById('set-fees').value = currentData.fees || 0;
             document.getElementById('set-color').value = currentData.themeColor || "#2563eb";
-            document.getElementById('set-layout').value = currentData.layout || 'grid';
-            document.getElementById('preview-logo').src = currentData.logo || "images/logo.png";
+            
+            // Background Logic (Color vs Image)
+            const bgType = currentData.bgType || 'color';
+            document.querySelector(`input[name="bg-type"][value="${bgType}"]`).checked = true;
+            app.toggleBgType();
+            if(currentData.bgImage) {
+                document.getElementById('preview-bg-image').src = currentData.bgImage;
+                document.getElementById('preview-bg-image').classList.remove('hidden');
+                tempBgImage = currentData.bgImage;
+            }
 
-            // Render Dynamic Branches
+            // 4. Branches
             const branchContainer = document.getElementById('branches-list');
             branchContainer.innerHTML = '';
             const branches = currentData.branches || [];
             branches.forEach((br) => app.addBranchUI(br.name, br.link, br.phone));
             if(branches.length === 0) app.addBranchUI();
 
-            // Render Dynamic Socials
+            // 5. Socials
             const socialContainer = document.getElementById('socials-list');
             socialContainer.innerHTML = '';
             const socials = currentData.socialLinks || [];
             socials.forEach((s) => app.addSocialUI(s.icon, s.url));
-            if(socials.length === 0) app.addSocialUI(); // Add one empty
+            if(socials.length === 0) app.addSocialUI();
 
             // QR & Banners
             const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
@@ -316,9 +373,9 @@
             document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
             document.getElementById('menu-link').href = url;
             
-            // Banners Render (Simplified)
+            // Banners Render
             const bannerCon = document.getElementById('banners-container');
-            const uploadBtn = bannerCon.firstElementChild; // Save Upload Btn
+            const uploadBtn = bannerCon.firstElementChild; 
             bannerCon.innerHTML = ''; bannerCon.appendChild(uploadBtn);
             banners.forEach((b, i) => {
                 const div = document.createElement('div');
@@ -342,33 +399,50 @@
             document.getElementById('settings-grid').classList.remove('hidden');
         };
 
+        // --- Toggle BG Type (Color vs Image) ---
+        app.toggleBgType = () => {
+            const type = document.querySelector('input[name="bg-type"]:checked').value;
+            if(type === 'color') {
+                document.getElementById('bg-color-picker').classList.remove('hidden');
+                document.getElementById('bg-image-uploader').classList.add('hidden');
+            } else {
+                document.getElementById('bg-color-picker').classList.add('hidden');
+                document.getElementById('bg-image-uploader').classList.remove('hidden');
+            }
+        };
+        app.handleBgImage = (i) => i.files[0] && compressImage(i.files[0], r => {
+            tempBgImage = r; 
+            document.getElementById('preview-bg-image').src = r; 
+            document.getElementById('preview-bg-image').classList.remove('hidden');
+        });
+
         // --- Dynamic Branches ---
         app.addBranchUI = (name='', link='', phone='') => {
             const container = document.getElementById('branches-list');
             const div = document.createElement('div');
-            div.className = "branch-item grid grid-cols-1 md:grid-cols-3 gap-2 bg-gray-50 dark:bg-black/10 p-3 rounded-xl relative group";
+            div.className = "branch-item grid grid-cols-1 md:grid-cols-3 gap-3 bg-gray-50 dark:bg-black/10 p-4 rounded-2xl relative group border border-gray-100 dark:border-gray-800";
             div.innerHTML = `
-                <input type="text" class="br-name bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm" placeholder="اسم الفرع" value="${name}">
-                <input type="text" class="br-link bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm" placeholder="رابط الموقع" value="${link}">
-                <input type="text" class="br-phone bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm" placeholder="هاتف الفرع" value="${phone}">
-                <button onclick="this.parentElement.remove()" class="absolute -top-2 -left-2 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center shadow text-xs opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-times"></i></button>
+                <input type="text" class="br-name bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-sm" placeholder="اسم الفرع" value="${name}">
+                <input type="text" class="br-link bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-sm text-left" dir="ltr" placeholder="رابط الخريطة" value="${link}">
+                <input type="text" class="br-phone bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-sm" placeholder="رقم الهاتف" value="${phone}">
+                <button onclick="this.parentElement.remove()" class="absolute -top-2 -left-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-lg text-xs opacity-0 group-hover:opacity-100 transition hover:scale-110"><i class="fa-solid fa-times"></i></button>
             `;
             container.appendChild(div);
         };
 
-        // --- Dynamic Socials ---
+        // --- Dynamic Socials (Fully Custom) ---
         app.addSocialUI = (icon='', url='') => {
             const container = document.getElementById('socials-list');
             const div = document.createElement('div');
-            div.className = "social-item flex gap-3 items-center bg-gray-50 dark:bg-black/10 p-3 rounded-xl relative group";
+            div.className = "social-item flex gap-3 items-center bg-gray-50 dark:bg-black/10 p-4 rounded-2xl relative group border border-gray-100 dark:border-gray-800";
             div.innerHTML = `
-                <div class="w-12 h-12 relative bg-white dark:bg-black/30 rounded-full overflow-hidden border border-dashed flex-shrink-0 cursor-pointer hover:border-blue-500">
-                    <img src="${icon || 'https://placehold.co/100?text=Icon'}" class="social-icon-preview w-full h-full object-cover">
+                <div class="w-14 h-14 relative bg-white dark:bg-black/30 rounded-full overflow-hidden border-2 border-dashed flex-shrink-0 cursor-pointer hover:border-green-500 transition shadow-sm">
+                    <img src="${icon || 'https://placehold.co/100?text=+'}" class="social-icon-preview w-full h-full object-cover">
                     <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="app.handleSocialIcon(this)">
                     <input type="hidden" class="social-icon-val" value="${icon}">
                 </div>
-                <input type="text" class="social-url flex-1 bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm text-left" dir="ltr" placeholder="https://..." value="${url}">
-                <button onclick="this.parentElement.remove()" class="text-red-500 hover:bg-red-50 p-2 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+                <input type="text" class="social-url flex-1 bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-sm text-left" dir="ltr" placeholder="https://..." value="${url}">
+                <button onclick="this.parentElement.remove()" class="text-red-500 hover:bg-red-50 w-10 h-10 rounded-xl flex items-center justify-center transition"><i class="fa-solid fa-trash"></i></button>
             `;
             container.appendChild(div);
         };
@@ -402,22 +476,33 @@
                 if(url) socialLinks.push({ icon, url });
             });
 
+            const bgType = document.querySelector('input[name="bg-type"]:checked').value;
+
             const updates = {
                 name: document.getElementById('set-name').value,
+                phone: document.getElementById('set-phone').value,
                 desc: document.getElementById('set-desc').value,
                 openTime: document.getElementById('set-open').value,
                 closeTime: document.getElementById('set-close').value,
                 tax: parseFloat(document.getElementById('set-tax').value) || 0,
                 fees: parseFloat(document.getElementById('set-fees').value) || 0,
                 themeColor: document.getElementById('set-color').value,
-                layout: document.getElementById('set-layout').value,
+                bgType: bgType,
+                bgImage: tempBgImage || currentData.bgImage || "",
                 branches: branches,
                 socialLinks: socialLinks
             };
+            
             if(tempLogo) updates.logo = tempLogo;
+            
+            const pass = document.getElementById('set-pass').value;
+            if(pass && auth.currentUser) {
+                try { await updatePassword(auth.currentUser, pass); alert("تم تحديث كلمة المرور"); }
+                catch(e) { alert("خطأ في كلمة المرور: " + e.message); }
+            }
 
             await updateDoc(doc(db, "restaurants", restId), updates);
-            alert("تم حفظ الإعدادات بنجاح!");
+            alert("تم حفظ جميع الإعدادات بنجاح! ✅");
             app.init();
         };
 
@@ -430,7 +515,7 @@
                 price: document.getElementById('prod-price').value,
                 category: document.getElementById('prod-cat').value,
                 description: document.getElementById('prod-desc').value,
-                image: tempImg || (idx!=""?products[idx].image:""),
+                image: tempImg || (idx!==""?products[idx].image:""),
                 stock: true
             };
             if(idx!=="") products[idx] = newP; else products.push(newP);
@@ -460,9 +545,11 @@
         };
         
         // --- Utils & Helpers ---
-        app.switchTab = (t) => {
+        app.switchTab = (t, btn) => {
             document.querySelectorAll('[id^="tab-"]').forEach(el=>el.classList.add('hidden'));
             document.getElementById('tab-'+t).classList.remove('hidden');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            if(btn) btn.classList.add('active');
         };
         app.openModal = (i='') => {
             document.getElementById('edit-index').value=i;
@@ -502,7 +589,7 @@
                 }
             }
         }
-        app.handleLogo = (i) => i.files[0] && compressImage(i.files[0], r => tempLogo=r);
+        app.handleLogo = (i) => i.files[0] && compressImage(i.files[0], r => {tempLogo=r; document.getElementById('preview-logo').src=r;});
         app.handleProdImg = (i) => i.files[0] && compressImage(i.files[0], r => {tempImg=r; document.getElementById('prod-preview').src=r; document.getElementById('prod-preview').classList.remove('hidden')});
         app.toggleLang = () => { currentLang = currentLang === 'ar' ? 'en' : 'ar'; localStorage.setItem('lang', currentLang); location.reload(); };
         app.toggleTheme = () => { document.documentElement.classList.toggle('dark'); localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'; };
@@ -519,7 +606,7 @@
         };
         app.openCatModal = () => {
             const cats = [...new Set((currentData.products || []).map(p => p.category))];
-            document.getElementById('cat-list-container').innerHTML = cats.map(c => `<div class="p-2 border rounded mb-2">${c}</div>`).join('');
+            document.getElementById('cat-list-container').innerHTML = cats.map(c => `<div class="p-2 border rounded mb-2 dark:text-white">${c}</div>`).join('');
             document.getElementById('cat-modal').classList.remove('hidden');
         };
         app.closeCatModal = () => document.getElementById('cat-modal').classList.add('hidden');
