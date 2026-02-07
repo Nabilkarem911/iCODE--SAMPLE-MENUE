@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>i-Code | بوابة الدخول</title>
+    <title>AI-menu | المنيو الذكي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -12,32 +12,36 @@
 <body class="flex flex-col min-h-screen">
 
     <nav class="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
-        <div class="flex items-center gap-2">
-            <img src="images/logo.png" class="w-10 h-10 rounded-lg bg-white p-1" onerror="this.src='https://via.placeholder.com/50'">
-            <span class="text-2xl font-black text-blue-500">i-Code</span>
+        <div class="flex items-center gap-3">
+            <img src="images/logo.png" class="w-12 h-12 rounded-xl bg-white/10 p-1 border border-blue-500/30 object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2082/2082691.png'">
+            
+            <span class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">AI-menu</span>
         </div>
         <button onclick="document.getElementById('login-modal').classList.remove('hidden')" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-xl font-bold transition shadow-lg shadow-blue-500/30">تسجيل الدخول</button>
     </nav>
 
     <div class="flex-1 flex flex-col items-center justify-center text-center px-4 space-y-8">
-        <h1 class="text-5xl md:text-7xl font-black leading-tight">إدارة مطعمك <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">بذكاء اصطناعي</span></h1>
-        <p class="text-gray-400 text-lg max-w-2xl">نظام متكامل لإنشاء المنيو الذكي، إدارة الطلبات، واستخراج تقارير المبيعات بضغطة زر.</p>
+        <h1 class="text-5xl md:text-7xl font-black leading-tight">
+            نظام <span class="text-blue-500">AI-menu</span> <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">الجيل القادم للمطاعم</span>
+        </h1>
+        <p class="text-gray-400 text-lg max-w-2xl">حول قائمة طعامك إلى تجربة رقمية ذكية. لوحة تحكم متكاملة، باركود QR، وتقارير مبيعات لحظية.</p>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl mt-10">
-            <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
-                <i class="fa-solid fa-bolt text-3xl text-yellow-400 mb-4"></i>
-                <h3 class="font-bold text-xl">منيو سريع</h3>
-                <p class="text-gray-400 text-sm">يعمل بدون تحميل وبدون إنترنت.</p>
+            <div class="bg-gray-800/50 p-6 rounded-2xl border border-gray-700 hover:border-blue-500 transition">
+                <i class="fa-solid fa-wand-magic-sparkles text-3xl text-blue-400 mb-4"></i>
+                <h3 class="font-bold text-xl">تحكم ذكي</h3>
+                <p class="text-gray-400 text-sm">عدل الأسعار والمنتجات في لحظة.</p>
             </div>
-            <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+            <div class="bg-gray-800/50 p-6 rounded-2xl border border-gray-700 hover:border-purple-500 transition">
                 <i class="fa-solid fa-qrcode text-3xl text-purple-400 mb-4"></i>
-                <h3 class="font-bold text-xl">QR Code</h3>
-                <p class="text-gray-400 text-sm">باركود جاهز للطباعة فوراً.</p>
+                <h3 class="font-bold text-xl">QR Code تلقائي</h3>
+                <p class="text-gray-400 text-sm">باركود جاهز للطباعة لكل طاولة.</p>
             </div>
-            <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+            <div class="bg-gray-800/50 p-6 rounded-2xl border border-gray-700 hover:border-green-500 transition">
                 <i class="fa-brands fa-whatsapp text-3xl text-green-400 mb-4"></i>
                 <h3 class="font-bold text-xl">طلبات واتساب</h3>
-                <p class="text-gray-400 text-sm">استقبل الطلبات على جوالك مباشرة.</p>
+                <p class="text-gray-400 text-sm">استقبل الطلبات مفصلة على جوالك.</p>
             </div>
         </div>
     </div>
@@ -45,11 +49,17 @@
     <div id="login-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 backdrop-blur-sm">
         <div class="bg-gray-800 p-8 rounded-3xl w-full max-w-md border border-gray-600 relative shadow-2xl">
             <button onclick="document.getElementById('login-modal').classList.add('hidden')" class="absolute top-5 right-5 text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
-            <h2 class="text-2xl font-bold mb-6 text-center">تسجيل الدخول</h2>
+            <h2 class="text-2xl font-bold mb-6 text-center text-white">تسجيل الدخول</h2>
             
             <div class="space-y-4">
-                <input type="email" id="email" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition" placeholder="البريد الإلكتروني">
-                <input type="password" id="password" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition" placeholder="كلمة المرور">
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block">البريد الإلكتروني</label>
+                    <input type="email" id="email" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition" placeholder="admin@icode.com">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block">كلمة المرور</label>
+                    <input type="password" id="password" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition" placeholder="******">
+                </div>
             </div>
 
             <button onclick="login()" id="login-btn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white py-4 rounded-xl font-bold mt-8 transition transform hover:scale-[1.02]">دخول</button>
@@ -69,29 +79,30 @@
             btn.innerText = "جاري التحقق...";
             
             try {
-                // 1. تسجيل الدخول
+                // 1. محاولة تسجيل الدخول
                 await signInWithEmailAndPassword(auth, email, pass);
 
-                // 2. التوجيه (Routing)
-                if(email === "admin@icode.com") {
-                    // ده السوبر أدمن
+                // 2. التوجيه حسب نوع المستخدم
+                if(email === "nabilkarem@gmail.com") {
+                    // ✅ لو ده الأدمن -> روح لصفحة السوبر أدمن
                     window.location.href = "super_admin.html";
                 } else {
-                    // ده مشترك.. لازم نجيب الـ ID بتاعه عشان نعرف هو مين
+                    // ✅ لو ده مشترك -> ابحث عن مطعمه وروح للوحة التحكم
                     const q = query(collection(db, "restaurants"), where("email", "==", email));
                     const querySnapshot = await getDocs(q);
                     
                     if(!querySnapshot.empty) {
                         const docData = querySnapshot.docs[0];
-                        localStorage.setItem('admin_rest_id', docData.id); // نحفظ الـ ID عشان نستخدمه جوه
+                        localStorage.setItem('admin_rest_id', docData.id); 
                         window.location.href = "client_dashboard.html";
                     } else {
-                        alert("حسابك صحيح ولكن لا يوجد مطعم مرتبط به!");
+                        alert("تم الدخول، ولكن لا يوجد مطعم مرتبط بهذا الحساب!");
+                        window.location.href = "index.html"; // رجعه تاني
                     }
                 }
             } catch (error) {
                 console.error(error);
-                alert("❌ بيانات الدخول غير صحيحة");
+                alert("❌ خطأ: تأكد من الإيميل والباسورد، وتفعيل Authentication في الفايربيز.");
                 btn.innerText = "دخول";
             }
         }
