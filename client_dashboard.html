@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-menu | لوحة التحكم</title>
+    <title>AI-menu | لوحة القيادة</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -56,10 +56,12 @@
         .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #10b981; }
         input:checked + .slider:before { transform: translateX(20px); }
-        
-        /* Fix for LTR Switch */
         html[dir="ltr"] input:checked + .slider:before { transform: translateX(20px); }
         html[dir="ltr"] .slider:before { left: 2px; }
+        
+        /* Layout Radio */
+        .layout-radio:checked + div { border-color: #2563eb; background-color: rgba(37, 99, 235, 0.05); }
+        .dark .layout-radio:checked + div { background-color: rgba(37, 99, 235, 0.2); }
     </style>
 </head>
 <body class="flex h-screen bg-gray-50 dark:bg-dark text-gray-800 dark:text-gray-100 transition-colors duration-300">
@@ -181,6 +183,7 @@
 
             <div id="tab-settings" class="hidden space-y-6">
                 <h1 class="text-2xl font-black text-gray-800 dark:text-white" data-i18n="title_settings">إعدادات المطعم</h1>
+                
                 <div class="bg-white dark:bg-surface p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm max-w-3xl">
                     <h3 class="font-bold text-sm text-primary mb-4 uppercase tracking-wider" data-i18n="sec_brand">البيانات</h3>
                     <div class="flex items-center gap-6 mb-6">
@@ -194,8 +197,25 @@
                         </div>
                     </div>
 
+                    <h3 class="font-bold text-sm text-green-600 mb-4 uppercase tracking-wider border-t border-gray-100 dark:border-gray-700 pt-4" data-i18n="sec_finance">المالية والضريبة</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1" data-i18n="lbl_tax">الضريبة (%)</label>
+                            <input id="set-tax" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1" data-i18n="lbl_fees">رسوم الخدمة</label>
+                            <input id="set-fees" type="number" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white">
+                        </div>
+                    </div>
+
+                    <h3 class="font-bold text-sm text-blue-600 mb-4 uppercase tracking-wider border-t border-gray-100 dark:border-gray-700 pt-4" data-i18n="sec_seo">محركات البحث (SEO)</h3>
+                    <div class="mb-6">
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_desc">وصف المطعم</label>
+                        <input id="set-desc" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white" data-ph="ph_desc">
+                    </div>
+
                     <h3 class="font-bold text-sm text-purple-600 mb-4 uppercase tracking-wider border-t border-gray-100 dark:border-gray-700 pt-4" data-i18n="sec_appearance">المظهر</h3>
-                    
                     <div class="mb-4">
                         <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_theme">نمط التصميم</label>
                         <select id="set-style" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none dark:text-white">
@@ -372,7 +392,7 @@
         let currentLang = localStorage.getItem('lang') || 'ar';
         let tempImg = "", tempLogo = "";
 
-        // Translation Dictionary
+        // Dictionary
         const i18n = {
             ar: {
                 nav_home: "نظرة عامة", nav_products: "المنتجات", nav_marketing: "التسويق", nav_tables: "الطاولات", nav_settings: "الإعدادات", nav_qr: "الباركود", btn_upgrade: "ترقية الباقة", btn_logout: "خروج", mob_header: "لوحة التحكم",
@@ -384,6 +404,7 @@
                 title_qr: "باركود القائمة", btn_print: "طباعة", btn_open: "فتح",
                 modal_prod: "بيانات المنتج", lbl_p_name: "الاسم", lbl_p_price: "السعر", lbl_p_cal: "السعرات", lbl_p_cat: "القسم", lbl_p_desc: "الوصف", lbl_allergens: "الحساسية", lbl_badges: "شارات التميز", btn_cancel: "إلغاء",
                 title_cats: "إدارة الأقسام", btn_close: "إغلاق",
+                sec_finance: "المالية والضريبة", lbl_tax: "الضريبة (%)", lbl_fees: "رسوم الخدمة", sec_seo: "محركات البحث (SEO)", lbl_desc: "وصف المطعم", ph_desc: "وصف مختصر للمطعم",
                 al_spicy: "حار", al_gluten: "جلوتين", al_egg: "بيض", al_milk: "ألبان", al_nuts: "مكسرات", al_peanuts: "فول سوداني", al_sesame: "سمسم", al_fish: "بحري", al_soy: "صويا", al_sulphites: "كبريتيت", al_mustard: "خردل", al_lupin: "ترمس", al_molluscs: "رخويات", al_crustaceans: "قشريات",
                 bg_new: "جديد", bg_best: "الأكثر مبيعاً", bg_offer: "عرض"
             },
@@ -397,6 +418,7 @@
                 title_qr: "Menu QR", btn_print: "Print", btn_open: "Open",
                 modal_prod: "Product Details", lbl_p_name: "Name", lbl_p_price: "Price", lbl_p_cal: "Calories", lbl_p_cat: "Category", lbl_p_desc: "Description", lbl_allergens: "Allergens", lbl_badges: "Badges", btn_cancel: "Cancel",
                 title_cats: "Manage Categories", btn_close: "Close",
+                sec_finance: "Finance & Tax", lbl_tax: "VAT (%)", lbl_fees: "Service Fees", sec_seo: "SEO", lbl_desc: "Description", ph_desc: "Short restaurant description",
                 al_spicy: "Spicy", al_gluten: "Gluten", al_egg: "Egg", al_milk: "Dairy", al_nuts: "Nuts", al_peanuts: "Peanuts", al_sesame: "Sesame", al_fish: "Seafood", al_soy: "Soy", al_sulphites: "Sulphites", al_mustard: "Mustard", al_lupin: "Lupin", al_molluscs: "Molluscs", al_crustaceans: "Crustaceans",
                 bg_new: "New", bg_best: "Bestseller", bg_offer: "Offer"
             }
@@ -445,6 +467,8 @@
             document.getElementById('dash-logo').src = currentData.logo || 'images/logo.png';
             document.getElementById('plan-badge').innerText = plan.name[currentLang];
 
+            if(currentData.plan !== 'vip') document.getElementById('btn-upgrade').classList.remove('hidden');
+
             // Products Grid
             const grid = document.getElementById('products-grid');
             if(products.length === 0) grid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10">No products</div>`;
@@ -490,11 +514,13 @@
             // Settings
             document.getElementById('set-name').value = currentData.name;
             document.getElementById('set-phone').value = currentData.phone || "";
+            document.getElementById('set-tax').value = currentData.tax || "";
+            document.getElementById('set-fees').value = currentData.fees || "";
+            document.getElementById('set-desc').value = currentData.desc || "";
             document.getElementById('set-color').value = currentData.themeColor || "#2563eb";
             document.getElementById('preview-logo').src = currentData.logo || "images/logo.png";
             document.getElementById('set-style').value = currentData.style || 'modern';
             
-            // Layout Logic Fix
             const layout = currentData.layout || 'grid';
             document.querySelector(`input[name="layout"][value="${layout}"]`).checked = true;
 
@@ -514,7 +540,7 @@
             app.renderChart(currentData.stats?.views || 0);
         };
 
-        // --- Products Logic ---
+        // --- Actions ---
         app.saveProduct = async () => {
             const products = [...(currentData.products || [])];
             const editIndex = parseInt(document.getElementById('edit-index').value);
@@ -563,6 +589,9 @@
             const updates = { 
                 name: document.getElementById('set-name').value,
                 phone: document.getElementById('set-phone').value,
+                tax: document.getElementById('set-tax').value,
+                fees: document.getElementById('set-fees').value,
+                desc: document.getElementById('set-desc').value,
                 themeColor: document.getElementById('set-color').value,
                 style: document.getElementById('set-style').value,
                 layout: layout
