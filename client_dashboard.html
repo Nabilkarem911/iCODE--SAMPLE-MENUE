@@ -61,7 +61,6 @@
         <div class="p-6 text-center border-b border-gray-100 dark:border-gray-800">
             <div class="relative w-20 h-20 mx-auto mb-3 group">
                 <img id="dash-logo" src="images/logo.png" class="w-full h-full rounded-2xl object-cover border p-1 shadow-sm">
-                <div class="absolute bottom-0 right-0 w-5 h-5 bg-green-500 border-2 border-white dark:border-surface rounded-full"></div>
             </div>
             <h2 id="dash-name" class="font-bold text-lg truncate">...</h2>
             <span id="plan-badge" class="text-[10px] bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-bold">...</span>
@@ -82,6 +81,9 @@
             </button>
             <button onclick="window.app.switchTab('settings', this)" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm">
                 <i class="fa-solid fa-sliders w-5 text-center"></i> <span data-i18n="nav_settings">الإعدادات</span>
+            </button>
+            <button onclick="window.app.switchTab('qr', this)" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm">
+                <i class="fa-solid fa-qrcode w-5 text-center"></i> <span data-i18n="nav_qr">الباركود</span>
             </button>
         </nav>
 
@@ -114,19 +116,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
                     <div class="bg-white dark:bg-surface p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <p class="text-xs text-gray-500 font-bold mb-2">إجمالي الزيارات</p>
-                        <h3 class="text-3xl font-black text-gray-800 dark:text-white" id="stat-views">0</h3>
+                        <h3 class="text-3xl font-black text-gray-800 dark:text-white" id="val-views">0</h3>
                     </div>
                     <div class="bg-white dark:bg-surface p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <p class="text-xs text-gray-500 font-bold mb-2">عدد المنتجات</p>
-                        <h3 class="text-3xl font-black text-gray-800 dark:text-white" id="stat-prods">0</h3>
+                        <h3 class="text-3xl font-black text-gray-800 dark:text-white" id="val-prods">0</h3>
                     </div>
                     <div class="bg-white dark:bg-surface p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <p class="text-xs text-gray-500 font-bold mb-2">عدد الطاولات</p>
-                        <h3 class="text-3xl font-black text-gray-800 dark:text-white" id="stat-tables">0</h3>
+                        <h3 class="text-3xl font-black text-gray-800 dark:text-white" id="val-tables">0</h3>
                     </div>
                     <div class="bg-gradient-to-br from-primary to-blue-700 text-white p-5 rounded-2xl shadow-lg">
                         <p class="text-xs opacity-80 font-bold mb-2">حالة الباقة</p>
-                        <h3 class="text-xl font-black" id="stat-plan">...</h3>
+                        <h3 class="text-xl font-black" id="val-plan">...</h3>
                     </div>
                 </div>
                 <div class="bg-white dark:bg-surface p-6 rounded-2xl border border-gray-100 dark:border-gray-800 h-80 shadow-sm">
@@ -136,7 +138,7 @@
 
             <div id="tab-products" class="hidden space-y-6">
                 <div class="flex flex-wrap justify-between items-center gap-4">
-                    <h1 class="text-2xl font-black">إدارة القائمة</h1>
+                    <h1 class="text-2xl font-black">قائمة الطعام</h1>
                     <div class="flex gap-2">
                         <button onclick="window.app.openCatModal()" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-xl font-bold text-sm shadow-sm hover:bg-gray-50">إدارة الأقسام</button>
                         <button onclick="window.app.openModal()" class="bg-primary text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg hover:bg-blue-600 flex items-center gap-2"><i class="fa-solid fa-plus"></i> منتج جديد</button>
@@ -192,7 +194,7 @@
 
                     <h3 class="font-bold text-sm text-purple-600 mb-4 uppercase tracking-wider border-t pt-4">المظهر والقوالب</h3>
                     <div class="mb-6">
-                        <label class="block text-xs font-bold text-gray-500 mb-3">تخطيط المنيو (Menu Layout)</label>
+                        <label class="block text-xs font-bold text-gray-500 mb-3">تخطيط المنيو</label>
                         <div class="grid grid-cols-2 gap-4">
                             <label class="cursor-pointer relative">
                                 <input type="radio" name="layout" value="grid" class="sr-only template-radio" checked>
@@ -230,6 +232,22 @@
                     <button onclick="window.app.saveSettings()" class="w-full bg-primary hover:bg-blue-600 text-white py-3.5 rounded-xl font-bold transition shadow-lg flex items-center justify-center gap-2">
                         <i class="fa-solid fa-save"></i> حفظ التغييرات
                     </button>
+                </div>
+            </div>
+
+            <div id="tab-qr" class="hidden text-center pt-10">
+                <div class="bg-white dark:bg-surface p-10 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-xl inline-block max-w-md w-full">
+                    <h2 class="text-2xl font-black mb-2 text-gray-800 dark:text-white">باركود القائمة</h2>
+                    <p class="text-gray-500 text-sm mb-6">الباركود الرئيسي للمنيو</p>
+                    
+                    <div class="bg-white p-4 rounded-2xl border-2 border-dashed border-gray-200 inline-block mb-8">
+                        <img id="qr-img" src="" class="w-56 h-56 object-contain">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="window.print()" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white px-6 py-3 rounded-xl font-bold text-sm transition">طباعة</button>
+                        <a id="menu-link" href="#" target="_blank" class="bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-sm transition">فتح</a>
+                    </div>
                 </div>
             </div>
 
@@ -382,27 +400,16 @@
             document.getElementById('dash-logo').src = currentData.logo || 'images/logo.png';
             document.getElementById('plan-badge').innerText = plan.name[currentLang];
 
-            // Upgrade Button
+            // Upgrade Button Logic
             if(currentData.plan !== 'vip') document.getElementById('btn-upgrade').classList.remove('hidden');
             else document.getElementById('btn-upgrade').classList.add('hidden');
 
-            // Stats
-            document.getElementById('stat-views-count').innerText = currentData.stats?.views || 0;
-            document.getElementById('stat-prods-count').innerText = products.length;
-            document.getElementById('stat-limit').innerText = `Limit: ${plan.limit}`;
-            document.getElementById('stat-plan-name').innerText = plan.name[currentLang];
-            document.getElementById('stat-tables').innerText = currentData.tables || 0;
+            // Stats (Renamed IDs to avoid conflict)
+            document.getElementById('val-views').innerText = currentData.stats?.views || 0;
+            document.getElementById('val-prods').innerText = products.length;
+            document.getElementById('val-tables').innerText = currentData.tables || 0;
+            document.getElementById('val-plan').innerText = (currentData.plan || 'Free').toUpperCase();
             
-            // Expiry
-            if(currentData.expiryDate) {
-                const days = Math.ceil((new Date(currentData.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
-                document.getElementById('stat-expiry').innerText = days < 0 ? "منتهي" : `باقي ${days} يوم`;
-            } else {
-                document.getElementById('stat-expiry').innerText = "مفتوح";
-            }
-
-            app.renderChart(currentData.stats?.views || 0);
-
             // Products Grid
             const grid = document.getElementById('products-grid');
             if(products.length === 0) {
@@ -418,8 +425,8 @@
                         </div>
                         <div class="absolute top-2 left-2 z-10">
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer toggle-checkbox" ${p.stock !== false ? 'checked' : ''} onchange="window.app.toggleStock(${i})">
-                                <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer toggle-label after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                                <input type="checkbox" class="sr-only peer template-radio" ${p.stock !== false ? 'checked' : ''} onchange="window.app.toggleStock(${i})">
+                                <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500"></div>
                             </label>
                         </div>
                         <div class="h-40 bg-gray-100 dark:bg-black/20 relative ${p.stock === false ? 'grayscale opacity-50' : ''}">
@@ -473,6 +480,8 @@
 
             const cats = [...new Set(products.map(p => p.category))];
             document.getElementById('cats-list').innerHTML = cats.map(c => `<option value="${c}">`).join('');
+            
+            app.renderChart(currentData.stats?.views || 0);
         };
 
         // --- Products Logic ---
@@ -652,9 +661,10 @@
         app.renderChart = (total) => {
             const ctx = document.getElementById('viewsChart');
             if(window.myChart) window.myChart.destroy();
+            const data = [0, 0, 0, 0, 0, 0, total];
             window.myChart = new Chart(ctx, {
                 type: 'line',
-                data: { labels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], datasets: [{ label: 'Views', data: [0,0,0,0,0,0, total], borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, tension: 0.4 }] },
+                data: { labels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], datasets: [{ label: 'Views', data: data, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, tension: 0.4 }] },
                 options: { responsive: true, maintainAspectRatio: false }
             });
         };
