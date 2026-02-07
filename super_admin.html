@@ -2,77 +2,178 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>AI-menu | Super Admin</title>
+    <title>AI-menu | غرفة العمليات</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>body { font-family: 'Tajawal', sans-serif; background-color: #0f172a; color: white; }</style>
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background-color: #0f172a; color: white; }
+        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .stat-card { transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); border-color: rgba(59, 130, 246, 0.5); }
+    </style>
 </head>
-<body class="p-6 md:p-10">
+<body class="min-h-screen p-6">
 
-    <div class="max-w-7xl mx-auto">
-        <div class="flex justify-between items-center mb-10">
+    <div class="max-w-[1400px] mx-auto space-y-8">
+        
+        <div class="flex flex-wrap justify-between items-center gap-4">
             <div>
-                <h1 class="text-3xl font-black text-blue-500">لوحة التحكم <span class="text-white text-lg">Super Admin</span></h1>
-                <p class="text-gray-400 text-sm">مرحباً نبيل، أنت المسيطر هنا 😎</p>
+                <h1 class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">AI-menu <span class="text-white text-lg font-medium opacity-60">Control Panel</span></h1>
+                <p class="text-gray-400 text-sm mt-1">مرحباً نبيل، أنت المسيطر هنا 😎</p>
             </div>
             <div class="flex gap-3">
-                <a href="index.html" class="bg-gray-800 px-4 py-2 rounded-xl text-sm font-bold hover:bg-gray-700">خروج</a>
-                <button onclick="openModal()" class="bg-blue-600 px-6 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-500"><i class="fa-solid fa-plus"></i> مشترك جديد</button>
+                <a href="index.html" class="glass px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-red-500/20 hover:text-red-400 transition">تسجيل خروج</a>
+                <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-blue-500/20 transition">
+                    <i class="fa-solid fa-plus"></i> مشترك جديد
+                </button>
             </div>
         </div>
 
-        <div class="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden shadow-2xl">
-            <table class="w-full text-right">
-                <thead class="bg-gray-900 text-gray-400 text-xs uppercase">
-                    <tr><th class="p-5">المطعم</th><th class="p-5">الباقة</th><th class="p-5">الحالة</th><th class="p-5 text-center">تحكم</th></tr>
-                </thead>
-                <tbody id="clients-table" class="text-gray-300 divide-y divide-gray-700 font-medium"></tbody>
-            </table>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 bg-blue-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
+                <p class="text-gray-400 text-xs font-bold mb-2">إجمالي المطاعم</p>
+                <h3 class="text-4xl font-black text-white" id="total-clients">0</h3>
+                <i class="fa-solid fa-store absolute left-6 top-6 text-2xl text-blue-500/50"></i>
+            </div>
+            <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 bg-green-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
+                <p class="text-gray-400 text-xs font-bold mb-2">اشتراكات نشطة</p>
+                <h3 class="text-4xl font-black text-green-400" id="active-clients">0</h3>
+                <i class="fa-solid fa-circle-check absolute left-6 top-6 text-2xl text-green-500/50"></i>
+            </div>
+            <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 bg-orange-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
+                <p class="text-gray-400 text-xs font-bold mb-2">إجمالي الزيارات</p>
+                <h3 class="text-4xl font-black text-orange-400" id="total-views">0</h3>
+                <i class="fa-solid fa-eye absolute left-6 top-6 text-2xl text-orange-500/50"></i>
+            </div>
+            <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 bg-purple-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
+                <p class="text-gray-400 text-xs font-bold mb-2">إجمالي المنتجات</p>
+                <h3 class="text-4xl font-black text-purple-400" id="total-prods">0</h3>
+                <i class="fa-solid fa-burger absolute left-6 top-6 text-2xl text-purple-500/50"></i>
+            </div>
+        </div>
+
+        <div class="bg-gray-800/50 border border-gray-700 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm">
+            <div class="p-5 border-b border-gray-700 flex justify-between items-center bg-gray-900/50">
+                <h2 class="font-bold text-lg text-white"><i class="fa-solid fa-list ml-2 text-blue-500"></i>قائمة المشتركين</h2>
+                <input type="text" id="search" onkeyup="searchTable()" placeholder="بحث سريع..." class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-blue-500 w-64 transition">
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-right whitespace-nowrap">
+                    <thead class="bg-gray-900/80 text-gray-400 text-xs uppercase font-bold tracking-wider">
+                        <tr>
+                            <th class="p-6">المطعم</th>
+                            <th class="p-6">البيانات</th>
+                            <th class="p-6">حالة الاشتراك</th>
+                            <th class="p-6 text-center">التقارير</th>
+                            <th class="p-6 text-center">تحكم كامل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clients-table" class="text-gray-300 divide-y divide-gray-700/50 font-medium text-sm"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div id="client-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div class="bg-gray-800 w-full max-w-lg rounded-2xl border border-gray-700 shadow-2xl relative">
-            <div class="p-6 border-b border-gray-700 flex justify-between items-center bg-gray-900 rounded-t-2xl">
-                <h2 class="text-xl font-bold" id="modal-title">بيانات المشترك</h2>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-white">✕</button>
+    <div id="modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div class="bg-gray-900 w-full max-w-2xl rounded-3xl border border-gray-700 shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-white" id="modal-title">مشترك جديد</h2>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-white transition"><i class="fa-solid fa-times text-xl"></i></button>
             </div>
             
-            <div class="p-6 space-y-4">
+            <div class="p-6 overflow-y-auto space-y-6">
                 <input type="hidden" id="edit-id">
                 
-                <div id="auth-fields" class="grid grid-cols-2 gap-4">
-                    <input type="email" id="c-email" class="bg-gray-900 border border-gray-600 rounded-lg p-3 w-full outline-none focus:border-blue-500" placeholder="الإيميل">
-                    <input type="password" id="c-pass" class="bg-gray-900 border border-gray-600 rounded-lg p-3 w-full outline-none focus:border-blue-500" placeholder="كلمة المرور">
-                </div>
-
-                <input type="text" id="c-name" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 outline-none focus:border-orange-500" placeholder="اسم المطعم">
-                <input type="text" id="c-uid" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 outline-none focus:border-orange-500" placeholder="معرف الرابط (english-only)">
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs text-yellow-500 font-bold mb-1">خطة الاشتراك</label>
-                        <select id="c-plan" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 outline-none focus:border-yellow-500">
-                            <option value="free">مجانية (5 منتجات)</option>
-                            <option value="gold">ذهبية (50 منتج + ألوان)</option>
-                            <option value="vip">بلاتينية (مفتوح)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-green-500 font-bold mb-1">الحالة</label>
-                        <select id="c-active" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 outline-none focus:border-green-500">
-                            <option value="true">نشط ✅</option>
-                            <option value="false">موقوف ⛔</option>
-                        </select>
+                <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50">
+                    <h3 class="text-xs text-blue-400 font-bold uppercase mb-3"><i class="fa-solid fa-lock ml-1"></i> بيانات الدخول</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">البريد الإلكتروني</label>
+                            <input type="email" id="c-email" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">كلمة المرور (اتركه فارغاً إذا لم ترد التغيير)</label>
+                            <input type="text" id="c-pass" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="******">
+                        </div>
                     </div>
                 </div>
-                <input type="date" id="c-expiry" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 outline-none focus:border-purple-500">
+
+                <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50">
+                    <h3 class="text-xs text-orange-400 font-bold uppercase mb-3"><i class="fa-solid fa-store ml-1"></i> بيانات المطعم</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">اسم المطعم</label>
+                            <input type="text" id="c-name" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">رقم الهاتف</label>
+                            <input type="text" id="c-phone" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs text-gray-500 mb-1">معرف الرابط (Unique ID)</label>
+                            <input type="text" id="c-uid" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none font-mono text-sm" placeholder="english-only-no-spaces">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50">
+                    <h3 class="text-xs text-purple-400 font-bold uppercase mb-3"><i class="fa-solid fa-crown ml-1"></i> الاشتراك والباقة</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">نوع الباقة</label>
+                            <select id="c-plan" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
+                                <option value="free">مجانية (Starter)</option>
+                                <option value="gold">ذهبية (Gold)</option>
+                                <option value="vip">بلاتينية (VIP)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">تاريخ الانتهاء</label>
+                            <input type="date" id="c-expiry" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">الحالة</label>
+                            <select id="c-active" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
+                                <option value="true">✅ نشط</option>
+                                <option value="false">⛔ موقوف</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="p-6 border-t border-gray-700 bg-gray-900 rounded-b-2xl">
-                <button onclick="saveClient()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition">حفظ</button>
+            <div class="p-6 border-t border-gray-800 flex gap-3">
+                <button onclick="saveClient()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition">حفظ التغييرات</button>
+                <button onclick="closeModal()" class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-bold transition">إلغاء</button>
             </div>
+        </div>
+    </div>
+
+    <div id="report-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-gray-800 p-8 rounded-3xl w-full max-w-sm border border-gray-700 shadow-2xl text-center">
+            <div class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-1" id="rep-name">...</h2>
+            <p class="text-gray-400 text-sm mb-6" id="rep-plan">Plan: ...</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-gray-700/50 p-4 rounded-2xl">
+                    <p class="text-xs text-gray-400">الزيارات</p>
+                    <p class="text-2xl font-black text-orange-400" id="rep-views">0</p>
+                </div>
+                <div class="bg-gray-700/50 p-4 rounded-2xl">
+                    <p class="text-xs text-gray-400">المنتجات</p>
+                    <p class="text-2xl font-black text-green-400" id="rep-prods">0</p>
+                </div>
+            </div>
+            
+            <button onclick="document.getElementById('report-modal').style.display='none'" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-xl font-bold transition">إغلاق</button>
         </div>
     </div>
 
@@ -81,92 +182,165 @@
 
         let clients = [];
 
-        async function loadClients() {
+        async function loadData() {
             const tbody = document.getElementById('clients-table');
-            tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-gray-500">جاري التحميل...</td></tr>';
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center p-10"><i class="fa-solid fa-circle-notch fa-spin text-blue-500 text-2xl"></i></td></tr>`;
+            
             try {
                 const snap = await getDocs(collection(db, "restaurants"));
                 clients = [];
                 snap.forEach(d => clients.push({id: d.id, ...d.data()}));
-                renderTable();
+                
+                // حساب الإحصائيات العلوية
+                document.getElementById('total-clients').innerText = clients.length;
+                document.getElementById('active-clients').innerText = clients.filter(c => c.isActive !== false).length;
+                document.getElementById('total-views').innerText = clients.reduce((a,b) => a + (b.stats?.views || 0), 0);
+                document.getElementById('total-prods').innerText = clients.reduce((a,b) => a + (b.products?.length || 0), 0);
+
+                renderTable(clients);
             } catch (e) { console.error(e); }
         }
 
-        function renderTable() {
+        function renderTable(list) {
             const tbody = document.getElementById('clients-table');
-            if(clients.length === 0) return tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-gray-500">لا يوجد مشتركين</td></tr>';
+            if(list.length === 0) return tbody.innerHTML = `<tr><td colspan="5" class="text-center p-10 text-gray-500">لا توجد بيانات</td></tr>`;
 
-            tbody.innerHTML = clients.map(c => `
-                <tr class="hover:bg-gray-700/20 border-b border-gray-700/50">
-                    <td class="p-5 font-bold">${c.name} <br> <span class="text-xs text-gray-500 font-normal">${c.email}</span></td>
-                    <td class="p-5"><span class="bg-gray-700 px-2 py-1 rounded text-xs text-yellow-400 font-bold uppercase">${c.plan || 'free'}</span></td>
-                    <td class="p-5"><span class="${c.isActive!==false?'text-green-400':'text-red-400'} text-xs font-bold">● ${c.isActive!==false?'نشط':'موقوف'}</span></td>
-                    <td class="p-5 text-center flex justify-center gap-2">
-                        <button onclick="editClient('${c.id}')" class="bg-blue-600/20 text-blue-400 p-2 rounded-lg hover:bg-blue-600 hover:text-white"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="loginAsClient('${c.id}')" class="bg-purple-600/20 text-purple-400 p-2 rounded-lg hover:bg-purple-600 hover:text-white"><i class="fa-solid fa-user-gear"></i></button>
-                        <button onclick="deleteClient('${c.id}')" class="bg-red-600/20 text-red-400 p-2 rounded-lg hover:bg-red-600 hover:text-white"><i class="fa-solid fa-trash"></i></button>
+            tbody.innerHTML = list.map(c => {
+                // حساب الأيام المتبقية
+                let expiryHTML = '<span class="text-gray-500 text-xs">غير محدد</span>';
+                if(c.expiryDate) {
+                    const days = Math.ceil((new Date(c.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+                    const color = days < 0 ? 'text-red-400' : (days < 7 ? 'text-orange-400' : 'text-green-400');
+                    const text = days < 0 ? `منتهي منذ ${Math.abs(days)} يوم` : `باقي ${days} يوم`;
+                    expiryHTML = `<span class="${color} text-xs font-bold bg-gray-800 px-2 py-1 rounded border border-gray-700">${text}</span>`;
+                }
+
+                // بادج الباقة
+                const planColors = { 'free': 'bg-gray-600', 'gold': 'bg-yellow-600', 'vip': 'bg-purple-600' };
+                const planBadge = `<span class="${planColors[c.plan||'free']} px-2 py-0.5 rounded text-[10px] text-white font-bold uppercase tracking-wider">${c.plan||'free'}</span>`;
+
+                return `
+                <tr class="hover:bg-gray-700/30 transition border-b border-gray-700/50 last:border-0 group">
+                    <td class="p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center text-xl font-bold text-white uppercase border border-gray-700 shadow-sm">
+                                ${c.name[0]}
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-base">${c.name} ${planBadge}</p>
+                                <p class="text-xs text-gray-500 font-mono mt-1">ID: ${c.id}</p>
+                            </div>
+                        </div>
                     </td>
-                </tr>
-            `).join('');
+                    <td class="p-6">
+                        <p class="text-sm text-gray-300 mb-1"><i class="fa-solid fa-envelope text-gray-500 ml-1"></i> ${c.email}</p>
+                        <p class="text-sm text-gray-300"><i class="fa-solid fa-phone text-gray-500 ml-1"></i> ${c.phone || '-'}</p>
+                    </td>
+                    <td class="p-6">
+                        <div class="flex flex-col gap-2">
+                            <span class="${c.isActive!==false ? 'text-green-400 bg-green-400/10' : 'text-red-400 bg-red-400/10'} w-fit px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full ${c.isActive!==false ? 'bg-green-400' : 'bg-red-400'}"></span>
+                                ${c.isActive!==false ? 'نشط' : 'موقوف'}
+                            </span>
+                            ${expiryHTML}
+                        </div>
+                    </td>
+                    <td class="p-6 text-center">
+                        <button onclick="showReport('${c.id}')" class="text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-3 py-1.5 rounded-lg transition text-xs font-bold border border-blue-500/20">
+                            <i class="fa-solid fa-chart-simple ml-1"></i> عرض التقرير
+                        </button>
+                    </td>
+                    <td class="p-6 text-center">
+                        <div class="flex justify-center gap-2 opacity-80 group-hover:opacity-100 transition">
+                            <button onclick="editClient('${c.id}')" title="تعديل شامل" class="w-9 h-9 rounded-lg bg-gray-700 hover:bg-blue-600 hover:text-white text-blue-400 transition"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="clientLogin('${c.id}')" title="دخول كعميل" class="w-9 h-9 rounded-lg bg-gray-700 hover:bg-purple-600 hover:text-white text-purple-400 transition"><i class="fa-solid fa-user-astronaut"></i></button>
+                            <button onclick="copyLink('${c.id}')" title="نسخ الرابط" class="w-9 h-9 rounded-lg bg-gray-700 hover:bg-orange-500 hover:text-white text-orange-400 transition"><i class="fa-solid fa-link"></i></button>
+                            <button onclick="deleteClient('${c.id}')" title="حذف" class="w-9 h-9 rounded-lg bg-gray-700 hover:bg-red-600 hover:text-white text-red-400 transition"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
         }
 
+        // --- Logic ---
         window.saveClient = async () => {
             const id = document.getElementById('edit-id').value;
             const uid = document.getElementById('c-uid').value;
+            const pass = document.getElementById('c-pass').value;
+            
             const data = {
                 name: document.getElementById('c-name').value,
                 email: document.getElementById('c-email').value,
-                plan: document.getElementById('c-plan').value, // 💎 حفظ الباقة
+                phone: document.getElementById('c-phone').value,
+                plan: document.getElementById('c-plan').value,
                 expiryDate: document.getElementById('c-expiry').value,
-                isActive: document.getElementById('c-active').value === 'true'
+                isActive: document.getElementById('c-active').value === 'true',
+                ...(pass && { adminKnownPass: pass }) // حفظ الباسورد فقط لو اتكتب
             };
 
-            if(!data.name || !uid) return alert("أكمل البيانات");
+            if(!data.name || !data.email || !uid) return alert("بيانات ناقصة!");
 
             try {
                 if(id) {
                     await updateDoc(doc(db, "restaurants", id), data);
-                    alert("✅ تم التعديل");
+                    alert("✅ تم التعديل بنجاح");
                 } else {
-                    const pass = document.getElementById('c-pass').value;
-                    if(!pass) return alert("الباسورد مطلوب");
+                    if(!pass) return alert("مطلوب كلمة مرور للجديد");
                     const cred = await createUserWithEmailAndPassword(auth, data.email, pass);
                     await setDoc(doc(db, "restaurants", uid), {
-                        ownerId: cred.user.uid, logo: "images/logo.png", themeColor: "#FF9F1C", products: [], stats: {views:0}, createdAt: new Date().toISOString(), ...data
+                        ownerId: cred.user.uid, logo: "images/logo.png", themeColor: "#FF9F1C", 
+                        products: [], stats: {views:0}, createdAt: new Date().toISOString(), ...data
                     });
-                    alert("✅ تم الإنشاء");
+                    alert("✅ تم إنشاء المشترك");
                 }
-                closeModal(); loadClients();
+                closeModal(); loadData();
             } catch (e) { alert("خطأ: " + e.message); }
         }
 
         window.openModal = () => {
             document.getElementById('edit-id').value = "";
-            document.getElementById('auth-fields').style.display = 'grid';
+            document.getElementById('modal-title').innerText = "مشترك جديد";
             document.getElementById('c-uid').disabled = false;
-            ['c-name','c-uid','c-email','c-pass','c-expiry'].forEach(i=>document.getElementById(i).value="");
-            document.getElementById('client-modal').style.display = 'flex';
+            ['c-name','c-uid','c-email','c-phone','c-pass','c-expiry'].forEach(i => document.getElementById(i).value="");
+            document.getElementById('modal').style.display = 'flex';
         }
 
         window.editClient = (id) => {
             const c = clients.find(x => x.id === id);
             document.getElementById('edit-id').value = id;
-            document.getElementById('auth-fields').style.display = 'none';
+            document.getElementById('modal-title').innerText = "تعديل: " + c.name;
             document.getElementById('c-uid').value = id;
             document.getElementById('c-uid').disabled = true;
             document.getElementById('c-name').value = c.name;
             document.getElementById('c-email').value = c.email;
-            document.getElementById('c-plan').value = c.plan || 'free'; // 💎 تحديد الباقة الحالية
-            document.getElementById('c-active').value = c.isActive!==false ? 'true' : 'false';
+            document.getElementById('c-phone').value = c.phone || "";
+            document.getElementById('c-plan').value = c.plan || "free";
             document.getElementById('c-expiry').value = c.expiryDate || "";
-            document.getElementById('client-modal').style.display = 'flex';
+            document.getElementById('c-active').value = c.isActive!==false ? "true" : "false";
+            document.getElementById('c-pass').value = ""; // تفريغ الباسورد
+            document.getElementById('modal').style.display = 'flex';
         }
 
-        window.closeModal = () => document.getElementById('client-modal').style.display = 'none';
-        window.deleteClient = async (id) => { if(confirm("حذف؟")) { await deleteDoc(doc(db, "restaurants", id)); loadClients(); } }
-        window.loginAsClient = (id) => { localStorage.setItem('admin_rest_id', id); window.location.href = "client_dashboard.html"; }
-        
-        loadClients();
+        window.showReport = (id) => {
+            const c = clients.find(x => x.id === id);
+            document.getElementById('rep-name').innerText = c.name;
+            document.getElementById('rep-plan').innerText = "Plan: " + (c.plan || "Free").toUpperCase();
+            document.getElementById('rep-views').innerText = c.stats?.views || 0;
+            document.getElementById('rep-prods').innerText = c.products?.length || 0;
+            document.getElementById('report-modal').style.display = 'flex';
+        }
+
+        window.searchTable = () => {
+            const q = document.getElementById('search').value.toLowerCase();
+            renderTable(clients.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q)));
+        }
+
+        window.closeModal = () => { document.getElementById('modal').style.display='none'; }
+        window.deleteClient = async (id) => { if(confirm("حذف نهائي؟")) { await deleteDoc(doc(db, "restaurants", id)); loadData(); } }
+        window.clientLogin = (id) => { localStorage.setItem('admin_rest_id', id); window.location.href = "client_dashboard.html"; }
+        window.copyLink = (id) => { navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname.replace('super_admin.html', '')}menu.html?id=${id}`); alert("تم النسخ!"); }
+
+        loadData();
     </script>
 </body>
 </html>
