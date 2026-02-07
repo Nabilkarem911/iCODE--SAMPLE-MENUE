@@ -30,31 +30,16 @@
     
     <style>
         body { font-family: 'Tajawal', sans-serif; overflow: hidden; }
-        
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f3f4f6; }
         .dark ::-webkit-scrollbar-track { background: #181b21; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
-        
-        /* Navigation Active State */
         .nav-link { transition: all 0.2s ease-in-out; cursor: pointer; }
         .nav-link:hover { background-color: rgba(59, 130, 246, 0.05); color: #3b82f6; }
         .nav-link.active { background: rgba(59,130,246,0.1); border-right: 3px solid #3b82f6; color: #3b82f6; }
-        
-        /* Upload Box Fix - ده هيحل مشكلة زرار الصور */
         .upload-box { border: 2px dashed #d1d5db; transition: 0.3s; position: relative; background: #f9fafb; cursor: pointer; }
         .dark .upload-box { border-color: #374151; background: #1f2937; }
-        .upload-box:hover { border-color: #3b82f6; }
-        
-        /* جعل زر الرفع يغطي المنطقة بالكامل */
-        .file-input-overlay { 
-            position: absolute; 
-            top: 0; left: 0; width: 100%; height: 100%; 
-            opacity: 0; 
-            cursor: pointer; 
-            z-index: 50; 
-        }
+        .file-input-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 50; }
     </style>
 </head>
 <body class="flex h-screen bg-gray-50 dark:bg-dark text-gray-800 dark:text-gray-100 transition-colors duration-300">
@@ -62,35 +47,35 @@
     <aside class="w-72 bg-white dark:bg-surface border-l border-gray-200 dark:border-gray-800 flex flex-col z-30 shadow-xl hidden md:flex transition-all">
         <div class="p-6 border-b border-gray-100 dark:border-gray-800 text-center">
             <div class="relative w-20 h-20 mx-auto mb-3">
-                <img id="dash-logo" src="images/logo.png" class="w-full h-full rounded-2xl object-cover border dark:border-gray-700 p-1 bg-white dark:bg-transparent">
+                <img id="dash-logo" src="images/logo.png" class="w-full h-full rounded-2xl object-cover border dark:border-gray-700 p-1 bg-white dark:bg-transparent" onerror="this.src='https://via.placeholder.com/150'">
             </div>
             <h2 id="dash-name" class="font-bold text-lg truncate">جار التحميل...</h2>
             <span id="plan-badge" class="text-[10px] bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full uppercase font-bold text-gray-500">...</span>
         </div>
 
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-            <button onclick="app.switchTab('home', this)" class="nav-link active w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm">
+            <button onclick="window.app.switchTab('home', this)" class="nav-link active w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm">
                 <i class="fa-solid fa-chart-pie"></i> <span data-i18n="nav_home">نظرة عامة</span>
             </button>
-            <button onclick="app.switchTab('products', this)" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm">
+            <button onclick="window.app.switchTab('products', this)" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm">
                 <i class="fa-solid fa-burger"></i> <span data-i18n="nav_products">المنتجات</span>
             </button>
-            <button onclick="app.switchTab('settings', this)" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm">
+            <button onclick="window.app.switchTab('settings', this)" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm">
                 <i class="fa-solid fa-gear"></i> <span data-i18n="nav_settings">الإعدادات</span>
             </button>
-            <button onclick="app.switchTab('qr', this)" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm">
+            <button onclick="window.app.switchTab('qr', this)" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm">
                 <i class="fa-solid fa-qrcode"></i> <span data-i18n="nav_qr">الباركود</span>
             </button>
         </nav>
 
         <div class="p-4 border-t border-gray-100 dark:border-gray-800 space-y-2">
             <div class="flex gap-2">
-                <button onclick="app.toggleLang()" class="flex-1 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-bold hover:bg-gray-200 transition">EN/AR</button>
-                <button onclick="app.toggleTheme()" class="flex-1 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-bold hover:bg-gray-200 transition">
+                <button onclick="window.app.toggleLang()" class="flex-1 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-bold hover:bg-gray-200 transition">EN/AR</button>
+                <button onclick="window.app.toggleTheme()" class="flex-1 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-bold hover:bg-gray-200 transition">
                     <i id="theme-icon" class="fa-solid fa-moon"></i>
                 </button>
             </div>
-            <button onclick="app.logout()" class="w-full py-2 bg-red-50 text-red-500 dark:bg-red-900/10 dark:text-red-400 rounded-lg text-xs font-bold hover:bg-red-100 transition">
+            <button onclick="window.app.logout()" class="w-full py-2 bg-red-50 text-red-500 dark:bg-red-900/10 dark:text-red-400 rounded-lg text-xs font-bold hover:bg-red-100 transition">
                 <i class="fa-solid fa-sign-out"></i> <span data-i18n="btn_logout">خروج</span>
             </button>
         </div>
@@ -103,10 +88,8 @@
         </div>
 
         <div class="flex-1 overflow-y-auto p-6 md:p-10">
-            
             <div id="tab-home" class="space-y-6">
                 <h1 class="text-3xl font-black mb-6 text-gray-800 dark:text-white" data-i18n="home_title">ملخص الأداء</h1>
-                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white dark:bg-surface p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <div class="flex justify-between mb-4">
@@ -115,7 +98,6 @@
                         </div>
                         <p class="text-3xl font-black text-gray-800 dark:text-white" id="stat-views-count">0</p>
                     </div>
-                    
                     <div class="bg-white dark:bg-surface p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
                         <div class="flex justify-between mb-4">
                             <h3 class="text-gray-500 text-xs font-bold uppercase" data-i18n="stat_products">المنتجات</h3>
@@ -124,14 +106,12 @@
                         <p class="text-3xl font-black text-gray-800 dark:text-white" id="stat-prods-count">0</p>
                         <p class="text-[10px] text-gray-400 mt-1" id="stat-limit">Limit: ...</p>
                     </div>
-
                     <div class="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-6 rounded-2xl shadow-lg">
                         <h3 class="text-xs font-bold uppercase opacity-80 mb-4" data-i18n="stat_plan">باقتك الحالية</h3>
                         <p class="text-2xl font-black mb-1" id="stat-plan-name">...</p>
                         <p class="text-[10px] opacity-80" id="stat-expiry">...</p>
                     </div>
                 </div>
-
                 <div class="bg-white dark:bg-surface p-6 rounded-2xl border border-gray-100 dark:border-gray-800 h-80 shadow-sm">
                     <canvas id="viewsChart"></canvas>
                 </div>
@@ -140,17 +120,15 @@
             <div id="tab-products" class="hidden space-y-6">
                 <div class="flex justify-between items-center">
                     <h1 class="text-2xl font-black text-gray-800 dark:text-white" data-i18n="prods_title">إدارة القائمة</h1>
-                    <button onclick="app.openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-bold text-sm shadow-lg transition">
+                    <button onclick="window.app.openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-bold text-sm shadow-lg transition">
                         <i class="fa-solid fa-plus"></i> <span data-i18n="btn_add_prod">منتج جديد</span>
                     </button>
                 </div>
-                
                 <div id="products-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
             </div>
 
             <div id="tab-settings" class="hidden space-y-6">
                 <h1 class="text-2xl font-black text-gray-800 dark:text-white" data-i18n="settings_title">إعدادات المطعم</h1>
-                
                 <div class="bg-white dark:bg-surface p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm max-w-2xl">
                     <div class="flex items-center gap-6 mb-8">
                         <div class="w-24 h-24 relative group cursor-pointer upload-box rounded-2xl overflow-hidden">
@@ -158,14 +136,13 @@
                             <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10">
                                 <i class="fa-solid fa-camera text-white"></i>
                             </div>
-                            <input type="file" id="logo-input" accept="image/*" class="file-input-overlay" onchange="app.handleLogo(this)">
+                            <input type="file" id="logo-input" accept="image/*" class="file-input-overlay" onchange="window.app.handleLogo(this)">
                         </div>
                         <div>
                             <h3 class="font-bold text-gray-800 dark:text-white" data-i18n="lbl_logo">شعار المطعم</h3>
                             <p class="text-xs text-gray-500">Max 2MB (PNG/JPG)</p>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="lbl_name">اسم المطعم</label>
@@ -176,7 +153,6 @@
                             <input id="set-phone" type="text" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none focus:border-primary dark:text-white">
                         </div>
                     </div>
-
                     <div class="mb-6">
                         <label class="block text-xs font-bold text-gray-500 mb-2" data-i18n="lbl_color">لون الهوية</label>
                         <div class="flex items-center gap-4">
@@ -184,16 +160,13 @@
                             <span id="color-lock" class="text-xs text-red-500 font-bold hidden flex items-center gap-1"><i class="fa-solid fa-lock"></i> <span data-i18n="msg_upgrade">ترقية مطلوبة</span></span>
                         </div>
                     </div>
-
                     <hr class="border-gray-200 dark:border-gray-700 my-6">
-
                     <div class="mb-6">
                         <h3 class="font-bold text-sm mb-4 text-red-400" data-i18n="lbl_security">الأمان</h3>
                         <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="lbl_new_pass">كلمة مرور جديدة</label>
                         <input id="set-pass" type="password" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none focus:border-primary dark:text-white" placeholder="******">
                     </div>
-
-                    <button onclick="app.saveSettings()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition shadow-lg" data-i18n="btn_save">حفظ التغييرات</button>
+                    <button onclick="window.app.saveSettings()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition shadow-lg" data-i18n="btn_save">حفظ التغييرات</button>
                 </div>
             </div>
 
@@ -207,7 +180,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </main>
 
@@ -215,7 +187,7 @@
         <div class="bg-white dark:bg-surface w-full max-w-3xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh]">
             <div class="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
                 <h3 class="text-xl font-bold text-gray-800 dark:text-white" data-i18n="modal_title">بيانات المنتج</h3>
-                <button onclick="app.closeModal()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:text-red-500 transition"><i class="fa-solid fa-times"></i></button>
+                <button onclick="window.app.closeModal()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:text-red-500 transition"><i class="fa-solid fa-times"></i></button>
             </div>
             
             <div class="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -226,7 +198,7 @@
                             <i class="fa-solid fa-cloud-arrow-up text-3xl mb-2 group-hover:scale-110 transition"></i>
                             <span class="text-xs block" data-i18n="lbl_upload">رفع صورة</span>
                         </div>
-                        <input type="file" id="prod-img-input" accept="image/*" class="file-input-overlay" onchange="app.handleProdImg(this)">
+                        <input type="file" id="prod-img-input" accept="image/*" class="file-input-overlay" onchange="window.app.handleProdImg(this)">
                     </div>
                 </div>
 
@@ -247,34 +219,34 @@
             </div>
 
             <div class="p-6 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3">
-                <button onclick="app.closeModal()" class="px-6 py-2 rounded-xl bg-gray-200 dark:bg-gray-800 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-300 transition" data-i18n="btn_cancel">إلغاء</button>
-                <button onclick="app.saveProduct()" class="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-lg transition" data-i18n="btn_save_prod">حفظ المنتج</button>
+                <button onclick="window.app.closeModal()" class="px-6 py-2 rounded-xl bg-gray-200 dark:bg-gray-800 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-300 transition" data-i18n="btn_cancel">إلغاء</button>
+                <button onclick="window.app.saveProduct()" class="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-lg transition" data-i18n="btn_save_prod">حفظ المنتج</button>
             </div>
         </div>
     </div>
 
     <script type="module">
+        // Import updatePassword here
         import { db, auth, doc, getDoc, updateDoc, arrayUnion, updatePassword } from './firebase-config.js';
 
-        // Global App Object (عشان نضمن إن الزراير تشوف الدوال)
+        // Global App Scope
         window.app = {};
 
-        // 1. Check Login
         const restId = localStorage.getItem('admin_rest_id');
         if(!restId) window.location.href = 'index.html';
 
-        // 2. State & Config
         const PLANS = {
             'free': { limit: 5, color: false, name: {ar:'مجانية', en:'Free'} },
             'gold': { limit: 50, color: true, name: {ar:'ذهبية', en:'Gold'} },
             'vip': { limit: 9999, color: true, name: {ar:'مؤسسات', en:'VIP'} }
         };
+
         let currentData = {};
         let currentLang = localStorage.getItem('lang') || 'ar';
         let tempImg = ""; 
         let tempLogo = "";
 
-        // 3. Translations
+        // Translations (Keeping it simple for logic focus)
         const i18n = {
             ar: {
                 nav_home: "نظرة عامة", nav_products: "المنتجات", nav_settings: "الإعدادات", nav_qr: "الباركود", btn_logout: "خروج",
@@ -294,38 +266,36 @@
             }
         };
 
-        // --- Core Functions (Attached to app object) ---
-
+        // Initialize
         app.init = async () => {
-            // Apply Lang & Theme
+            // Language & Theme
             document.documentElement.lang = currentLang;
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             app.applyTrans();
             
-            // Default Light Mode
             if(localStorage.theme === 'dark') document.documentElement.classList.add('dark');
             else document.documentElement.classList.remove('dark');
 
+            // Load Data
             try {
                 const snap = await getDoc(doc(db, "restaurants", restId));
                 if(snap.exists()) {
                     currentData = snap.data();
                     app.renderAll();
                 } else {
-                    alert("No Data! Please Relogin.");
-                    window.location.href = "index.html";
+                    alert("No Data Found");
                 }
-            } catch(e) { 
+            } catch(e) {
                 console.error(e);
-                alert("خطأ في الاتصال: " + e.message); 
+                alert("Error loading data: " + e.message);
             }
-        }
+        };
 
         app.renderAll = () => {
             const plan = PLANS[currentData.plan || 'free'];
             const products = currentData.products || [];
 
-            // Sidebar & Header
+            // Header & Sidebar
             document.getElementById('dash-name').innerText = currentData.name;
             document.getElementById('dash-logo').src = currentData.logo || 'images/logo.png';
             document.getElementById('plan-badge').innerText = plan.name[currentLang];
@@ -336,6 +306,7 @@
             document.getElementById('stat-limit').innerText = `Limit: ${plan.limit}`;
             document.getElementById('stat-plan-name').innerText = plan.name[currentLang];
             
+            // Expiry
             if(currentData.expiryDate) {
                 const days = Math.ceil((new Date(currentData.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
                 document.getElementById('stat-expiry').innerText = days < 0 ? "Expired" : `${days} Days`;
@@ -348,13 +319,13 @@
             // Products Grid
             const grid = document.getElementById('products-grid');
             if(products.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10">لا توجد منتجات حتى الآن</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10">لا توجد منتجات</div>`;
             } else {
                 grid.innerHTML = products.map((p, i) => `
                     <div class="bg-white dark:bg-surface rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden relative group">
-                        <button onclick="app.deleteProd(${i})" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-lg z-20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center shadow-lg cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="window.app.deleteProd(${i})" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-lg z-20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center shadow-lg cursor-pointer"><i class="fa-solid fa-trash"></i></button>
                         <div class="h-40 bg-gray-100 dark:bg-black/20">
-                            <img src="${p.image}" class="w-full h-full object-cover">
+                            <img src="${p.image}" class="w-full h-full object-cover" onerror="this.src='images/logo.png'">
                         </div>
                         <div class="p-4">
                             <h3 class="font-bold mb-1 text-gray-800 dark:text-white">${p.name}</h3>
@@ -381,51 +352,51 @@
                 document.getElementById('color-lock').classList.add('hidden');
             }
 
-            // QR
+            // QR Code
             const url = `${window.location.origin}${window.location.pathname.replace('client_dashboard.html','')}menu.html?id=${restId}`;
             document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
             document.getElementById('menu-link').href = url;
 
-            // Datalist Categories
+            // Categories
             const cats = [...new Set(products.map(p => p.category))];
             document.getElementById('cats-list').innerHTML = cats.map(c => `<option value="${c}">`).join('');
-        }
+        };
 
-        // --- Actions ---
-
+        // Actions attached to window.app
         app.saveProduct = async () => {
             const plan = PLANS[currentData.plan || 'free'];
             const products = currentData.products || [];
             
             if(products.length >= plan.limit) {
-                alert(currentLang==='ar' ? "عفواً، لقد وصلت للحد الأقصى" : "Plan limit reached");
+                alert(currentLang==='ar' ? "الحد الأقصى" : "Limit Reached");
                 return;
             }
 
             const name = document.getElementById('prod-name').value;
             const price = document.getElementById('prod-price').value;
             
-            if(!name || !price) return alert("يرجى كتابة الاسم والسعر");
+            if(!name || !price) return alert("اكتب الاسم والسعر");
 
             const newProd = {
                 name, 
                 price: Number(price),
-                category: document.getElementById('prod-cat').value || "عام",
+                category: document.getElementById('prod-cat').value || "General",
                 calories: document.getElementById('prod-cal').value,
                 description: document.getElementById('prod-desc').value,
                 image: tempImg || "images/logo.png"
             };
 
-            await updateDoc(doc(db, "restaurants", restId), {
-                products: arrayUnion(newProd)
-            });
-            
-            app.closeModal();
-            app.init();
+            try {
+                await updateDoc(doc(db, "restaurants", restId), {
+                    products: arrayUnion(newProd)
+                });
+                app.closeModal();
+                app.init(); // Refresh
+            } catch(e) { alert(e.message); }
         };
 
         app.deleteProd = async (index) => {
-            if(!confirm(currentLang==='ar'?"هل أنت متأكد من الحذف؟":"Are you sure?")) return;
+            if(!confirm("Hapus?")) return;
             const products = currentData.products;
             products.splice(index, 1);
             await updateDoc(doc(db, "restaurants", restId), { products });
@@ -441,17 +412,16 @@
             const updates = { name, phone, themeColor: color };
             if(tempLogo) updates.logo = tempLogo;
 
-            await updateDoc(doc(db, "restaurants", restId), updates);
-
-            if(pass && auth.currentUser) {
-                try {
+            try {
+                await updateDoc(doc(db, "restaurants", restId), updates);
+                
+                if(pass && auth.currentUser) {
                     await updatePassword(auth.currentUser, pass);
-                    alert("تم تحديث كلمة المرور");
-                } catch(e) { console.error(e); }
-            }
-
-            alert("تم الحفظ بنجاح");
-            app.init();
+                    alert("تم تغيير الباسورد");
+                }
+                alert("تم الحفظ");
+                app.init();
+            } catch(e) { alert(e.message); }
         };
 
         app.handleProdImg = (input) => {
@@ -490,17 +460,14 @@
             });
         };
 
-        app.openModal = () => {
-            tempImg = "";
-            document.getElementById('prod-preview').classList.add('hidden');
-            document.querySelectorAll('#modal input').forEach(i => i.value = "");
-            document.getElementById('modal').classList.remove('hidden');
-            document.getElementById('modal').classList.add('flex');
+        app.toggleTheme = () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
         };
-        
-        app.closeModal = () => {
-            document.getElementById('modal').classList.add('hidden');
-            document.getElementById('modal').classList.remove('flex');
+
+        app.logout = () => {
+            localStorage.removeItem('admin_rest_id');
+            window.location.href = 'index.html';
         };
 
         app.switchTab = (id, btn) => {
@@ -510,14 +477,17 @@
             btn.classList.add('active');
         };
 
-        app.logout = () => {
-            localStorage.removeItem('admin_rest_id');
-            window.location.href = 'index.html';
+        app.openModal = () => {
+            tempImg = "";
+            document.getElementById('prod-preview').classList.add('hidden');
+            document.querySelectorAll('#modal input').forEach(i => i.value = "");
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modal').classList.add('flex');
         };
 
-        app.toggleTheme = () => {
-            document.documentElement.classList.toggle('dark');
-            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        app.closeModal = () => {
+            document.getElementById('modal').classList.add('hidden');
+            document.getElementById('modal').classList.remove('flex');
         };
 
         app.renderChart = (total) => {
@@ -528,7 +498,7 @@
                 data: {
                     labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
                     datasets: [{
-                        label: currentLang === 'ar' ? 'الزيارات' : 'Views',
+                        label: 'Views',
                         data: [0, 0, 0, 0, 0, 0, total],
                         borderColor: '#3b82f6',
                         backgroundColor: 'rgba(59,130,246,0.1)',
@@ -540,7 +510,7 @@
             });
         };
 
-        // Start
+        // Start App
         app.init();
     </script>
 </body>
