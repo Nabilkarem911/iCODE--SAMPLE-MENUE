@@ -7,14 +7,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; padding-bottom: 100px; }</style>
+    <style>
+        /* 🎨 هنا السر: بنعرف متغير اسمه --primary */
+        :root { --primary: #FF9F1C; } 
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; padding-bottom: 100px; }
+        
+        /* بنستخدم المتغير ده في الكلاسات الخاصة */
+        .btn-primary { background-color: var(--primary); color: white; }
+        .text-primary { color: var(--primary); }
+        .border-primary { border-color: var(--primary); }
+        .bg-primary-light { background-color: var(--primary); opacity: 0.1; }
+    </style>
 </head>
 <body class="bg-gray-50">
 
-    <div id="loader" class="fixed inset-0 bg-white z-50 flex items-center justify-center"><div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div></div>
+    <div id="loader" class="fixed inset-0 bg-white z-50 flex items-center justify-center"><div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div></div>
 
     <div class="bg-white p-4 sticky top-0 z-40 shadow-sm flex justify-between items-center">
-        <div><h1 id="m-name" class="font-black text-xl">...</h1><p class="text-xs text-gray-400">مرحباً بكم 👋</p></div>
+        <div><h1 id="m-name" class="font-black text-xl">...</h1></div>
         <img id="m-logo" src="images/logo.png" class="w-10 h-10 rounded-lg bg-gray-50 object-contain p-1">
     </div>
 
@@ -22,105 +32,41 @@
 
     <div id="menu-box" class="p-4 space-y-4 min-h-screen"></div>
 
-    <div id="cart-bar" onclick="openCart()" class="fixed bottom-5 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-gray-900 text-white p-3 rounded-xl shadow-2xl flex justify-between items-center cursor-pointer transition transform translate-y-[200%]">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold text-yellow-400" id="cart-qty">0</div>
-            <div><p class="text-xs text-gray-400">الإجمالي</p><p class="font-bold"><span id="cart-total">0</span> ر.س</p></div>
-        </div>
-        <div class="bg-yellow-500 text-black px-4 py-2 rounded-lg font-bold text-sm">عرض السلة</div>
-    </div>
-
-    <div id="cart-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm">
-        <div class="bg-white w-[90%] max-w-md rounded-2xl p-5">
-            <div class="flex justify-between mb-4 border-b pb-2"><h2 class="font-bold text-xl">🛒 السلة</h2><i class="fa-solid fa-times text-gray-400 cursor-pointer" onclick="document.getElementById('cart-modal').style.display='none'"></i></div>
-            <div id="cart-list" class="max-h-60 overflow-y-auto space-y-3 mb-4"></div>
-            <textarea id="cart-note" class="w-full border rounded-lg p-2 text-sm mb-3" placeholder="ملاحظات..."></textarea>
-            <button onclick="checkout()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold flex justify-center gap-2"><span>إرسال واتساب</span> <i class="fa-brands fa-whatsapp"></i></button>
-        </div>
-    </div>
-
     <script type="module">
-        import { db, doc, getDoc, updateDoc } from './firebase-config.js';
-
+        import { db, doc, getDoc } from './firebase-config.js';
         const restId = new URLSearchParams(window.location.search).get('id');
-        let products = [], cart = [], phone = "";
 
         async function init() {
-            if(!restId) return document.body.innerHTML = "<h1 class='text-center mt-20'>الرابط خطأ ❌</h1>";
-            
+            if(!restId) return;
             const snap = await getDoc(doc(db, "restaurants", restId));
             if(snap.exists()) {
                 const data = snap.data();
-                document.title = data.name;
                 document.getElementById('m-name').innerText = data.name;
                 document.getElementById('m-logo').src = data.logo;
-                phone = data.phone;
-                products = data.products || [];
                 
-                // Theme Color
+                // 🎨 السطر السحري: تغيير اللون بناءً على اختيار العميل
                 if(data.themeColor) document.documentElement.style.setProperty('--primary', data.themeColor);
 
-                renderCats();
-                renderMenu(products);
-                updateDoc(doc(db, "restaurants", restId), { "stats.views": (data.stats.views||0)+1 });
-            } else {
-                document.body.innerHTML = "<h1 class='text-center mt-20'>المطعم غير موجود ❌</h1>";
+                renderMenu(data.products || []);
             }
             document.getElementById('loader').style.display = 'none';
         }
-
-        function renderCats() {
-            const cats = [...new Set(products.map(p => p.category))];
-            document.getElementById('cats-box').innerHTML = `<button onclick="filter('all')" class="bg-black text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">الكل</button>` + 
-            cats.map(c => `<button onclick="filter('${c}')" class="bg-gray-100 text-gray-600 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">${c}</button>`).join('');
-        }
-
-        window.filter = (c) => renderMenu(c === 'all' ? products : products.filter(p => p.category === c));
 
         function renderMenu(list) {
             const box = document.getElementById('menu-box');
             if(list.length===0) return box.innerHTML = "<p class='text-center text-gray-400'>لا توجد منتجات</p>";
             box.innerHTML = `<div class="grid grid-cols-2 gap-4">` + list.map(p => `
-                <div class="bg-white rounded-2xl shadow-sm border overflow-hidden" onclick="addToCart('${p.name}', ${p.price})">
+                <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
                     <img src="${p.image}" class="h-32 w-full object-cover" onerror="this.src='images/logo.png'">
                     <div class="p-3">
                         <h3 class="font-bold text-sm mb-1 line-clamp-1">${p.name}</h3>
-                        <div class="flex justify-between items-center"><span class="font-black text-orange-500">${p.price} ر.س</span><div class="bg-orange-100 w-6 h-6 rounded-full flex items-center justify-center text-orange-600 font-bold">+</div></div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-black text-primary">${p.price} ر.س</span>
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center font-bold" style="background-color: var(--primary); color: white;">+</div>
+                        </div>
                     </div>
                 </div>`).join('') + `</div>`;
         }
-
-        window.addToCart = (name, price) => {
-            const ex = cart.find(i => i.name === name);
-            if(ex) ex.qty++; else cart.push({name, price, qty:1});
-            updateCart();
-        }
-
-        function updateCart() {
-            const total = cart.reduce((s, i) => s + (i.price*i.qty), 0);
-            document.getElementById('cart-qty').innerText = cart.length;
-            document.getElementById('cart-total').innerText = total;
-            const bar = document.getElementById('cart-bar');
-            cart.length > 0 ? bar.classList.remove('translate-y-[200%]') : bar.classList.add('translate-y-[200%]');
-
-            document.getElementById('cart-list').innerHTML = cart.map((i, x) => `
-                <div class="flex justify-between items-center border-b pb-2">
-                    <div><p class="font-bold text-sm">${i.name}</p><p class="text-xs text-gray-400">${i.qty} x ${i.price} ر.س</p></div>
-                    <i class="fa-solid fa-trash text-red-500 cursor-pointer" onclick="remItem(${x})"></i>
-                </div>`).join('');
-        }
-
-        window.remItem = (x) => { cart.splice(x, 1); updateCart(); if(cart.length===0) document.getElementById('cart-modal').style.display='none'; }
-        
-        window.checkout = () => {
-            let msg = `مرحباً ${document.title}، طلب جديد:\n`;
-            cart.forEach(i => msg += `▪️ ${i.qty}x ${i.name}\n`);
-            const note = document.getElementById('cart-note').value;
-            if(note) msg += `📝 ملاحظة: ${note}`;
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        window.openCart = () => document.getElementById('cart-modal').style.display='flex';
         init();
     </script>
 </body>
