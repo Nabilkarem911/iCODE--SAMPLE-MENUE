@@ -82,7 +82,7 @@
                 await signInWithEmailAndPassword(auth, email, pass);
 
                 // 2. التوجيه حسب نوع المستخدم
-                if(email === "admin@icode.com") {
+                if(email === "nabilkarem@gmail.com") {
                     window.location.href = "super_admin.html";
                 } else {
                     const q = query(collection(db, "restaurants"), where("email", "==", email));
@@ -112,3 +112,4 @@
     </script>
 </body>
 </html>
+
