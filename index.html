@@ -1,50 +1,235 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="dark">
 <head>
     <meta charset="UTF-8">
-    <title>AI-menu | الدخول الموحد</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-menu | المستقبل للمطاعم الذكية</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Tajawal', sans-serif; background-color: #0f172a; color: white; }</style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#8b5cf6',
+                        dark: '#0f172a',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        tajawal: ['Tajawal', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Tajawal', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .gradient-text { background-clip: text; -webkit-background-clip: text; color: transparent; background-image: linear-gradient(to right, #60a5fa, #a78bfa); }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-light { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(0, 0, 0, 0.05); }
+        
+        /* Smooth Scroll */
+        html { scroll-behavior: smooth; }
+        
+        /* Animations */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+    </style>
 </head>
-<body class="flex flex-col min-h-screen items-center justify-center">
+<body class="bg-light text-gray-800 dark:bg-dark dark:text-white">
 
-    <div class="text-center space-y-6">
-        <img src="images/logo.png" class="w-28 h-28 mx-auto rounded-2xl object-contain bg-white/5 p-2 border border-blue-500/20 shadow-2xl">
-        <h1 class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">AI-menu</h1>
-        <p class="text-gray-400 text-lg">نظام إدارة المطاعم الذكي - الإصدار الاحترافي</p>
-        <button onclick="document.getElementById('login-modal').classList.remove('hidden')" class="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-2xl font-bold text-lg shadow-blue-900/20 shadow-lg transition transform hover:-translate-y-1">تسجيل الدخول</button>
-    </div>
-
-    <div id="login-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 backdrop-blur-sm">
-        <div class="bg-gray-900 p-8 rounded-3xl w-full max-w-md border border-gray-800 shadow-2xl relative">
-            <button onclick="document.getElementById('login-modal').classList.add('hidden')" class="absolute top-5 right-5 text-gray-500 hover:text-white">✕</button>
-            <h2 class="text-2xl font-bold mb-6 text-center">أهلاً بك 👋</h2>
-            
-            <div class="space-y-4">
-                <input type="email" id="email" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition" placeholder="البريد الإلكتروني">
-                <input type="password" id="password" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition" placeholder="كلمة المرور">
+    <nav class="fixed w-full z-50 transition-all duration-300 border-b border-transparent" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg">AI</div>
+                <span class="text-2xl font-black tracking-tighter">AI-menu</span>
             </div>
 
-            <button onclick="login()" id="login-btn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white py-4 rounded-xl font-bold mt-8 transition">دخول آمن</button>
+            <div class="hidden md:flex gap-8 font-bold text-sm">
+                <a href="#hero" class="hover:text-primary transition" data-i18n="nav_home">الرئيسية</a>
+                <a href="#features" class="hover:text-primary transition" data-i18n="nav_features">المميزات</a>
+                <a href="#pricing" class="hover:text-primary transition" data-i18n="nav_pricing">الباقات</a>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-700 transition shadow-sm">
+                    <i id="theme-icon" class="fa-solid fa-moon text-gray-600 dark:text-yellow-400 text-lg"></i>
+                </button>
+
+                <button onclick="toggleLang()" class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-700 transition shadow-sm font-bold text-xs">
+                    <span id="lang-text">EN</span>
+                </button>
+
+                <button onclick="openModal()" class="bg-primary hover:bg-blue-600 text-white px-6 py-2 rounded-xl font-bold text-sm transition shadow-lg shadow-blue-500/30" data-i18n="btn_login">
+                    تسجيل الدخول
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero" class="min-h-screen flex items-center justify-center pt-20 relative overflow-hidden">
+        <div class="absolute top-20 left-20 w-72 h-72 bg-purple-500/20 rounded-full blur-[100px] animate-float"></div>
+        <div class="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] animate-float" style="animation-delay: 2s"></div>
+
+        <div class="max-w-4xl mx-auto text-center px-6 relative z-10">
+            <span class="inline-block py-1 px-3 rounded-full bg-blue-500/10 text-blue-500 font-bold text-xs mb-6 border border-blue-500/20" data-i18n="hero_badge">🚀 الجيل القادم من المطاعم</span>
+            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                <span data-i18n="hero_title1">إدارة مطعمك</span> <br>
+                <span class="gradient-text" data-i18n="hero_title2">أصبحت أذكى</span>
+            </h1>
+            <p class="text-lg text-gray-500 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed" data-i18n="hero_desc">
+                نظام سحابي متكامل يمنحك منيو إلكتروني، باركود QR، استقبال طلبات واتساب، وتقارير مبيعات دقيقة. كل ذلك في منصة واحدة سهلة الاستخدام.
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <button onclick="openModal()" class="bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/20 hover:scale-105 transition transform" data-i18n="btn_start">ابدأ الآن مجاناً</button>
+                <a href="#features" class="bg-white dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-200 dark:border-gray-700 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition" data-i18n="btn_learn">اعرف المزيد</a>
+            </div>
+            
+            <div class="mt-16 relative mx-auto max-w-3xl">
+                <div class="absolute inset-0 bg-gradient-to-t from-light dark:from-dark to-transparent z-20 h-20 bottom-0 top-auto w-full"></div>
+                <img src="https://assets.menux.app/website/home/dashboard-preview.png" class="rounded-2xl border-4 border-gray-200 dark:border-gray-800 shadow-2xl opacity-90 hover:opacity-100 transition duration-500" alt="Dashboard Preview" onerror="this.src='https://via.placeholder.com/800x400/1e293b/ffffff?text=AI-Menu+Dashboard'">
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-20 bg-white dark:bg-gray-900/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-black mb-4" data-i18n="feat_title">كل ما تحتاجه للنجاح</h2>
+                <p class="text-gray-500 dark:text-gray-400" data-i18n="feat_desc">أدوات قوية صممت خصيصاً لزيادة مبيعاتك وتنظيم عملك.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 rounded-3xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-primary transition group">
+                    <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-primary text-2xl mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="f1_title">منيو QR ذكي</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed" data-i18n="f1_desc">وفر تكاليف الطباعة. منيو يفتح فوراً بدون تحميل تطبيقات، مع إمكانية تعديل الأسعار في أي وقت.</p>
+                </div>
+
+                <div class="p-8 rounded-3xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-secondary transition group">
+                    <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center text-secondary text-2xl mb-6 group-hover:scale-110 transition">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="f2_title">طلبات واتساب</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed" data-i18n="f2_desc">استقبل الطلبات مفصلة ومكتوبة مباشرة على واتساب الخاص بالمطعم، لسهولة التواصل والتنفيذ.</p>
+                </div>
+
+                <div class="p-8 rounded-3xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-orange-500 transition group">
+                    <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center text-orange-500 text-2xl mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="f3_title">تقارير وتحليلات</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed" data-i18n="f3_desc">تعرف على عدد الزوار، المنتجات الأكثر طلباً، وأداء مطعمك من خلال لوحة تحكم عصرية.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-black mb-4" data-i18n="price_title">خطط تناسب الجميع</h2>
+                <p class="text-gray-500 dark:text-gray-400" data-i18n="price_desc">ابدأ مجاناً، ورقي باقتك كلما كبر مطعمك.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                
+                <div class="p-8 rounded-3xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition relative">
+                    <h3 class="text-lg font-bold text-gray-500" data-i18n="p1_name">الباقة المجانية</h3>
+                    <div class="my-4"><span class="text-4xl font-black">0</span> <span class="text-sm text-gray-500">ر.س / شهر</span></div>
+                    <p class="text-sm text-gray-400 mb-6" data-i18n="p1_sub">للمشاريع المنزلية الصغيرة</p>
+                    <ul class="space-y-3 mb-8 text-sm">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> <span data-i18n="p1_f1">5 منتجات فقط</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> <span data-i18n="p1_f2">منيو QR أساسي</span></li>
+                        <li class="flex items-center gap-2 text-gray-400"><i class="fa-solid fa-xmark"></i> <span data-i18n="p1_f3">تغيير الألوان</span></li>
+                    </ul>
+                    <button onclick="openModal()" class="w-full py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition" data-i18n="btn_choose">اختيار</button>
+                </div>
+
+                <div class="p-8 rounded-3xl bg-gray-900 dark:bg-gray-700 border-2 border-primary relative transform md:-translate-y-4 shadow-2xl text-white">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary px-4 py-1 rounded-full text-xs font-bold" data-i18n="pop_badge">الأكثر طلباً</div>
+                    <h3 class="text-lg font-bold text-blue-300" data-i18n="p2_name">الباقة الذهبية</h3>
+                    <div class="my-4"><span class="text-5xl font-black">99</span> <span class="text-sm text-gray-300">ر.س / شهر</span></div>
+                    <p class="text-sm text-gray-300 mb-6" data-i18n="p2_sub">للمطاعم والكافيهات</p>
+                    <ul class="space-y-3 mb-8 text-sm">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> <span data-i18n="p2_f1">50 منتج</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> <span data-i18n="p2_f2">تخصيص الألوان والهوية</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> <span data-i18n="p2_f3">دعم فني واتساب</span></li>
+                    </ul>
+                    <button onclick="openModal()" class="w-full py-3 rounded-xl bg-primary hover:bg-blue-600 font-bold transition" data-i18n="btn_choose">اختيار</button>
+                </div>
+
+                <div class="p-8 rounded-3xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition">
+                    <h3 class="text-lg font-bold text-purple-500" data-i18n="p3_name">باقة VIP</h3>
+                    <div class="my-4"><span class="text-4xl font-black">199</span> <span class="text-sm text-gray-500">ر.س / شهر</span></div>
+                    <p class="text-sm text-gray-400 mb-6" data-i18n="p3_sub">للسلاسل والفنادق</p>
+                    <ul class="space-y-3 mb-8 text-sm">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> <span data-i18n="p3_f1">منتجات غير محدودة</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> <span data-i18n="p3_f2">إزالة شعار AI-menu</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> <span data-i18n="p3_f3">مدير حساب خاص</span></li>
+                    </ul>
+                    <button onclick="openModal()" class="w-full py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition" data-i18n="btn_choose">اختيار</button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-10 border-t border-gray-200 dark:border-gray-800 text-center text-gray-500 text-sm">
+        <p>© 2026 AI-menu. All rights reserved.</p>
+    </footer>
+
+    <div id="login-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[100] backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white dark:bg-gray-900 p-8 rounded-3xl w-full max-w-md border border-gray-200 dark:border-gray-700 shadow-2xl relative transform scale-95 transition-transform duration-300" id="modal-content">
+            <button onclick="closeModal()" class="absolute top-5 right-5 text-gray-400 hover:text-red-500 transition"><i class="fa-solid fa-times text-xl"></i></button>
+            
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-primary text-3xl mx-auto mb-4">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <h2 class="text-2xl font-bold dark:text-white" data-i18n="login_title">تسجيل الدخول</h2>
+                <p class="text-gray-500 text-sm" data-i18n="login_sub">لوحة تحكم المشتركين والأدمن</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="lbl_email">البريد الإلكتروني</label>
+                    <input type="email" id="email" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none focus:border-primary dark:text-white transition" dir="ltr">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="lbl_pass">كلمة المرور</label>
+                    <input type="password" id="password" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 outline-none focus:border-primary dark:text-white transition" dir="ltr">
+                </div>
+            </div>
+
+            <button onclick="login()" id="login-btn" class="w-full bg-primary hover:bg-blue-600 text-white py-3 rounded-xl font-bold mt-8 transition shadow-lg" data-i18n="btn_login_submit">دخول</button>
         </div>
     </div>
 
     <script type="module">
         import { auth, signInWithEmailAndPassword, db, collection, query, where, getDocs } from './firebase-config.js';
 
+        // Login Logic
         window.login = async function() {
-            const email = document.getElementById('email').value.toLowerCase().trim();
+            const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
             const btn = document.getElementById('login-btn');
 
-            if(!email || !pass) return alert("الرجاء إدخال البيانات");
-            btn.innerText = "جاري التحقق...";
+            if(!email || !pass) return alert(currentLang === 'ar' ? "البيانات ناقصة" : "Missing credentials");
+            
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
             
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
 
-                // ✅ الإيميل الجديد للسوبر أدمن
                 if(email === "nabilkarem@gmail.com") {
                     window.location.href = "super_admin.html";
                 } else {
@@ -54,22 +239,134 @@
                     if(!querySnapshot.empty) {
                         const docData = querySnapshot.docs[0];
                         if(docData.data().isActive === false) {
-                            alert("⛔ حسابك موقوف! يرجى مراجعة الإدارة.");
-                            btn.innerText = "دخول"; return;
+                            alert(currentLang === 'ar' ? "حسابك موقوف" : "Account suspended");
+                            btn.innerText = currentLang === 'ar' ? "دخول" : "Login"; return;
                         }
                         localStorage.setItem('admin_rest_id', docData.id); 
                         window.location.href = "client_dashboard.html";
                     } else {
-                        alert("بيانات صحيحة لكن لا يوجد مطعم مرتبط!");
-                        btn.innerText = "دخول";
+                        alert(currentLang === 'ar' ? "لا يوجد مطعم مرتبط" : "No restaurant linked");
+                        btn.innerText = currentLang === 'ar' ? "دخول" : "Login";
                     }
                 }
             } catch (error) {
                 console.error(error);
-                alert("❌ خطأ في الدخول: تأكد من الإيميل والباسورد");
-                btn.innerText = "دخول";
+                alert(currentLang === 'ar' ? "خطأ في البيانات" : "Invalid credentials");
+                btn.innerText = currentLang === 'ar' ? "دخول" : "Login";
             }
         }
+    </script>
+
+    <script>
+        // UI & Translations
+        let currentLang = localStorage.getItem('lang') || 'ar';
+        const html = document.documentElement;
+
+        const translations = {
+            ar: {
+                nav_home: "الرئيسية", nav_features: "المميزات", nav_pricing: "الباقات", btn_login: "تسجيل الدخول",
+                hero_badge: "🚀 الجيل القادم من المطاعم", hero_title1: "إدارة مطعمك", hero_title2: "أصبحت أذكى",
+                hero_desc: "نظام سحابي متكامل يمنحك منيو إلكتروني، باركود QR، استقبال طلبات واتساب، وتقارير مبيعات دقيقة.",
+                btn_start: "ابدأ الآن مجاناً", btn_learn: "اعرف المزيد",
+                feat_title: "كل ما تحتاجه للنجاح", feat_desc: "أدوات قوية صممت خصيصاً لزيادة مبيعاتك وتنظيم عملك.",
+                f1_title: "منيو QR ذكي", f1_desc: "وفر تكاليف الطباعة. منيو يفتح فوراً بدون تحميل تطبيقات.",
+                f2_title: "طلبات واتساب", f2_desc: "استقبل الطلبات مفصلة ومكتوبة مباشرة على واتساب.",
+                f3_title: "تقارير وتحليلات", f3_desc: "تعرف على عدد الزوار والمنتجات الأكثر طلباً.",
+                price_title: "خطط تناسب الجميع", price_desc: "ابدأ مجاناً، ورقي باقتك كلما كبر مطعمك.",
+                p1_name: "الباقة المجانية", p1_sub: "للمشاريع المنزلية", p1_f1: "5 منتجات", p1_f2: "منيو QR أساسي", p1_f3: "تغيير الألوان",
+                p2_name: "الباقة الذهبية", p2_sub: "للمطاعم والكافيهات", p2_f1: "50 منتج", p2_f2: "تخصيص الهوية", p2_f3: "دعم فني", pop_badge: "الأكثر طلباً",
+                p3_name: "باقة VIP", p3_sub: "للسلاسل والفنادق", p3_f1: "منتجات غير محدودة", p3_f2: "بدون شعارنا", p3_f3: "مدير حساب",
+                btn_choose: "اختيار", login_title: "تسجيل الدخول", login_sub: "لوحة تحكم المشتركين والأدمن",
+                lbl_email: "البريد الإلكتروني", lbl_pass: "كلمة المرور", btn_login_submit: "دخول"
+            },
+            en: {
+                nav_home: "Home", nav_features: "Features", nav_pricing: "Pricing", btn_login: "Login",
+                hero_badge: "🚀 Next Gen Restaurants", hero_title1: "Manage Your Restaurant", hero_title2: "The Smart Way",
+                hero_desc: "All-in-one cloud system giving you digital menu, QR code, WhatsApp orders, and sales reports.",
+                btn_start: "Start for Free", btn_learn: "Learn More",
+                feat_title: "Everything You Need", feat_desc: "Powerful tools designed to boost sales and organize work.",
+                f1_title: "Smart QR Menu", f1_desc: "Save printing costs. Instant menu access without apps.",
+                f2_title: "WhatsApp Orders", f2_desc: "Receive detailed orders directly on your WhatsApp.",
+                f3_title: "Reports & Analytics", f3_desc: "Track visitors and top-selling products.",
+                price_title: "Plans for Everyone", price_desc: "Start free, upgrade as you grow.",
+                p1_name: "Free Plan", p1_sub: "For home businesses", p1_f1: "5 Products", p1_f2: "Basic QR Menu", p1_f3: "Color Customization",
+                p2_name: "Gold Plan", p2_sub: "For Restaurants", p2_f1: "50 Products", p2_f2: "Full Branding", p2_f3: "Support", pop_badge: "Popular",
+                p3_name: "VIP Plan", p3_sub: "For Hotels & Chains", p3_f1: "Unlimited Products", p3_f2: "No Watermark", p3_f3: "Account Manager",
+                btn_choose: "Select", login_title: "Login", login_sub: "Admin & Client Dashboard",
+                lbl_email: "Email Address", lbl_pass: "Password", btn_login_submit: "Login"
+            }
+        };
+
+        function applyLang() {
+            html.lang = currentLang;
+            html.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('lang-text').innerText = currentLang === 'ar' ? 'EN' : 'AR';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[currentLang][key]) el.innerText = translations[currentLang][key];
+            });
+            localStorage.setItem('lang', currentLang);
+        }
+
+        window.toggleLang = () => {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            applyLang();
+        }
+
+        // Theme Logic
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            document.getElementById('theme-icon').className = "fa-solid fa-sun text-yellow-400 text-lg";
+        } else {
+            html.classList.remove('dark');
+            document.getElementById('theme-icon').className = "fa-solid fa-moon text-gray-600 text-lg";
+        }
+
+        window.toggleTheme = () => {
+            if(html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.theme = 'light';
+                document.getElementById('theme-icon').className = "fa-solid fa-moon text-gray-600 text-lg";
+            } else {
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+                document.getElementById('theme-icon').className = "fa-solid fa-sun text-yellow-400 text-lg";
+            }
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('login-modal');
+        const modalContent = document.getElementById('modal-content');
+        
+        window.openModal = () => {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        window.closeModal = () => {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // Init
+        applyLang();
+        
+        // Sticky Navbar Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if(window.scrollY > 50) {
+                nav.classList.add('bg-white/80', 'dark:bg-dark/80', 'backdrop-blur-md', 'shadow-sm');
+            } else {
+                nav.classList.remove('bg-white/80', 'dark:bg-dark/80', 'backdrop-blur-md', 'shadow-sm');
+            }
+        });
     </script>
 </body>
 </html>
