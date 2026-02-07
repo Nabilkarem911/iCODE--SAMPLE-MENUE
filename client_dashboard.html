@@ -530,7 +530,7 @@
             
             // FIX: Get current path including subfolder if exists
             const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
-            const url = `${currentPath}/menu.html?id=${restId}`;
+            const url = `${currentPath}/landing.html?id=${restId}...`;
             
             document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
             document.getElementById('menu-link').href = url;
@@ -664,7 +664,7 @@
             const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
             
             for(let i=1; i<=count; i++) {
-                const url = `${currentPath}/menu.html?id=${restId}&table=${i}`;
+                const url = `${currentPath}/landing.html?id=${restId}...`;
                 const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
                 container.innerHTML += `<div class="text-center p-3 border rounded-xl bg-gray-50 dark:bg-gray-800"><p class="text-xs font-bold mb-2 dark:text-white">T${i}</p><img src="${qr}" class="w-full rounded mb-2"><a href="${qr}" download="T${i}.png" class="text-[10px] text-blue-600 font-bold">DL</a></div>`;
             }
