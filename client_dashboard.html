@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-menu Dashboard</title>
+    <title>AI-menu Dashboard | لوحة التحكم</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -45,9 +45,18 @@
         .upload-box:hover { border-color: #2563eb; }
         .file-input-overlay { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 10; width: 100%; height: 100%; }
 
+        /* Tags Selection */
         .select-tag { cursor: pointer; user-select: none; transition: 0.2s; border: 1px solid #e5e7eb; background: white; opacity: 0.7; filter: grayscale(1); }
         .dark .select-tag { border-color: #374151; background: #1f2937; color: white; }
         .select-tag.selected { opacity: 1; filter: grayscale(0); border-color: #2563eb; background: rgba(37, 99, 235, 0.1); color: #2563eb; }
+
+        /* Stock Switch */
+        .toggle-checkbox:checked { right: 0; border-color: #10b981; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
+        
+        /* Layout Radio */
+        .layout-radio:checked + div { border-color: #2563eb; background-color: rgba(37, 99, 235, 0.05); }
+        .dark .layout-radio:checked + div { background-color: rgba(37, 99, 235, 0.2); }
     </style>
 </head>
 <body class="flex h-screen bg-gray-50 dark:bg-dark text-gray-800 dark:text-gray-100 transition-colors duration-300">
@@ -202,15 +211,15 @@
                         <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-3" data-i18n="lbl_layout">تخطيط المنيو</label>
                         <div class="grid grid-cols-2 gap-4">
                             <label class="cursor-pointer relative">
-                                <input type="radio" name="layout" value="grid" class="sr-only template-radio" checked>
+                                <input type="radio" name="layout" value="grid" class="sr-only layout-radio" checked>
                                 <div class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <span class="text-sm font-bold dark:text-white" data-i18n="opt_grid">شبكة</span>
+                                    <span class="text-sm font-bold dark:text-white" data-i18n="opt_grid">شبكة (Grid)</span>
                                 </div>
                             </label>
                             <label class="cursor-pointer relative">
-                                <input type="radio" name="layout" value="list" class="sr-only template-radio">
+                                <input type="radio" name="layout" value="list" class="sr-only layout-radio">
                                 <div class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <span class="text-sm font-bold dark:text-white" data-i18n="opt_list">قائمة</span>
+                                    <span class="text-sm font-bold dark:text-white" data-i18n="opt_list">قائمة (List)</span>
                                 </div>
                             </label>
                         </div>
@@ -309,8 +318,24 @@
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="بيض">🥚 <span data-i18n="al_egg">بيض</span></div>
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="ألبان">🥛 <span data-i18n="al_milk">ألبان</span></div>
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="مكسرات">🌰 <span data-i18n="al_nuts">مكسرات</span></div>
+                            <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="فول سوداني">🥜 <span data-i18n="al_peanuts">فول سوداني</span></div>
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="سمسم">🌱 <span data-i18n="al_sesame">سمسم</span></div>
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="بحري">🐟 <span data-i18n="al_fish">بحري</span></div>
+                            <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="صويا">🫘 <span data-i18n="al_soy">صويا</span></div>
+                            <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="كبريتيت">🧪 <span data-i18n="al_sulphites">كبريتيت</span></div>
+                            <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="خردل">🌼 <span data-i18n="al_mustard">خردل</span></div>
+                            <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="ترمس">🌿 <span data-i18n="al_lupin">ترمس</span></div>
+                            <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="رخويات">🐌 <span data-i18n="al_molluscs">رخويات</span></div>
+                            <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="قشريات">🦞 <span data-i18n="al_crustaceans">قشريات</span></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2" data-i18n="lbl_badges">شارات التميز</label>
+                        <div class="flex gap-2">
+                            <div class="select-tag badge-select px-3 py-1 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="new">✨ <span data-i18n="bg_new">جديد</span></div>
+                            <div class="select-tag badge-select px-3 py-1 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="bestseller">🔥 <span data-i18n="bg_best">الأكثر مبيعاً</span></div>
+                            <div class="select-tag badge-select px-3 py-1 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="promo">🏷️ <span data-i18n="bg_offer">عرض</span></div>
                         </div>
                     </div>
                 </div>
@@ -359,9 +384,10 @@
                 title_tables: "إدارة الطاولات", lbl_tables_count: "عدد الطاولات", btn_generate: "توليد",
                 title_settings: "الإعدادات", sec_brand: "البيانات", ph_name: "اسم المطعم", ph_phone: "رقم الواتساب", sec_appearance: "المظهر", lbl_theme: "نمط التصميم", opt_modern: "مودرن", opt_classic: "كلاسيك", opt_minimal: "بسيط", lbl_layout: "تخطيط المنيو", opt_grid: "شبكة", opt_list: "قائمة", lbl_color: "لون الهوية", msg_vip_only: "للباقة الذهبية", sec_security: "الأمان", lbl_pass: "كلمة المرور الجديدة", ph_pass: "اتركه فارغاً لعدم التغيير", btn_save: "حفظ",
                 title_qr: "باركود القائمة", btn_print: "طباعة", btn_open: "فتح",
-                modal_prod: "بيانات المنتج", lbl_p_name: "الاسم", lbl_p_price: "السعر", lbl_p_cal: "السعرات", lbl_p_cat: "القسم", lbl_p_desc: "الوصف", lbl_allergens: "الحساسية", btn_cancel: "إلغاء",
+                modal_prod: "بيانات المنتج", lbl_p_name: "الاسم", lbl_p_price: "السعر", lbl_p_cal: "السعرات", lbl_p_cat: "القسم", lbl_p_desc: "الوصف", lbl_allergens: "الحساسية", lbl_badges: "شارات التميز", btn_cancel: "إلغاء",
                 title_cats: "إدارة الأقسام", btn_close: "إغلاق",
-                al_spicy: "حار", al_gluten: "جلوتين", al_egg: "بيض", al_milk: "ألبان", al_nuts: "مكسرات", al_sesame: "سمسم", al_fish: "بحري"
+                al_spicy: "حار", al_gluten: "جلوتين", al_egg: "بيض", al_milk: "ألبان", al_nuts: "مكسرات", al_peanuts: "فول سوداني", al_sesame: "سمسم", al_fish: "بحري", al_soy: "صويا", al_sulphites: "كبريتيت", al_mustard: "خردل", al_lupin: "ترمس", al_molluscs: "رخويات", al_crustaceans: "قشريات",
+                bg_new: "جديد", bg_best: "الأكثر مبيعاً", bg_offer: "عرض"
             },
             en: {
                 nav_home: "Overview", nav_products: "Products", nav_marketing: "Marketing", nav_tables: "Tables", nav_settings: "Settings", nav_qr: "QR Code", btn_upgrade: "Upgrade", btn_logout: "Logout", mob_header: "Dashboard",
@@ -371,9 +397,10 @@
                 title_tables: "Tables", lbl_tables_count: "Table Count", btn_generate: "Generate",
                 title_settings: "Settings", sec_brand: "Brand Info", ph_name: "Restaurant Name", ph_phone: "WhatsApp Number", sec_appearance: "Appearance", lbl_theme: "Theme Style", opt_modern: "Modern", opt_classic: "Classic", opt_minimal: "Minimal", lbl_layout: "Layout", opt_grid: "Grid", opt_list: "List", lbl_color: "Brand Color", msg_vip_only: "Gold Plan Only", sec_security: "Security", lbl_pass: "New Password", ph_pass: "Leave empty to keep current", btn_save: "Save",
                 title_qr: "Menu QR", btn_print: "Print", btn_open: "Open",
-                modal_prod: "Product Details", lbl_p_name: "Name", lbl_p_price: "Price", lbl_p_cal: "Calories", lbl_p_cat: "Category", lbl_p_desc: "Description", lbl_allergens: "Allergens", btn_cancel: "Cancel",
+                modal_prod: "Product Details", lbl_p_name: "Name", lbl_p_price: "Price", lbl_p_cal: "Calories", lbl_p_cat: "Category", lbl_p_desc: "Description", lbl_allergens: "Allergens", lbl_badges: "Badges", btn_cancel: "Cancel",
                 title_cats: "Manage Categories", btn_close: "Close",
-                al_spicy: "Spicy", al_gluten: "Gluten", al_egg: "Egg", al_milk: "Dairy", al_nuts: "Nuts", al_sesame: "Sesame", al_fish: "Seafood"
+                al_spicy: "Spicy", al_gluten: "Gluten", al_egg: "Egg", al_milk: "Dairy", al_nuts: "Nuts", al_peanuts: "Peanuts", al_sesame: "Sesame", al_fish: "Seafood", al_soy: "Soy", al_sulphites: "Sulphites", al_mustard: "Mustard", al_lupin: "Lupin", al_molluscs: "Molluscs", al_crustaceans: "Crustaceans",
+                bg_new: "New", bg_best: "Bestseller", bg_offer: "Offer"
             }
         };
 
@@ -432,7 +459,13 @@
                             <button onclick="window.app.openModal(${i})" class="bg-white text-blue-600 w-8 h-8 rounded-lg shadow flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="window.app.deleteProd(${i})" class="bg-white text-red-500 w-8 h-8 rounded-lg shadow flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
                         </div>
-                        <div class="h-40 bg-gray-100 dark:bg-black/20 relative">
+                        <div class="absolute top-2 left-2 z-10">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer toggle-checkbox" ${p.stock !== false ? 'checked' : ''} onchange="window.app.toggleStock(${i})">
+                                <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer toggle-label after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                            </label>
+                        </div>
+                        <div class="h-40 bg-gray-100 dark:bg-black/20 relative ${p.stock === false ? 'grayscale opacity-50' : ''}">
                             <img src="${p.image}" class="w-full h-full object-cover">
                         </div>
                         <div class="p-4">
@@ -496,8 +529,9 @@
             
             if(!name || !price) return alert("Required fields missing");
 
-            const allergens = [];
+            const allergens = [], badges = [];
             document.querySelectorAll('.allergen-tag.selected').forEach(t => allergens.push(t.dataset.val));
+            document.querySelectorAll('.badge-select.selected').forEach(t => badges.push(t.dataset.val));
 
             const prodObj = {
                 name, price: Number(price),
@@ -505,7 +539,7 @@
                 calories: document.getElementById('prod-cal').value,
                 description: document.getElementById('prod-desc').value,
                 image: tempImg || (editIndex > -1 ? products[editIndex].image : "images/logo.png"),
-                allergens
+                allergens, badges, stock: true
             };
 
             if(editIndex > -1) products[editIndex] = prodObj;
@@ -523,14 +557,22 @@
             app.init();
         };
 
+        app.toggleStock = async (i) => {
+            const products = currentData.products;
+            products[i].stock = products[i].stock === false ? true : false;
+            await updateDoc(doc(db, "restaurants", restId), { products });
+            app.init();
+        };
+
         // --- Settings & Banners ---
         app.saveSettings = async () => {
+            const layout = document.querySelector('input[name="layout"]:checked').value;
             const updates = { 
                 name: document.getElementById('set-name').value,
                 phone: document.getElementById('set-phone').value,
                 themeColor: document.getElementById('set-color').value,
                 style: document.getElementById('set-style').value,
-                layout: document.querySelector('input[name="layout"]:checked').value
+                layout: layout
             };
             if(tempLogo) updates.logo = tempLogo;
             const pass = document.getElementById('set-pass').value;
@@ -624,6 +666,7 @@
                 document.getElementById('prod-desc').value = p.description || "";
                 if(p.image) { document.getElementById('prod-preview').src = p.image; document.getElementById('prod-preview').classList.remove('hidden'); }
                 if(p.allergens) p.allergens.forEach(val => { const el = document.querySelector(`.allergen-tag[data-val="${val}"]`); if(el) el.classList.add('selected'); });
+                if(p.badges) p.badges.forEach(val => { const el = document.querySelector(`.badge-select[data-val="${val}"]`); if(el) el.classList.add('selected'); });
             } else {
                 document.querySelectorAll('#modal input:not([type=hidden])').forEach(i => i.value="");
                 document.getElementById('prod-desc').value="";
