@@ -2,101 +2,192 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>AI-menu | غرفة العمليات</title>
+    <title>AI-menu | Super Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Tajawal', sans-serif; background-color: #0f172a; color: white; }
         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .card-stat { transition: 0.3s; }
+        .card-stat:hover { transform: translateY(-5px); border-color: #3b82f6; }
     </style>
 </head>
-<body class="p-6 md:p-10 min-h-screen">
+<body class="min-h-screen flex flex-col">
 
-    <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
-            <div>
-                <h1 class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">AI-menu <span class="text-white text-lg font-medium">Admin</span></h1>
-                <p class="text-gray-400 text-sm mt-1">لوحة التحكم المركزية</p>
-            </div>
-            
-            <div class="flex gap-4">
-                <div class="glass px-6 py-3 rounded-2xl text-center">
-                    <p class="text-xs text-gray-400 font-bold">إجمالي المطاعم</p>
-                    <p class="text-2xl font-black text-white" id="total-count">0</p>
-                </div>
-                <div class="glass px-6 py-3 rounded-2xl text-center">
-                    <p class="text-xs text-gray-400 font-bold">المفعلين</p>
-                    <p class="text-2xl font-black text-green-400" id="active-count">0</p>
+    <nav class="border-b border-gray-800 bg-gray-900/50 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-xl font-black">AI</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-none">لوحة القيادة</h1>
+                    <p class="text-xs text-gray-400">Super Admin</p>
                 </div>
             </div>
-
             <div class="flex gap-3">
-                <a href="index.html" class="bg-gray-800 px-4 py-3 rounded-xl text-sm font-bold hover:bg-gray-700 transition">خروج</a>
-                <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-bold transition flex items-center gap-2 shadow-lg shadow-blue-500/20">
+                <a href="index.html" class="bg-gray-800 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-500/20 hover:text-red-400 transition">تسجيل خروج</a>
+                <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-500 px-5 py-2 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg shadow-blue-500/20 transition">
                     <i class="fa-solid fa-plus"></i> مشترك جديد
                 </button>
             </div>
         </div>
+    </nav>
 
-        <div class="bg-gray-800/50 rounded-3xl border border-gray-700/50 overflow-hidden shadow-2xl">
+    <main class="flex-1 p-6 max-w-7xl mx-auto w-full space-y-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="glass p-6 rounded-2xl card-stat">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="p-2 bg-blue-500/20 rounded-lg text-blue-400"><i class="fa-solid fa-store"></i></div>
+                    <span class="text-xs text-gray-400 font-bold bg-gray-800 px-2 py-1 rounded">الكلي</span>
+                </div>
+                <h3 class="text-3xl font-black" id="total-clients">0</h3>
+                <p class="text-xs text-gray-400">مطعم مسجل</p>
+            </div>
+            <div class="glass p-6 rounded-2xl card-stat">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="p-2 bg-green-500/20 rounded-lg text-green-400"><i class="fa-solid fa-check-circle"></i></div>
+                    <span class="text-xs text-gray-400 font-bold bg-gray-800 px-2 py-1 rounded">النشطة</span>
+                </div>
+                <h3 class="text-3xl font-black text-green-400" id="active-clients">0</h3>
+                <p class="text-xs text-gray-400">اشتراك ساري</p>
+            </div>
+            <div class="glass p-6 rounded-2xl card-stat">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="p-2 bg-orange-500/20 rounded-lg text-orange-400"><i class="fa-solid fa-eye"></i></div>
+                    <span class="text-xs text-gray-400 font-bold bg-gray-800 px-2 py-1 rounded">الزيارات</span>
+                </div>
+                <h3 class="text-3xl font-black text-orange-400" id="total-views">0</h3>
+                <p class="text-xs text-gray-400">مشاهدة للمنيوهات</p>
+            </div>
+            <div class="glass p-6 rounded-2xl card-stat">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="p-2 bg-purple-500/20 rounded-lg text-purple-400"><i class="fa-solid fa-burger"></i></div>
+                    <span class="text-xs text-gray-400 font-bold bg-gray-800 px-2 py-1 rounded">المنتجات</span>
+                </div>
+                <h3 class="text-3xl font-black text-purple-400" id="total-products">0</h3>
+                <p class="text-xs text-gray-400">منتج في النظام</p>
+            </div>
+        </div>
+
+        <div class="bg-gray-800/50 border border-gray-700 rounded-2xl overflow-hidden shadow-2xl">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-900/50">
+                <h2 class="font-bold text-lg"><i class="fa-solid fa-users text-gray-400 ml-2"></i>قائمة المشتركين</h2>
+                <input type="text" id="search-box" onkeyup="searchClients()" placeholder="بحث باسم المطعم..." class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm outline-none focus:border-blue-500 w-64">
+            </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-right whitespace-nowrap">
-                    <thead class="bg-gray-900/50 text-gray-400 text-xs uppercase tracking-wider">
+                    <thead class="bg-gray-900 text-gray-500 text-xs uppercase font-bold tracking-wider">
                         <tr>
-                            <th class="p-6">المطعم</th>
-                            <th class="p-6">الاشتراك</th>
-                            <th class="p-6 text-center">الروابط</th>
-                            <th class="p-6 text-center">إجراءات</th>
+                            <th class="p-5">المطعم</th>
+                            <th class="p-5">حالة الاشتراك</th>
+                            <th class="p-5 text-center">الأداء</th>
+                            <th class="p-5 text-center">الروابط</th>
+                            <th class="p-5 text-center">تحكم</th>
                         </tr>
                     </thead>
-                    <tbody id="clients-table" class="text-gray-300 divide-y divide-gray-700/50 font-medium">
-                        <tr><td colspan="4" class="text-center p-10 text-gray-500">جاري تحميل البيانات...</td></tr>
+                    <tbody id="clients-table" class="text-gray-300 divide-y divide-gray-700 font-medium">
+                        <tr><td colspan="5" class="text-center p-10 text-gray-500">جاري تحميل البيانات...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
+    </main>
 
-    <div id="modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 backdrop-blur-sm">
-        <div class="bg-gray-800 p-8 rounded-3xl w-full max-w-lg border border-gray-600 shadow-2xl relative transform transition-all">
-            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
-            <h2 class="text-2xl font-bold mb-6 text-white" id="modal-title">مشترك جديد</h2>
+    <div id="client-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div class="bg-gray-800 w-full max-w-2xl rounded-2xl border border-gray-700 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b border-gray-700 flex justify-between items-center bg-gray-900">
+                <h2 class="text-xl font-bold" id="modal-title">مشترك جديد</h2>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
+            </div>
             
-            <div class="space-y-4">
-                <input type="hidden" id="edit-id"> <div id="auth-fields">
-                    <label class="text-xs text-blue-400 font-bold mb-1 block">بيانات الدخول</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="email" id="c-email" class="bg-gray-900 border border-gray-600 rounded-xl p-3 w-full outline-none focus:border-blue-500 transition" placeholder="الإيميل">
-                        <input type="password" id="c-pass" class="bg-gray-900 border border-gray-600 rounded-xl p-3 w-full outline-none focus:border-blue-500 transition" placeholder="كلمة المرور">
+            <div class="p-6 overflow-y-auto space-y-6">
+                <input type="hidden" id="edit-id">
+                
+                <div>
+                    <h3 class="text-xs text-blue-400 font-bold uppercase mb-3">بيانات الدخول & المطعم</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">اسم المطعم</label>
+                            <input type="text" id="c-name" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">معرف الرابط (Unique ID)</label>
+                            <input type="text" id="c-uid" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">البريد الإلكتروني</label>
+                            <input type="email" id="c-email" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">كلمة المرور (للجديد أو للتغيير)</label>
+                            <input type="text" id="c-pass" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 outline-none focus:border-blue-500" placeholder="اتركه فارغاً لعدم التغيير">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">رقم الهاتف</label>
+                            <input type="text" id="c-phone" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 outline-none focus:border-blue-500">
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="text-xs text-orange-400 font-bold mb-1 block">بيانات المطعم</label>
-                    <input type="text" id="c-name" class="bg-gray-900 border border-gray-600 rounded-xl p-3 w-full outline-none focus:border-orange-500 mb-3 transition" placeholder="اسم المطعم (واو بشاميل)">
-                    <input type="text" id="c-uid" class="bg-gray-900 border border-gray-600 rounded-xl p-3 w-full outline-none focus:border-orange-500 transition" placeholder="معرف الرابط (wow-bechamel)">
-                    <p class="text-[10px] text-gray-500 mt-1">الرابط: menu.html?id=<span id="url-preview">...</span></p>
-                </div>
-
-                <div id="status-field" class="hidden">
-                    <label class="flex items-center gap-3 bg-gray-900 p-3 rounded-xl cursor-pointer">
-                        <input type="checkbox" id="c-active" class="w-5 h-5 accent-green-500">
-                        <span class="text-sm">اشتراك مفعل (Active)</span>
-                    </label>
+                <div class="border-t border-gray-700 pt-4">
+                    <h3 class="text-xs text-purple-400 font-bold uppercase mb-3">تفاصيل الاشتراك</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">تاريخ الانتهاء</label>
+                            <input type="date" id="c-expiry" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 outline-none focus:border-purple-500">
+                        </div>
+                        <div>
+                            <label class="flex items-center gap-3 bg-gray-900 border border-gray-700 p-3 rounded-lg cursor-pointer hover:bg-gray-800 transition">
+                                <input type="checkbox" id="c-active" class="w-5 h-5 accent-green-500">
+                                <div>
+                                    <span class="block text-sm font-bold">اشتراك مفعل</span>
+                                    <span class="text-xs text-gray-500">إلغاء التفعيل يوقف المنيو فوراً</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <button onclick="saveClient()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl font-bold mt-8 transition shadow-lg shadow-blue-600/20" id="save-btn">إنشاء الحساب</button>
+            <div class="p-6 border-t border-gray-700 bg-gray-900 flex gap-3">
+                <button onclick="saveClient()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition">حفظ البيانات</button>
+                <button onclick="closeModal()" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-bold transition">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="stats-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div class="bg-gray-800 w-full max-w-md rounded-2xl border border-gray-700 shadow-2xl overflow-hidden">
+            <div class="p-6 text-center bg-gray-900 border-b border-gray-700">
+                <h2 class="text-xl font-bold" id="stats-title">إحصائيات</h2>
+            </div>
+            <div class="p-6 grid grid-cols-2 gap-4">
+                <div class="bg-gray-700/50 p-4 rounded-xl text-center">
+                    <p class="text-xs text-gray-400 mb-1">عدد الزيارات</p>
+                    <p class="text-3xl font-black text-orange-400" id="stats-views">0</p>
+                </div>
+                <div class="bg-gray-700/50 p-4 rounded-xl text-center">
+                    <p class="text-xs text-gray-400 mb-1">عدد المنتجات</p>
+                    <p class="text-3xl font-black text-blue-400" id="stats-prods">0</p>
+                </div>
+                <div class="col-span-2 bg-gray-700/30 p-4 rounded-xl text-center">
+                    <p class="text-xs text-gray-400 mb-1">تاريخ الانضمام</p>
+                    <p class="font-bold text-white" id="stats-date">-</p>
+                </div>
+            </div>
+            <div class="p-4">
+                <button onclick="document.getElementById('stats-modal').style.display='none'" class="w-full bg-gray-700 text-white py-3 rounded-xl font-bold">إغلاق</button>
+            </div>
         </div>
     </div>
 
     <script type="module">
-        import { db, auth, createUserWithEmailAndPassword, doc, setDoc, updateDoc, deleteDoc, collection, getDocs } from './firebase-config.js';
+        import { db, auth, collection, doc, setDoc, updateDoc, deleteDoc, getDocs, createUserWithEmailAndPassword } from './firebase-config.js';
 
         let clients = [];
 
-        // 1. تحميل وعرض البيانات
+        // --- Load & Render ---
         async function loadClients() {
             const tbody = document.getElementById('clients-table');
             try {
@@ -104,171 +195,183 @@
                 clients = [];
                 snap.forEach(d => clients.push({id: d.id, ...d.data()}));
                 
-                // تحديث العدادات
-                document.getElementById('total-count').innerText = clients.length;
-                document.getElementById('active-count').innerText = clients.filter(c => c.isActive !== false).length;
-
-                renderTable();
-            } catch (e) { 
+                updateGlobalStats();
+                renderTable(clients);
+            } catch (e) {
                 console.error(e);
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center p-8 text-red-400">حدث خطأ في التحميل</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center p-8 text-red-400">فشل تحميل البيانات. تأكد من الإنترنت والصلاحيات.</td></tr>';
             }
         }
 
-        function renderTable() {
-            const tbody = document.getElementById('clients-table');
-            if(clients.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center p-8 text-gray-500">لا يوجد مشتركين حتى الآن</td></tr>';
-                return;
-            }
+        function updateGlobalStats() {
+            document.getElementById('total-clients').innerText = clients.length;
+            document.getElementById('active-clients').innerText = clients.filter(c => c.isActive).length;
+            
+            // حساب إجمالي الزيارات والمنتجات لكل المطاعم
+            const totalViews = clients.reduce((sum, c) => sum + (c.stats?.views || 0), 0);
+            const totalProds = clients.reduce((sum, c) => sum + (c.products?.length || 0), 0);
+            
+            document.getElementById('total-views').innerText = totalViews;
+            document.getElementById('total-products').innerText = totalProds;
+        }
 
-            tbody.innerHTML = clients.map(c => `
-                <tr class="hover:bg-gray-700/30 transition group border-b border-gray-700/50 last:border-0">
-                    <td class="p-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-gray-700 flex items-center justify-center text-xl font-bold text-white uppercase shadow-inner">
-                                ${c.logo && c.logo.length > 20 ? `<img src="${c.logo}" class="w-full h-full object-cover rounded-xl">` : c.name[0]}
+        function renderTable(list) {
+            const tbody = document.getElementById('clients-table');
+            if(list.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center p-8 text-gray-500">لا توجد نتائج</td></tr>'; return; }
+
+            tbody.innerHTML = list.map(c => {
+                // حساب الأيام المتبقية
+                let expiryStatus = '<span class="text-gray-600 text-[10px]">غير محدد</span>';
+                if (c.expiryDate) {
+                    const diff = Math.ceil((new Date(c.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+                    expiryStatus = diff < 0 
+                        ? `<span class="text-red-400 text-[10px] font-bold">منتهي (${Math.abs(diff)} يوم)</span>` 
+                        : `<span class="text-green-400 text-[10px] font-bold">باقي ${diff} يوم</span>`;
+                }
+
+                return `
+                <tr class="hover:bg-gray-700/20 transition border-b border-gray-700/50 last:border-0 group">
+                    <td class="p-5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center text-lg font-bold text-white uppercase border border-gray-700">
+                                ${c.logo && c.logo.length > 20 ? `<img src="${c.logo}" class="w-full h-full object-cover rounded-lg">` : c.name[0]}
                             </div>
                             <div>
-                                <p class="font-bold text-white text-lg">${c.name}</p>
-                                <p class="text-xs text-gray-500 font-mono">ID: ${c.id}</p>
-                                <p class="text-xs text-blue-400">${c.email}</p>
+                                <p class="font-bold text-white text-sm">${c.name}</p>
+                                <p class="text-[10px] text-blue-400">${c.email}</p>
                             </div>
                         </div>
                     </td>
-                    <td class="p-6">
-                        <span class="${c.isActive !== false ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'} border px-3 py-1 rounded-full text-xs font-bold flex w-fit items-center gap-2">
-                            <span class="w-2 h-2 rounded-full ${c.isActive !== false ? 'bg-green-500' : 'bg-red-500'}"></span>
-                            ${c.isActive !== false ? 'نشط' : 'متوقف'}
-                        </span>
-                    </td>
-                    <td class="p-6 text-center">
-                        <div class="flex justify-center gap-2">
-                            <a href="menu.html?id=${c.id}" target="_blank" class="bg-gray-700 p-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-600 transition tooltip" title="مشاهدة المنيو"><i class="fa-solid fa-eye"></i></a>
-                            <button onclick="copyLink('${c.id}')" class="bg-gray-700 p-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-600 transition" title="نسخ الرابط"><i class="fa-solid fa-link"></i></button>
-                            <button onclick="loginAsClient('${c.id}')" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3 rounded-lg hover:bg-blue-600 hover:text-white transition text-xs font-bold flex items-center gap-2">
-                                <i class="fa-solid fa-user-gear"></i> إدارة المنيو
-                            </button>
+                    <td class="p-5">
+                        <div class="flex flex-col gap-1">
+                            <span class="${c.isActive ? 'text-green-400' : 'text-red-400'} text-xs font-bold flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full ${c.isActive ? 'bg-green-500' : 'bg-red-500'}"></span>
+                                ${c.isActive ? 'نشط' : 'متوقف'}
+                            </span>
+                            ${expiryStatus}
                         </div>
                     </td>
-                    <td class="p-6 text-center">
-                        <div class="flex justify-center gap-2 opacity-60 group-hover:opacity-100 transition">
-                            <button onclick="editClient('${c.id}')" class="w-9 h-9 rounded-lg bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500 hover:text-white transition"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteClient('${c.id}')" class="w-9 h-9 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition"><i class="fa-solid fa-trash"></i></button>
+                    <td class="p-5 text-center">
+                        <button onclick="showStats('${c.id}')" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1 rounded text-xs transition border border-gray-700">
+                            <i class="fa-solid fa-chart-simple ml-1"></i> تقرير
+                        </button>
+                    </td>
+                    <td class="p-5 text-center">
+                        <div class="flex justify-center gap-2">
+                            <a href="menu.html?id=${c.id}" target="_blank" class="text-gray-400 hover:text-white transition" title="فتح المنيو"><i class="fa-solid fa-up-right-from-square"></i></a>
+                            <button onclick="copyLink('${c.id}')" class="text-gray-400 hover:text-white transition" title="نسخ الرابط"><i class="fa-solid fa-link"></i></button>
+                        </div>
+                    </td>
+                    <td class="p-5 text-center">
+                        <div class="flex justify-center gap-2">
+                            <button onclick="editClient('${c.id}')" class="bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white p-2 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="loginAsClient('${c.id}')" class="bg-purple-600/20 text-purple-400 hover:bg-purple-600 hover:text-white p-2 rounded-lg transition" title="دخول كعميل"><i class="fa-solid fa-user-gear"></i></button>
+                            <button onclick="deleteClient('${c.id}')" class="bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white p-2 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
         }
 
-        // 2. الحفظ (إنشاء أو تعديل)
+        // --- Actions ---
         window.saveClient = async () => {
             const editId = document.getElementById('edit-id').value;
             const name = document.getElementById('c-name').value;
             const uid = document.getElementById('c-uid').value;
-            
-            if(!name || !uid) return alert("الرجاء إكمال البيانات الأساسية");
+            const email = document.getElementById('c-email').value;
+            const phone = document.getElementById('c-phone').value;
+            const expiry = document.getElementById('c-expiry').value;
+            const isActive = document.getElementById('c-active').checked;
+            const pass = document.getElementById('c-pass').value;
+
+            if(!name || !uid || !email) return alert("البيانات الأساسية مطلوبة (الاسم، المعرف، الإيميل)");
 
             try {
-                if(editId) {
-                    // --- تعديل ---
-                    const isActive = document.getElementById('c-active').checked;
-                    await updateDoc(doc(db, "restaurants", editId), {
-                        name: name,
-                        isActive: isActive
-                    });
-                    alert("✅ تم تعديل البيانات بنجاح");
-                } else {
-                    // --- إنشاء جديد ---
-                    const email = document.getElementById('c-email').value;
-                    const pass = document.getElementById('c-pass').value;
-                    if(!email || !pass) return alert("الرجاء إدخال الإيميل والباسورد");
+                // البيانات المشتركة للتحديث والإنشاء
+                const clientData = {
+                    name, email, phone, expiryDate: expiry, isActive,
+                    // بنحفظ الباسورد في الداتابيز عشان الأدمن يعرفه (في الأنظمة الحقيقية لا يفضل، لكن هنا لسهولة الإدارة ليك)
+                    ...(pass && { adminKnownPass: pass }) 
+                };
 
+                if(editId) {
+                    // Update
+                    await updateDoc(doc(db, "restaurants", editId), clientData);
+                    // ملحوظة: تغيير الإيميل/الباسورد في الـ Auth بيحتاج Cloud Functions، هنا هنغير في الداتابيز بس كمرجع
+                    alert("✅ تم تحديث بيانات السجل");
+                } else {
+                    // Create
+                    if(!pass) return alert("كلمة المرور مطلوبة للعميل الجديد");
                     const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                    
                     await setDoc(doc(db, "restaurants", uid), {
                         ownerId: cred.user.uid,
-                        name: name,
-                        email: email,
-                        isActive: true, // مفعل افتراضياً
-                        phone: "966500000000",
                         themeColor: "#FF9F1C",
                         logo: "images/logo.png",
                         products: [],
                         stats: { views: 0 },
-                        createdAt: new Date().toISOString()
+                        createdAt: new Date().toISOString(),
+                        ...clientData
                     });
-                    alert("✅ تم إنشاء المشترك بنجاح");
+                    alert("✅ تم إنشاء المشترك");
                 }
                 closeModal();
                 loadClients();
             } catch (e) { alert("خطأ: " + e.message); }
         }
 
-        // 3. التعديل (فتح المودال بالبيانات)
-        window.editClient = (id) => {
-            const client = clients.find(c => c.id === id);
-            if(!client) return;
-
-            // ملء البيانات
-            document.getElementById('edit-id').value = id;
-            document.getElementById('c-name').value = client.name;
-            document.getElementById('c-uid').value = id;
-            document.getElementById('c-uid').disabled = true; // ممنوع تغيير المعرف
-            document.getElementById('c-active').checked = client.isActive !== false;
-
-            // إخفاء حقول الدخول وإظهار حقول الحالة
-            document.getElementById('auth-fields').style.display = 'none';
-            document.getElementById('status-field').style.display = 'block';
-            
-            // تغيير النصوص
-            document.getElementById('modal-title').innerText = "تعديل المشترك";
-            document.getElementById('save-btn').innerText = "حفظ التعديلات";
-            
-            document.getElementById('modal').style.display = 'flex';
-        }
-
-        // 4. الحذف
-        window.deleteClient = async (id) => {
-            if(confirm("⚠️ هل أنت متأكد من حذف هذا المطعم نهائياً؟\nهذا الإجراء لا يمكن التراجع عنه.")) {
-                await deleteDoc(doc(db, "restaurants", id));
-                loadClients();
-            }
-        }
-
-        // 5. الوظائف المساعدة
-        window.openModal = () => {
-            // تصفير المودال للإنشاء الجديد
+        window.openAddModal = () => {
             document.getElementById('edit-id').value = "";
-            document.getElementById('c-name').value = "";
-            document.getElementById('c-uid').value = "";
-            document.getElementById('c-uid').disabled = false;
-            document.getElementById('c-email').value = "";
-            document.getElementById('c-pass').value = "";
-            
-            document.getElementById('auth-fields').style.display = 'block';
-            document.getElementById('status-field').style.display = 'none';
-            
             document.getElementById('modal-title').innerText = "مشترك جديد";
-            document.getElementById('save-btn').innerText = "إنشاء الحساب";
             
-            document.getElementById('modal').style.display = 'flex';
-        }
-        
-        window.closeModal = () => document.getElementById('modal').style.display = 'none';
+            // Reset Fields
+            ['c-name', 'c-uid', 'c-email', 'c-pass', 'c-phone', 'c-expiry'].forEach(id => document.getElementById(id).value = "");
+            document.getElementById('c-active').checked = true;
+            document.getElementById('c-uid').disabled = false; // Allow editing UID for new only
 
-        window.loginAsClient = (id) => {
-            localStorage.setItem('admin_rest_id', id);
-            window.location.href = "client_dashboard.html";
+            document.getElementById('client-modal').style.display = 'flex';
         }
 
-        window.copyLink = (id) => {
-            const link = window.location.origin + window.location.pathname.replace('super_admin.html', '') + `menu.html?id=${id}`;
-            navigator.clipboard.writeText(link);
-            alert("تم نسخ الرابط!");
+        window.editClient = (id) => {
+            const c = clients.find(x => x.id === id);
+            if(!c) return;
+
+            document.getElementById('edit-id').value = id;
+            document.getElementById('modal-title').innerText = "تعديل بيانات: " + c.name;
+            
+            document.getElementById('c-name').value = c.name;
+            document.getElementById('c-uid').value = c.id;
+            document.getElementById('c-uid').disabled = true; // Lock UID
+            document.getElementById('c-email').value = c.email;
+            document.getElementById('c-pass').value = ""; // Empty by default
+            document.getElementById('c-pass').placeholder = c.adminKnownPass ? `الحالية: ${c.adminKnownPass}` : "اتركه فارغاً";
+            document.getElementById('c-phone').value = c.phone || "";
+            document.getElementById('c-expiry').value = c.expiryDate || "";
+            document.getElementById('c-active').checked = c.isActive;
+
+            document.getElementById('client-modal').style.display = 'flex';
         }
 
-        // تشغيل
-        document.getElementById('c-uid').addEventListener('input', (e) => document.getElementById('url-preview').innerText = e.target.value);
+        window.showStats = (id) => {
+            const c = clients.find(x => x.id === id);
+            document.getElementById('stats-title').innerText = c.name;
+            document.getElementById('stats-views').innerText = c.stats?.views || 0;
+            document.getElementById('stats-prods').innerText = c.products?.length || 0;
+            document.getElementById('stats-date').innerText = new Date(c.createdAt).toLocaleDateString('ar-EG');
+            document.getElementById('stats-modal').style.display = 'flex';
+        }
+
+        window.searchClients = () => {
+            const term = document.getElementById('search-box').value.toLowerCase();
+            const filtered = clients.filter(c => c.name.toLowerCase().includes(term) || c.email.toLowerCase().includes(term));
+            renderTable(filtered);
+        }
+
+        window.deleteClient = async (id) => { if(confirm("حذف نهائي لهذا المطعم؟")) { await deleteDoc(doc(db, "restaurants", id)); loadClients(); } }
+        window.closeModal = () => document.getElementById('client-modal').style.display = 'none';
+        window.loginAsClient = (id) => { localStorage.setItem('admin_rest_id', id); window.location.href = "client_dashboard.html"; }
+        window.copyLink = (id) => { navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname.replace('super_admin.html', '')}menu.html?id=${id}`); alert("تم النسخ!"); }
+
         loadClients();
     </script>
 </body>
