@@ -12,11 +12,12 @@
         :root {
             --landing-btn-color: #FF9F1C;
             --landing-text-color: #ffffff;
+            --landing-page-bg: #f8fafc;
         }
 
-        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; padding-bottom: 80px; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--landing-page-bg); padding-bottom: 80px; }
         /* Updated .header-bg to handle dynamic backgrounds via JS */
-        .header-bg { background: linear-gradient(135deg, #FF9F1C 0%, #FF5400 100%); border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 15px 35px rgba(255, 84, 0, 0.25); color: white; padding-top: 40px; padding-bottom: 60px; text-align: center; position: relative; }
+        .header-bg { background: linear-gradient(135deg, #FF9F1C 0%, #FF5400 100%); border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 15px 35px rgba(255, 84, 0, 0.25); color: var(--landing-text-color); padding-top: 40px; padding-bottom: 60px; text-align: center; position: relative; }
         
         /* Status Pulse */
         .status-pulse { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; margin-right: 5px; }
@@ -27,8 +28,9 @@
         @keyframes pulse-red { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
         /* Social Heartbeat */
-        .social-beat { animation: heartbeat 1.5s infinite; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
-        .social-beat:hover { animation: none; transform: scale(1.1); }
+        .social-beat { transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .social-beat:hover { transform: scale(1.1); }
+        .social-beat-open { animation: heartbeat 1.5s infinite; }
         @keyframes heartbeat { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
         .logo-container { width: 120px; height: 120px; background: white; border-radius: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin: -60px auto 20px auto; position: relative; z-index: 20; border: 4px solid rgba(255,255,255,0.95); }
@@ -42,6 +44,15 @@
         .accordion-content.open { max-height: 1000px; }
         .rotate-icon { transition: 0.3s; }
         .accordion-btn.active .rotate-icon { transform: rotate(180deg); }
+
+        .btn-landing-primary {
+            background-color: var(--landing-btn-color);
+            color: var(--landing-text-color);
+        }
+        .btn-landing-primary-inner {
+            background-color: rgba(0,0,0,0.2);
+            border-color: rgba(255,255,255,0.2);
+        }
     </style>
 </head>
 <body>
@@ -49,7 +60,7 @@
     <div class="overlay" onclick="toggleSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <h2 class="text-xl font-bold mb-6 text-gray-800" data-i18n="menu">القائمة</h2>
-        <a id="side-login" href="login.html" class="block bg-orange-500 text-white text-center py-3 rounded-xl font-bold mb-4 shadow-lg hover:bg-orange-600 transition" data-i18n="login">تسجيل الدخول</a>
+        <a id="side-login" href="login.html" class="block text-center py-3 rounded-xl font-bold mb-4 shadow-lg hover:opacity-90 transition btn-landing-primary" data-i18n="login">تسجيل الدخول</a>
         <button onclick="toggleSidebar()" class="block w-full text-center py-3 border rounded-xl font-bold text-gray-600" data-i18n="close">إغلاق</button>
     </div>
 
@@ -69,7 +80,6 @@
         <div class="mt-4">
             <h1 class="text-3xl font-black mb-1 drop-shadow-md" id="rest-name">...</h1>
             <p class="text-xs opacity-90 font-light" id="rest-desc">...</p>
-            <p id="rest-hours" class="text-xs opacity-90 font-light mt-1"></p>
         </div>
     </header>
 
@@ -78,15 +88,24 @@
     </div>
 
     <main class="px-6 space-y-5">
-        <a id="menu-btn" href="#" class="group block w-full bg-gray-900 text-white rounded-[22px] p-1 shadow-xl transform transition active:scale-95">
-            <div class="bg-gray-800 rounded-[20px] p-5 flex items-center justify-between border border-gray-700">
+        <a id="menu-btn" href="#" class="group block w-full rounded-[22px] p-1 shadow-xl transform transition active:scale-95 btn-landing-primary">
+            <div class="rounded-[20px] p-5 flex items-center justify-between border btn-landing-primary-inner">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition" style="background-color: var(--landing-btn-color); color: var(--landing-text-color);">🍽️</div>
-                    <div><h2 class="text-xl font-bold" data-i18n="food_menu">قائمة الطعام</h2><p class="text-xs text-gray-400" data-i18n="browse_menu">تصفح المنيو واطلب الآن</p></div>
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition bg-white/20 text-white">🍽️</div>
+                    <div><h2 class="text-xl font-bold" data-i18n="food_menu">قائمة الطعام</h2><p class="text-xs opacity-80" data-i18n="browse_menu">تصفح المنيو واطلب الآن</p></div>
                 </div>
-                <div class="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center"><i class="fa-solid fa-arrow-left ltr:rotate-180"></i></div>
+                <div class="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white"><i class="fa-solid fa-arrow-left ltr:rotate-180"></i></div>
             </div>
         </a>
+
+        <div id="hours-card" class="bg-white rounded-2xl p-4 shadow-sm border flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-green-100 text-green-600">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="flex-1">
+                <p id="rest-hours" class="text-xs text-gray-700"></p>
+            </div>
+        </div>
 
         <div class="flex gap-4">
             <a id="loyalty-btn" href="#" class="flex-1 bg-white p-4 rounded-2xl shadow-sm text-center border block hover:shadow-md transition">
@@ -174,6 +193,11 @@
             else arrow.classList.remove('rotate-180');
         }
 
+        function normalizeUrl(raw) {
+            if (!raw) return '#';
+            return /^https?:\/\//.test(raw) ? raw : `https://${raw}`;
+        }
+
         async function init() {
             updatePageLang();
             const params = new URLSearchParams(window.location.search);
@@ -208,16 +232,36 @@
                     document.documentElement.style.setProperty('--landing-btn-color', btnColor);
                     document.documentElement.style.setProperty('--landing-text-color', txtColor);
 
-                    // --- 2) Header Background Logic ---
+                    // --- 2) Background Logic (Header + Page) ---
                     const headerEl = document.querySelector('.header-bg');
+                    
+                    // Header BG
                     if (data.landingBgType === 'image' && data.landingBgImage) {
                         headerEl.style.background = `linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.8) 100%), url('${data.landingBgImage}')`;
                         headerEl.style.backgroundSize = 'cover';
                         headerEl.style.backgroundPosition = 'center';
                     } else if (data.landingBgType === 'color' && data.landingBgColor) {
-                        headerEl.style.background = `linear-gradient(135deg, ${data.landingBgColor} 0%, #000 100%)`;
+                        if (data.landingBgColor2) {
+                            headerEl.style.background = `linear-gradient(135deg, ${data.landingBgColor} 0%, ${data.landingBgColor2} 100%)`;
+                        } else {
+                            headerEl.style.background = data.landingBgColor;
+                        }
                     } else if (data.themeColor) {
                         headerEl.style.background = `linear-gradient(135deg, ${data.themeColor} 0%, #000 100%)`;
+                    }
+
+                    // Page BG
+                    if (data.pageBgType === 'image' && data.pageBgImage) {
+                        document.body.style.backgroundImage = `url('${data.pageBgImage}')`;
+                        document.body.style.backgroundSize = 'cover';
+                        document.body.style.backgroundAttachment = 'fixed';
+                        document.documentElement.style.setProperty('--landing-page-bg', 'transparent');
+                    } else if (data.pageBgType === 'color' && data.pageBgColor) {
+                        document.body.style.backgroundImage = '';
+                        document.documentElement.style.setProperty('--landing-page-bg', data.pageBgColor);
+                    } else {
+                        document.body.style.backgroundImage = '';
+                        document.documentElement.style.setProperty('--landing-page-bg', '#f8fafc');
                     }
 
                     // --- 3) Check Status & Working Hours Text ---
@@ -225,24 +269,33 @@
                     const hoursText = buildWorkingHoursText(data.openTime, data.closeTime, data.workDays);
                     document.getElementById('rest-hours').innerText = hoursText;
 
-                    // --- 4) Render Branches (with Address and MapURL) ---
+                    // --- 4) Toggle Buttons ---
+                    const showLoyalty = data.showLoyalty !== false;
+                    const showRating = data.showRating !== false;
+                    if (!showLoyalty) document.getElementById('loyalty-btn').classList.add('hidden');
+                    if (!showRating) document.getElementById('rate-btn').classList.add('hidden');
+
+                    // --- 5) Render Branches (with Address and MapURL) ---
                     const container = document.getElementById('branches-container');
                     const branches = data.branches || [];
                     if(branches.length > 0) {
-                        container.innerHTML = branches.map(br => `
+                        container.innerHTML = branches.map(br => {
+                            const rawUrl = br.mapUrl || br.link;
+                            const href = normalizeUrl(rawUrl);
+                            return `
                             <div class="bg-gray-50 p-3 rounded-xl">
                                 <div class="mb-2">
                                     <h4 class="font-bold text-gray-800 text-sm">${br.name}</h4>
                                     ${br.address ? `<p class="text-xs text-gray-500 mt-1">${br.address}</p>` : ''}
                                 </div>
                                 <div class="flex gap-2">
-                                    <a href="${br.mapUrl || br.link || '#'}" target="_blank" class="flex-1 flex items-center justify-center bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">
+                                    <a href="${href}" target="_blank" class="flex-1 flex items-center justify-center bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">
                                         <i class="fa-solid fa-location-dot text-red-500 mx-1"></i> <span data-i18n="loc">${i18n[currentLang].loc}</span>
                                     </a>
                                     ${br.phone ? `<a href="tel:${br.phone}" class="flex-1 flex items-center justify-center bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100"><i class="fa-solid fa-phone text-green-500 mx-1"></i> <span data-i18n="call">${i18n[currentLang].call}</span></a>` : ''}
                                 </div>
                             </div>
-                        `).join('');
+                        `}).join('');
                         document.getElementById('no-branches').classList.add('hidden');
                     } else {
                         document.getElementById('no-branches').classList.remove('hidden');
@@ -266,6 +319,8 @@
         function checkStatus(open, close, workDays) {
             const dot = document.getElementById('status-dot');
             const txt = document.getElementById('status-text');
+            const socialContainer = document.getElementById('socials-container');
+            const icons = document.querySelectorAll('#socials-container .social-beat');
             
             // --- Determine Today's specific times ---
             const daysMap = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
@@ -282,6 +337,7 @@
                         // Closed today
                         dot.className = "status-pulse pulse-red";
                         txt.innerText = i18n[currentLang].closed;
+                        if(icons.length) icons.forEach(el => el.classList.remove('social-beat-open'));
                         return; 
                     }
                     if (dayConfig.open && dayConfig.close) {
@@ -310,9 +366,11 @@
             if(isOpen) {
                 dot.className = "status-pulse pulse-green";
                 txt.innerText = i18n[currentLang].open;
+                if(icons.length) icons.forEach(el => el.classList.add('social-beat-open'));
             } else {
                 dot.className = "status-pulse pulse-red";
                 txt.innerText = i18n[currentLang].closed;
+                if(icons.length) icons.forEach(el => el.classList.remove('social-beat-open'));
             }
         }
 
