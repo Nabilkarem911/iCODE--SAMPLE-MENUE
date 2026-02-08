@@ -293,7 +293,6 @@
             // --- 3. Banners ---
             if(restaurant.banners && restaurant.banners.length > 0) {
                 const bWrapper = document.getElementById('banners-wrapper');
-                // Removed w-80 class, added w-full to make it full width slide
                 bWrapper.innerHTML = restaurant.banners.map(b => `<img src="${b}">`).join('');
                 document.getElementById('banners-area').classList.remove('hidden');
                 
@@ -314,18 +313,26 @@
             app.renderProducts("الكل");
         };
 
+        // fixed banner slider
         app.initBanners = () => {
             const wrapper = document.getElementById('banners-wrapper');
             const slides = wrapper.querySelectorAll('img');
             if (!slides.length) return;
 
+            // 1. Set wrapper width based on number of slides
+            wrapper.style.width = `${slides.length * 100}%`;
+
+            // 2. Set each slide width relative to the wrapper
             slides.forEach(img => {
-                img.classList.add('w-full', 'h-40', 'object-cover', 'flex-shrink-0');
+                img.classList.add('h-40', 'object-cover', 'flex-shrink-0');
+                img.style.width = `${100 / slides.length}%`;
             });
 
             bannerIndex = 0;
             const update = () => {
-                wrapper.style.transform = `translateX(-${bannerIndex * 100}%)`;
+                // 3. Calculate offset based on percentage fraction
+                const offset = (100 / slides.length) * bannerIndex;
+                wrapper.style.transform = `translateX(-${offset}%)`;
             };
 
             const startAuto = () => {
@@ -512,27 +519,40 @@
             document.getElementById('cart-modal').classList.remove('flex');
         };
 
+        // improved confetti
         app.showCelebration = () => {
             const layer = document.getElementById('confetti-layer');
             if (!layer) return;
             layer.innerHTML = '';
             layer.classList.remove('hidden');
 
-            const colors = ['#f97316','#22c55e','#3b82f6','#ec4899','#eab308'];
-            const pieces = 60;
+            // Richer, darker colors
+            const colors = ['#d32f2f', '#1976d2', '#388e3c', '#fbc02d', '#8e24aa', '#e64a19', '#5d4037'];
+            const pieces = 150; // Increased count
+
             for (let i = 0; i < pieces; i++) {
                 const div = document.createElement('div');
                 div.className = 'confetti-piece';
-                div.style.left = Math.random() * 100 + '%';
+                
+                // Varied positions
+                div.style.left = Math.random() * 100 + '%'; 
                 div.style.top = '-10px';
+                
                 div.style.backgroundColor = colors[i % colors.length];
-                div.style.animationDelay = (Math.random() * 0.3) + 's';
+                
+                // Varied speed (longer duration 2s+)
+                div.style.animationDuration = (Math.random() * 1 + 2) + 's';
+                div.style.animationDelay = (Math.random() * 0.5) + 's';
+                
+                // Random rotation
+                div.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
                 layer.appendChild(div);
             }
             setTimeout(() => {
                 layer.classList.add('hidden');
                 layer.innerHTML = '';
-            }, 1700);
+            }, 3000); // Increased timeout to match duration
         };
 
         app.checkout = () => {
