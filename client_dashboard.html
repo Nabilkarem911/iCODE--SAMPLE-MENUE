@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI-menu Dashboard | Pro</title>
     
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -17,9 +17,9 @@
             }
         }
     </script>
-    <link href="[https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap](https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap)" rel="stylesheet">
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css)">
-    <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         body { font-family: 'Tajawal', sans-serif; overflow: hidden; }
@@ -87,9 +87,6 @@
                 <div class="flex flex-wrap justify-between items-center gap-4">
                     <h1 class="text-2xl font-black text-gray-800 dark:text-white" data-i18n="title_products">قائمة الطعام</h1>
                     <div class="flex gap-2">
-                        <button onclick="window.app.openAddonsModal()" class="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl font-bold text-sm shadow-sm">
-                            الإضافات
-                        </button>
                         <button onclick="window.app.openCatModal()" class="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl font-bold text-sm shadow-sm" data-i18n="btn_cats">إدارة الأقسام</button>
                         <button onclick="window.app.openModal()" class="bg-primary text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> <span data-i18n="btn_add">جديد</span></button>
                     </div>
@@ -397,7 +394,7 @@
                                 <input id="set-extra-title-en" type="text" placeholder="English title" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
                                 <input id="set-extra-sub-en" type="text" placeholder="English subtitle" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
                             </div>
-                            <input id="set-extra-link" type="text" placeholder="[https://example.com](https://example.com)" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
+                            <input id="set-extra-link" type="text" placeholder="https://example.com" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
                             <input id="set-extra-icon" type="text" placeholder="🔥 أو أيقونة" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
                         </div>
 
@@ -505,12 +502,6 @@
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="قشريات">🦞 <span data-i18n="al_crustaceans">قشريات</span></div>
                         </div>
                     </div>
-                    
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2">الإضافات المتاحة لهذا المنتج</label>
-                        <div id="prod-addons-container" class="space-y-2 max-h-40 overflow-y-auto p-1 bg-gray-50 dark:bg-black/20 rounded-xl"></div>
-                    </div>
-
                 </div>
             </div>
             <div class="p-5 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3 bg-gray-50 dark:bg-black/20">
@@ -526,25 +517,6 @@
             <h3 class="text-xl font-black mb-6 text-gray-800 dark:text-white" data-i18n="title_cats">إدارة الأقسام</h3>
             <div id="cat-list-container" class="space-y-3 max-h-60 overflow-y-auto mb-4 p-1"></div>
             <button onclick="window.app.closeCatModal()" class="w-full bg-gray-100 dark:bg-gray-800 py-3 rounded-xl font-bold text-sm dark:text-white" data-i18n="btn_close">إغلاق</button>
-        </div>
-    </div>
-
-    <div id="addons-modal" class="fixed inset-0 bg-black/80 z-[60] hidden items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white dark:bg-surface w-full max-w-2xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
-            <div class="p-5 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-black/20">
-                <h3 class="text-lg font-black text-gray-800 dark:text-white">إدارة الإضافات (Global Add-ons)</h3>
-                <button onclick="document.getElementById('addons-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-red-500 hover:text-white transition flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
-            </div>
-            <div class="p-6 overflow-y-auto flex-1 bg-white dark:bg-surface">
-                <div class="flex justify-end mb-4">
-                    <button onclick="window.app.addAddonRow()" class="bg-pink-100 text-pink-600 px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-pink-200 transition">+ إضافة جديدة</button>
-                </div>
-                <div id="addons-modal-list" class="space-y-3"></div>
-            </div>
-            <div class="p-5 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3 bg-gray-50 dark:bg-black/20">
-                <button onclick="document.getElementById('addons-modal').classList.add('hidden')" class="px-6 py-2.5 rounded-xl bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 text-sm font-bold" data-i18n="btn_cancel">إلغاء</button>
-                <button onclick="window.app.saveAddons()" class="px-8 py-2.5 rounded-xl bg-primary hover:bg-blue-600 text-white text-sm font-bold shadow-lg" data-i18n="btn_save">حفظ</button>
-            </div>
         </div>
     </div>
 
@@ -751,8 +723,6 @@
             branches.forEach(br => app.addBranchUI(br.name, br.link, br.phone, br.address, br.mapUrl));
             if(branches.length === 0) app.addBranchUI(); 
 
-            // addons: logic removed from renderAll
-
             document.getElementById('set-tax').value = currentData.tax || "";
             document.getElementById('set-fees').value = currentData.fees || "";
             document.getElementById('set-layout').value = currentData.layout || 'grid';
@@ -865,7 +835,7 @@
             div.className = "social-item flex gap-3 items-center bg-gray-50 dark:bg-black/10 p-3 rounded-xl relative border border-gray-200 dark:border-gray-700";
             div.innerHTML = `
                 <div class="w-12 h-12 relative bg-white dark:bg-black/30 rounded-full overflow-hidden border border-dashed flex-shrink-0 cursor-pointer hover:border-blue-500">
-                    <img src="${icon || '[https://placehold.co/100?text=Icon](https://placehold.co/100?text=Icon)'}" class="social-icon-preview w-full h-full object-cover">
+                    <img src="${icon || 'https://placehold.co/100?text=Icon'}" class="social-icon-preview w-full h-full object-cover">
                     <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="window.app.handleSocialIcon(this)">
                     <input type="hidden" class="social-icon-val" value="${icon}">
                 </div>
@@ -873,81 +843,6 @@
                 <button onclick="this.parentElement.remove()" class="text-red-500 hover:bg-red-50 p-2 rounded-lg"><i class="fa-solid fa-trash"></i></button>
             `;
             container.appendChild(div);
-        };
-
-        // addons: new modal functions
-        app.openAddonsModal = () => {
-            const container = document.getElementById('addons-modal-list');
-            container.innerHTML = '';
-            const addons = currentData.globalAddons || [];
-            addons.forEach(a => app.addAddonRow(a));
-            if(addons.length === 0) app.addAddonRow();
-            document.getElementById('addons-modal').classList.remove('hidden');
-            document.getElementById('addons-modal').classList.add('flex');
-        };
-
-        app.addAddonRow = (addon = null) => {
-            const container = document.getElementById('addons-modal-list');
-            const div = document.createElement('div');
-            div.className = "addon-row bg-gray-50 dark:bg-black/10 p-4 rounded-xl border border-gray-200 dark:border-gray-700 relative";
-            const id = addon ? addon.id : '';
-            const name = addon ? addon.name : '';
-            const price = addon ? addon.price : '';
-            const note = addon ? addon.note : '';
-            const active = addon ? (addon.active !== false) : true;
-
-            div.innerHTML = `
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-2">
-                    <input type="text" class="addon-name bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm" placeholder="اسم الإضافة (جبنة)" value="${name}" oninput="window.app.handleNameInput(this)">
-                    <input type="number" class="addon-price bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm" placeholder="السعر" value="${price}">
-                    <input type="text" class="addon-note col-span-2 md:col-span-1 bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm" placeholder="ملاحظة للعميل" value="${note}">
-                    <div class="flex items-center justify-between col-span-2 md:col-span-1 gap-2">
-                        <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-black/20 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 flex-1">
-                            <input type="checkbox" class="addon-active w-4 h-4 accent-primary" ${active ? 'checked' : ''}>
-                            <span class="text-xs font-bold text-gray-500">تفعيل</span>
-                        </label>
-                        <input type="text" class="addon-id w-20 text-[10px] text-gray-400 bg-transparent text-center" readonly value="${id}" placeholder="ID">
-                    </div>
-                </div>
-                <button onclick="this.parentElement.remove()" class="absolute top-2 left-2 text-red-500 hover:text-red-700"><i class="fa-solid fa-times"></i></button>
-            `;
-            container.appendChild(div);
-        };
-
-        // addons: auto generate slug
-        app.handleNameInput = (input) => {
-            const row = input.closest('.addon-row');
-            const idInput = row.querySelector('.addon-id');
-            // Only generate ID if it's empty (new addon)
-            if(!idInput.value) {
-                const slug = input.value.trim().replace(/\s+/g, '-').toLowerCase();
-                idInput.value = slug;
-            }
-        };
-
-        app.saveAddons = async () => {
-            const globalAddons = [];
-            document.querySelectorAll('.addon-row').forEach(row => {
-                const name = row.querySelector('.addon-name').value;
-                const price = parseFloat(row.querySelector('.addon-price').value) || 0;
-                const note = row.querySelector('.addon-note').value;
-                const active = row.querySelector('.addon-active').checked;
-                let id = row.querySelector('.addon-id').value;
-                
-                if(name && !id) id = name.trim().replace(/\s+/g, '-').toLowerCase(); // fallback
-
-                if(name && id) {
-                    globalAddons.push({ id, name, price, note, active });
-                }
-            });
-
-            try {
-                await updateDoc(doc(db, "restaurants", restId), { globalAddons });
-                currentData.globalAddons = globalAddons; // Update local state
-                document.getElementById('addons-modal').classList.add('hidden');
-                alert(i18n[currentLang]['msg_saved']);
-                // Re-render things if needed, or just keep state
-            } catch(e) { alert(e.message); }
         };
 
         // switched to Cloudinary URL instead of Base64
@@ -1060,8 +955,7 @@
                 showRating: document.getElementById('set-show-rating').checked,
 
                 branches: branches,
-                socialLinks: socialLinks,
-                // addons: removed from saveSettings (handled in saveAddons)
+                socialLinks: socialLinks
             };
 
             // Using Cloudinary URL if temp variables are set
@@ -1098,10 +992,6 @@
             document.querySelectorAll('.allergen-tag.selected').forEach(t => allergens.push(t.dataset.val));
             document.querySelectorAll('.badge-select.selected').forEach(t => badges.push(t.dataset.val));
 
-            // addons: collect selected allowed addons for product
-            const addons = [];
-            document.querySelectorAll('.prod-addon-check:checked').forEach(c => addons.push(c.value));
-
             const prodObj = {
                 name, 
                 price: parseFloat(price) || 0, 
@@ -1110,8 +1000,7 @@
                 description: document.getElementById('prod-desc').value,
                 // Using Cloudinary URL if tempImg is set
                 image: tempImg || (editIndex !== "" ? products[editIndex].image : "images/logo.png"),
-                allergens, badges, stock: true,
-                addons: addons // Save allowed addons
+                allergens, badges, stock: true
             };
 
             if(editIndex !== "") products[editIndex] = prodObj;
@@ -1229,28 +1118,6 @@
             document.querySelectorAll('.select-tag').forEach(t => t.classList.remove('selected'));
             document.getElementById('prod-preview').classList.add('hidden');
             
-            // addons: render checkboxes for product modal
-            const addonContainer = document.getElementById('prod-addons-container');
-            addonContainer.innerHTML = '';
-            const globalAddons = currentData.globalAddons || [];
-            
-            // Generate checkbox for each ACTIVE global addon
-            if(globalAddons.length > 0) {
-                globalAddons.filter(a => a.active !== false).forEach(a => {
-                    addonContainer.innerHTML += `
-                        <label class="flex items-center gap-2 p-2 border-b border-gray-100 dark:border-gray-700 last:border-0 cursor-pointer">
-                            <input type="checkbox" class="prod-addon-check w-4 h-4 accent-primary" value="${a.id}">
-                            <div class="flex-1">
-                                <span class="text-sm font-bold dark:text-white">${a.name}</span>
-                                <span class="text-xs text-gray-500 block">${a.price} ريال</span>
-                            </div>
-                        </label>
-                    `;
-                });
-            } else {
-                addonContainer.innerHTML = '<span class="text-xs text-gray-400 p-2">لا توجد إضافات عامة معرفة في الإعدادات</span>';
-            }
-
             if(editIdx !== "") {
                 const p = currentData.products[editIdx];
                 document.getElementById('prod-name').value = p.name;
@@ -1261,14 +1128,6 @@
                 if(p.image) { document.getElementById('prod-preview').src = p.image; document.getElementById('prod-preview').classList.remove('hidden'); }
                 if(p.allergens) p.allergens.forEach(val => { const el = document.querySelector(`.allergen-tag[data-val="${val}"]`); if(el) el.classList.add('selected'); });
                 if(p.badges) p.badges.forEach(val => { const el = document.querySelector(`.badge-select[data-val="${val}"]`); if(el) el.classList.add('selected'); });
-                
-                // addons: check allowed addons
-                if(p.addons) {
-                    p.addons.forEach(id => {
-                        const box = addonContainer.querySelector(`input[value="${id}"]`);
-                        if(box) box.checked = true;
-                    });
-                }
             } else {
                 document.querySelectorAll('#modal input:not([type=hidden]), #modal textarea').forEach(i => i.value="");
             }
