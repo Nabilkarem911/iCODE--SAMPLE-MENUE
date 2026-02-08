@@ -523,6 +523,31 @@
     <script type="module">
         import { db, auth, doc, getDoc, updateDoc, arrayUnion, updatePassword } from './firebase-config.js';
 
+        // Cloudinary config (unsigned upload)
+        const CLOUD_NAME = "dwlcbj9gx";
+        const UPLOAD_PRESET = "AI-MENU";
+
+        async function uploadImageToCloudinary(file, folder) {
+            const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", UPLOAD_PRESET);
+            if (folder) formData.append("folder", folder); 
+
+            const res = await fetch(url, {
+                method: "POST",
+                body: formData
+            });
+
+            if (!res.ok) {
+                console.error("Cloudinary upload error", await res.text());
+                throw new Error("Cloudinary upload failed");
+            }
+
+            const data = await res.json();
+            return data.secure_url; 
+        }
+
         window.app = {};
         const restId = localStorage.getItem('admin_rest_id');
         if(!restId) window.location.href = 'index.html';
@@ -820,9 +845,31 @@
             container.appendChild(div);
         };
 
-        app.handleMenuBgUpload = (i) => i.files[0] && compressImage(i.files[0], 1920, (r) => { tempMenuBg = r; });
-        app.handleLandingBgUpload = (i) => i.files[0] && compressImage(i.files[0], 1920, (r) => { tempLandingBg = r; });
-        app.handlePageBgUpload = (i) => i.files[0] && compressImage(i.files[0], 1920, (r) => { tempPageBg = r; });
+        // switched to Cloudinary URL instead of Base64
+        app.handleMenuBgUpload = async (i) => {
+            if(i.files[0]) {
+                try {
+                    tempMenuBg = await uploadImageToCloudinary(i.files[0], `restaurants/${restId}/menu`);
+                } catch(e) { console.error(e); }
+            }
+        };
+        // switched to Cloudinary URL instead of Base64
+        app.handleLandingBgUpload = async (i) => {
+            if(i.files[0]) {
+                try {
+                    tempLandingBg = await uploadImageToCloudinary(i.files[0], `restaurants/${restId}/landing`);
+                } catch(e) { console.error(e); }
+            }
+        };
+        // switched to Cloudinary URL instead of Base64
+        app.handlePageBgUpload = async (i) => {
+            if(i.files[0]) {
+                try {
+                    tempPageBg = await uploadImageToCloudinary(i.files[0], `restaurants/${restId}/page`);
+                } catch(e) { console.error(e); }
+            }
+        };
+
         app.handleSocialIcon = (input) => {
             if(input.files && input.files[0]) {
                 compressImage(input.files[0], 800, (res) => {
@@ -911,6 +958,7 @@
                 socialLinks: socialLinks
             };
 
+            // Using Cloudinary URL if temp variables are set
             if(tempLogo) updates.logo = tempLogo;
             if(tempMenuBg) updates.menuBgImage = tempMenuBg;
             if(tempLandingBg) updates.landingBgImage = tempLandingBg;
@@ -950,6 +998,7 @@
                 category: document.getElementById('prod-cat').value || "General",
                 calories: parseInt(document.getElementById('prod-cal').value) || 0,
                 description: document.getElementById('prod-desc').value,
+                // Using Cloudinary URL if tempImg is set
                 image: tempImg || (editIndex !== "" ? products[editIndex].image : "images/logo.png"),
                 allergens, badges, stock: true
             };
@@ -976,10 +1025,16 @@
             await updateDoc(doc(db, "restaurants", restId), { products });
         };
 
-        app.handleBannerUpload = (i) => i.files[0] && compressImage(i.files[0], 800, async (r) => {
-            await updateDoc(doc(db, "restaurants", restId), { banners: arrayUnion(r) });
-            app.init();
-        });
+        // switched to Cloudinary URL instead of Base64
+        app.handleBannerUpload = async (i) => {
+            if(i.files[0]) {
+                try {
+                    const url = await uploadImageToCloudinary(i.files[0], `restaurants/${restId}/banners`);
+                    await updateDoc(doc(db, "restaurants", restId), { banners: arrayUnion(url) });
+                    app.init();
+                } catch(e) { console.error(e); }
+            }
+        };
         app.deleteBanner = async (i) => {
             if(!confirm(i18n[currentLang]['msg_del'])) return;
             const banners = currentData.banners;
@@ -1021,8 +1076,26 @@
                 }
             }
         }
-        app.handleProdImg = (i) => i.files[0] && compressImage(i.files[0], 800, (r) => { tempImg=r; document.getElementById('prod-preview').src=r; document.getElementById('prod-preview').classList.remove('hidden'); });
-        app.handleLogo = (i) => i.files[0] && compressImage(i.files[0], 800, (r) => { tempLogo=r; document.getElementById('preview-logo').src=r; });
+        
+        // switched to Cloudinary URL instead of Base64
+        app.handleProdImg = async (i) => {
+            if(i.files[0]) {
+                try {
+                    tempImg = await uploadImageToCloudinary(i.files[0], `restaurants/${restId}/products`);
+                    document.getElementById('prod-preview').src = tempImg;
+                    document.getElementById('prod-preview').classList.remove('hidden');
+                } catch(e) { console.error(e); }
+            }
+        };
+        // switched to Cloudinary URL instead of Base64
+        app.handleLogo = async (i) => {
+            if(i.files[0]) {
+                try {
+                    tempLogo = await uploadImageToCloudinary(i.files[0], `restaurants/${restId}/logo`);
+                    document.getElementById('preview-logo').src = tempLogo;
+                } catch(e) { console.error(e); }
+            }
+        };
         app.openCatModal = () => {
             const cats = [...new Set((currentData.products || []).map(p => p.category))];
             document.getElementById('cat-list-container').innerHTML = cats.map((c, idx) => `<div class="flex gap-2 items-center mb-2"><input type="text" value="${c}" id="cat-input-${idx}" class="flex-1 bg-gray-50 dark:bg-black/20 dark:text-white border p-2 rounded text-sm"><button onclick="window.app.updateCat('${c}', ${idx})" class="bg-blue-100 text-blue-600 px-3 py-2 rounded text-xs font-bold">Save</button></div>`).join('');
