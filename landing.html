@@ -9,7 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
+        :root {
+            --landing-btn-color: #FF9F1C;
+            --landing-text-color: #ffffff;
+        }
+
         body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; padding-bottom: 80px; }
+        /* Updated .header-bg to handle dynamic backgrounds via JS */
         .header-bg { background: linear-gradient(135deg, #FF9F1C 0%, #FF5400 100%); border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 15px 35px rgba(255, 84, 0, 0.25); color: white; padding-top: 40px; padding-bottom: 60px; text-align: center; position: relative; }
         
         /* Status Pulse */
@@ -63,6 +69,7 @@
         <div class="mt-4">
             <h1 class="text-3xl font-black mb-1 drop-shadow-md" id="rest-name">...</h1>
             <p class="text-xs opacity-90 font-light" id="rest-desc">...</p>
+            <p id="rest-hours" class="text-xs opacity-90 font-light mt-1"></p>
         </div>
     </header>
 
@@ -74,7 +81,7 @@
         <a id="menu-btn" href="#" class="group block w-full bg-gray-900 text-white rounded-[22px] p-1 shadow-xl transform transition active:scale-95">
             <div class="bg-gray-800 rounded-[20px] p-5 flex items-center justify-between border border-gray-700">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 bg-orange-500 rounded-full flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition">🍽️</div>
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition" style="background-color: var(--landing-btn-color); color: var(--landing-text-color);">🍽️</div>
                     <div><h2 class="text-xl font-bold" data-i18n="food_menu">قائمة الطعام</h2><p class="text-xs text-gray-400" data-i18n="browse_menu">تصفح المنيو واطلب الآن</p></div>
                 </div>
                 <div class="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center"><i class="fa-solid fa-arrow-left ltr:rotate-180"></i></div>
@@ -112,6 +119,17 @@
         import { db, doc, getDoc } from './firebase-config.js';
 
         let currentLang = localStorage.getItem('lang') || 'ar';
+        let restaurantData = null;
+        
+        // Helpers for working hours
+        const DAY_LABELS = {
+            sat: "السبت", sun: "الأحد", mon: "الإثنين", tue: "الثلاثاء", wed: "الأربعاء", thu: "الخميس", fri: "الجمعة"
+        };
+        const DAY_LABELS_EN = {
+            sat: "Saturday", sun: "Sunday", mon: "Monday", tue: "Tuesday", wed: "Wednesday", thu: "Thursday", fri: "Friday"
+        };
+        const DAY_ORDER = ["sat", "sun", "mon", "tue", "wed", "thu", "fri"];
+
         const i18n = {
             ar: { 
                 menu: "القائمة", login: "تسجيل الدخول", close: "إغلاق", open: "مفتوح الآن", closed: "مغلق حالياً",
@@ -137,6 +155,11 @@
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             localStorage.setItem('lang', currentLang);
             updatePageLang();
+            if (restaurantData) {
+                checkStatus(restaurantData.openTime, restaurantData.closeTime, restaurantData.workDays);
+                const hoursText = buildWorkingHoursText(restaurantData.openTime, restaurantData.closeTime, restaurantData.workDays);
+                document.getElementById('rest-hours').innerText = hoursText;
+            }
         }
 
         function updatePageLang() {
@@ -173,25 +196,47 @@
                 const snap = await getDoc(doc(db, "restaurants", restId));
                 if(snap.exists()) {
                     const data = snap.data();
+                    restaurantData = data;
                     
                     document.getElementById('rest-name').innerText = data.name || "Restaurant";
                     document.getElementById('rest-desc').innerText = data.desc || "";
                     if(data.logo) document.getElementById('rest-logo').src = data.logo;
-                    if(data.themeColor) document.querySelector('.header-bg').style.background = `linear-gradient(135deg, ${data.themeColor} 0%, #000 100%)`;
 
-                    checkStatus(data.openTime, data.closeTime);
+                    // --- 1) Dynamic Colors ---
+                    const btnColor = data.landingBtnColor || data.themeColor || '#FF9F1C';
+                    const txtColor = data.landingTextColor || '#ffffff';
+                    document.documentElement.style.setProperty('--landing-btn-color', btnColor);
+                    document.documentElement.style.setProperty('--landing-text-color', txtColor);
 
-                    // Render Branches
+                    // --- 2) Header Background Logic ---
+                    const headerEl = document.querySelector('.header-bg');
+                    if (data.landingBgType === 'image' && data.landingBgImage) {
+                        headerEl.style.background = `linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.8) 100%), url('${data.landingBgImage}')`;
+                        headerEl.style.backgroundSize = 'cover';
+                        headerEl.style.backgroundPosition = 'center';
+                    } else if (data.landingBgType === 'color' && data.landingBgColor) {
+                        headerEl.style.background = `linear-gradient(135deg, ${data.landingBgColor} 0%, #000 100%)`;
+                    } else if (data.themeColor) {
+                        headerEl.style.background = `linear-gradient(135deg, ${data.themeColor} 0%, #000 100%)`;
+                    }
+
+                    // --- 3) Check Status & Working Hours Text ---
+                    checkStatus(data.openTime, data.closeTime, data.workDays);
+                    const hoursText = buildWorkingHoursText(data.openTime, data.closeTime, data.workDays);
+                    document.getElementById('rest-hours').innerText = hoursText;
+
+                    // --- 4) Render Branches (with Address and MapURL) ---
                     const container = document.getElementById('branches-container');
                     const branches = data.branches || [];
                     if(branches.length > 0) {
                         container.innerHTML = branches.map(br => `
                             <div class="bg-gray-50 p-3 rounded-xl">
-                                <div class="flex justify-between items-center mb-2">
+                                <div class="mb-2">
                                     <h4 class="font-bold text-gray-800 text-sm">${br.name}</h4>
+                                    ${br.address ? `<p class="text-xs text-gray-500 mt-1">${br.address}</p>` : ''}
                                 </div>
                                 <div class="flex gap-2">
-                                    <a href="${br.link || '#'}" target="_blank" class="flex-1 flex items-center justify-center bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">
+                                    <a href="${br.mapUrl || br.link || '#'}" target="_blank" class="flex-1 flex items-center justify-center bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">
                                         <i class="fa-solid fa-location-dot text-red-500 mx-1"></i> <span data-i18n="loc">${i18n[currentLang].loc}</span>
                                     </a>
                                     ${br.phone ? `<a href="tel:${br.phone}" class="flex-1 flex items-center justify-center bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100"><i class="fa-solid fa-phone text-green-500 mx-1"></i> <span data-i18n="call">${i18n[currentLang].call}</span></a>` : ''}
@@ -218,17 +263,40 @@
             } catch(e) { console.error(e); }
         }
 
-        function checkStatus(open, close) {
+        function checkStatus(open, close, workDays) {
             const dot = document.getElementById('status-dot');
             const txt = document.getElementById('status-text');
             
-            if(!open || !close) return; 
-
+            // --- Determine Today's specific times ---
+            const daysMap = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
             const now = new Date();
+            const todayCode = daysMap[now.getDay()]; // 0=Sun, 6=Sat
+
+            let effectiveOpen = open;
+            let effectiveClose = close;
+
+            if (workDays && workDays.length > 0) {
+                const dayConfig = workDays.find(d => d.day === todayCode);
+                if (dayConfig) {
+                    if (dayConfig.enabled === false) {
+                        // Closed today
+                        dot.className = "status-pulse pulse-red";
+                        txt.innerText = i18n[currentLang].closed;
+                        return; 
+                    }
+                    if (dayConfig.open && dayConfig.close) {
+                        effectiveOpen = dayConfig.open;
+                        effectiveClose = dayConfig.close;
+                    }
+                }
+            }
+
+            if(!effectiveOpen || !effectiveClose) return; 
+
             const currentMins = now.getHours() * 60 + now.getMinutes();
             
-            const [oh, om] = open.split(':').map(Number);
-            const [ch, cm] = close.split(':').map(Number);
+            const [oh, om] = effectiveOpen.split(':').map(Number);
+            const [ch, cm] = effectiveClose.split(':').map(Number);
             const openMins = oh * 60 + om;
             let closeMins = ch * 60 + cm;
 
@@ -246,6 +314,90 @@
                 dot.className = "status-pulse pulse-red";
                 txt.innerText = i18n[currentLang].closed;
             }
+        }
+
+        function formatTime(t, lang) {
+            if (!t) return "";
+            const [hStr, m] = t.split(":");
+            let h = parseInt(hStr, 10);
+            const isPM = h >= 12;
+            if (h === 0) h = 12;
+            else if (h > 12) h -= 12;
+
+            if (lang === 'ar') {
+                const suffix = isPM ? "م" : "ص";
+                return `${h}:${m} ${suffix}`;
+            } else {
+                const suffix = isPM ? "PM" : "AM";
+                return `${h}:${m} ${suffix}`;
+            }
+        }
+
+        function buildWorkingHoursText(openTime, closeTime, workDays) {
+            if (!workDays || workDays.length === 0) {
+                if (!openTime || !closeTime) return "";
+                if (currentLang === 'ar') {
+                    return `طوال الأسبوع من ${formatTime(openTime, 'ar')} إلى ${formatTime(closeTime, 'ar')}`;
+                } else {
+                    return `All week from ${formatTime(openTime, 'en')} to ${formatTime(closeTime, 'en')}`;
+                }
+            }
+
+            // Group days by status and time
+            const groups = [];
+            let currentGroup = null;
+
+            for (const dayCode of DAY_ORDER) {
+                const dayConfig = workDays.find(d => d.day === dayCode);
+                
+                // Defaults if day config missing
+                let isOpen = true;
+                let o = openTime;
+                let c = closeTime;
+
+                if (dayConfig) {
+                    isOpen = dayConfig.enabled;
+                    if (isOpen) {
+                        o = dayConfig.open || openTime;
+                        c = dayConfig.close || closeTime;
+                    }
+                }
+
+                // Create signature to compare
+                const signature = isOpen ? `${o}-${c}` : 'closed';
+
+                if (currentGroup && currentGroup.signature === signature) {
+                    currentGroup.days.push(dayCode);
+                } else {
+                    currentGroup = { signature, isOpen, open: o, close: c, days: [dayCode] };
+                    groups.push(currentGroup);
+                }
+            }
+
+            // Build text from groups
+            const parts = groups.map(g => {
+                if (!g.isOpen) return null; // Optionally hide closed groups or say "Closed"
+                
+                const labels = currentLang === 'ar' ? DAY_LABELS : DAY_LABELS_EN;
+                const oFormatted = formatTime(g.open, currentLang);
+                const cFormatted = formatTime(g.close, currentLang);
+
+                if (currentLang === 'ar') {
+                    if (g.days.length === 1) {
+                        return `يوم ${labels[g.days[0]]} من ${oFormatted} إلى ${cFormatted}`;
+                    } else {
+                        return `من ${labels[g.days[0]]} إلى ${labels[g.days[g.days.length - 1]]} من ${oFormatted} إلى ${cFormatted}`;
+                    }
+                } else {
+                    if (g.days.length === 1) {
+                        return `On ${labels[g.days[0]]} from ${oFormatted} to ${cFormatted}`;
+                    } else {
+                        return `From ${labels[g.days[0]]} to ${labels[g.days[g.days.length - 1]]} from ${oFormatted} to ${cFormatted}`;
+                    }
+                }
+            }).filter(Boolean);
+
+            return parts.join(currentLang === 'ar' ? '، ' : ', ');
         }
 
         init();
