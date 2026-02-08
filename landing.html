@@ -113,12 +113,12 @@
             </div>
         </a>
 
-        <div id="hours-card" class="bg-white rounded-2xl p-4 shadow-sm border flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-green-100 text-green-600">
+        <div id="hours-card" class="card-main rounded-2xl p-4 shadow-sm border flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center card-btn-circle">
                 <i class="fa-solid fa-clock"></i>
             </div>
             <div class="flex-1">
-                <p id="rest-hours" class="text-sm font-semibold text-gray-800"></p>
+                <p id="rest-hours" class="text-sm font-semibold"></p>
             </div>
         </div>
 
@@ -133,17 +133,17 @@
             </a>
         </div>
 
-        <div class="bg-white rounded-2xl p-5 shadow-sm border">
+        <div class="rounded-2xl p-5 shadow-sm border card-main">
             <div class="accordion-btn flex items-center justify-between" onclick="toggleBranches(this)">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-store text-orange-500"></i>
-                    <h3 class="font-bold text-lg text-gray-800" data-i18n="branches">فروعنا</h3>
+                    <h3 class="font-bold text-lg" data-i18n="branches">فروعنا</h3>
                 </div>
-                <i class="fa-solid fa-chevron-down text-gray-400 rotate-icon"></i>
+                <i class="fa-solid fa-chevron-down opacity-50 rotate-icon"></i>
             </div>
             
             <div id="branches-container" class="accordion-content mt-0 space-y-3 pt-2"></div>
-            <p id="no-branches" class="text-center text-gray-400 text-sm hidden mt-2" data-i18n="no_branches">لا توجد فروع مضافة</p>
+            <p id="no-branches" class="text-center text-sm hidden mt-2" data-i18n="no_branches">لا توجد فروع مضافة</p>
         </div>
     </main>
 
@@ -303,6 +303,7 @@
                     if (!showRating) document.getElementById('rate-btn').classList.add('hidden');
 
                     // --- 5) Render Branches (with Address and MapURL) ---
+                    // Updated to use Dynamic Card Colors but Keep Buttons Static
                     const container = document.getElementById('branches-container');
                     const branches = data.branches || [];
                     if(branches.length > 0) {
@@ -310,12 +311,13 @@
                             const rawUrl = br.mapUrl || br.link;
                             const href = normalizeUrl(rawUrl);
                             return `
-                            <div class="bg-gray-50 p-3 rounded-xl">
+                            <div class="p-3 rounded-xl border border-white/10" 
+                                 style="background-color: var(--landing-card-bg); color: var(--landing-card-text);">
                                 <div class="mb-2">
-                                    <h4 class="font-bold text-gray-800 text-sm">${br.name}</h4>
-                                    ${br.address ? `<p class="text-xs text-gray-500 mt-1">${br.address}</p>` : ''}
+                                    <h4 class="font-bold text-sm">${br.name}</h4>
+                                    ${br.address ? `<p class="text-xs opacity-80 mt-1">${br.address}</p>` : ''}
                                 </div>
-                                <div class="flex gap-2">
+                                <div class="flex gap-2 mt-2">
                                     <a href="${href}" target="_blank" class="flex-1 flex items-center justify-center bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">
                                         <i class="fa-solid fa-location-dot text-red-500 mx-1"></i> <span data-i18n="loc">${i18n[currentLang].loc}</span>
                                     </a>
