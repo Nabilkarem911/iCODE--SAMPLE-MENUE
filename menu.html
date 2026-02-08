@@ -69,13 +69,37 @@
         #loader { position: fixed; inset: 0; bg-white; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--brand-color); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Confetti Animation */
+        .confetti-piece {
+            position: absolute;
+            width: 8px;
+            height: 14px;
+            border-radius: 2px;
+            opacity: 0.9;
+            animation: confetti-fall 1.5s ease-out forwards;
+        }
+        @keyframes confetti-fall {
+            0%   { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
 
+    <div id="confetti-layer" class="pointer-events-none fixed inset-0 overflow-hidden z-[100] hidden"></div>
+
     <div id="loader" class="bg-white"><div class="spinner"></div></div>
 
     <header class="menu-header shadow-sm p-4 relative z-20">
+        <div class="flex justify-between items-center mb-3">
+            <a id="back-main" href="#" class="bg-white/20 px-3 py-1 rounded-lg text-xs font-bold text-white backdrop-blur-sm flex items-center gap-1 hover:bg-white/30 transition">
+                <i class="fa-solid fa-arrow-right rtl:rotate-180"></i> القائمة الرئيسية
+            </a>
+            
+            <button onclick="app.toggleLang()" class="bg-white/20 px-3 py-1 rounded-lg text-xs font-bold text-white backdrop-blur-sm">EN/AR</button>
+        </div>
+
         <div class="flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <img id="rest-logo" src="" class="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm hidden">
@@ -84,14 +108,19 @@
                     <p id="table-info" class="text-xs text-gray-200 hidden"><i class="fa-solid fa-chair"></i> طاولة رقم <span id="table-num"></span></p>
                 </div>
             </div>
-            <button onclick="app.toggleLang()" class="bg-white/20 px-3 py-1 rounded-lg text-xs font-bold text-white backdrop-blur-sm">EN/AR</button>
         </div>
         <p id="rest-desc" class="text-xs text-gray-200 mt-2 line-clamp-2"></p>
     </header>
 
     <div id="banners-area" class="p-4 hidden">
-        <div class="flex overflow-x-auto gap-3 no-scrollbar snap-x snap-mandatory" id="banners-wrapper">
+        <div class="relative">
+            <div class="overflow-hidden rounded-xl">
+                <div class="flex transition-transform duration-500 ease-out no-scrollbar" id="banners-wrapper">
+                    </div>
             </div>
+            <button id="banner-prev" type="button" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm hover:bg-black/60 transition">‹</button>
+            <button id="banner-next" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm hover:bg-black/60 transition">›</button>
+        </div>
     </div>
 
     <div class="sticky-cats border-b border-gray-100 shadow-sm">
@@ -154,7 +183,7 @@
                 </div>
 
             <div class="p-6 border-t bg-gray-50 space-y-3">
-                <div class="flex justify-between text-sm text-gray-500"><span>المجموع</span><span id="bill-sub">0</span></div>
+                <div class="flex justify-between text-sm text-gray-500"><span>المجموع (بدون ضريبة)</span><span id="bill-sub">0</span></div>
                 <div class="flex justify-between text-sm text-gray-500"><span>الضريبة (<span id="tax-rate">0</span>%)</span><span id="bill-tax">0</span></div>
                 <div class="flex justify-between text-sm text-gray-500"><span>الخدمة</span><span id="bill-fees">0</span></div>
                 <div class="flex justify-between text-xl font-black text-gray-800 border-t pt-2"><span>الإجمالي</span><span id="bill-total" class="text-brand">0</span></div>
@@ -181,6 +210,10 @@
         let currentModalProd = null;
         let modalQty = 1;
         
+        // Banner slider state
+        let bannerIndex = 0;
+        let bannerTimer = null;
+
         // Params
         const urlParams = new URLSearchParams(window.location.search);
         const restId = urlParams.get('id');
@@ -191,6 +224,11 @@
         app.init = async () => {
             if(!restId) return document.body.innerHTML = "<div class='p-10 text-center'>Error: No Restaurant ID provided in URL</div>";
             
+            // Setup Back Button
+            const backLink = tableNum ? `landing.html?id=${restId}&table=${tableNum}` : `landing.html?id=${restId}`;
+            const backEl = document.getElementById('back-main');
+            if (backEl) backEl.href = backLink;
+
             // Set Lang
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
@@ -255,8 +293,12 @@
             // --- 3. Banners ---
             if(restaurant.banners && restaurant.banners.length > 0) {
                 const bWrapper = document.getElementById('banners-wrapper');
-                bWrapper.innerHTML = restaurant.banners.map(b => `<img src="${b}" class="w-80 h-40 object-cover rounded-xl shadow-sm snap-center flex-shrink-0">`).join('');
+                // Removed w-80 class, added w-full to make it full width slide
+                bWrapper.innerHTML = restaurant.banners.map(b => `<img src="${b}">`).join('');
                 document.getElementById('banners-area').classList.remove('hidden');
+                
+                // Initialize Slider Logic
+                app.initBanners();
             }
 
             // --- 4. Categories ---
@@ -270,6 +312,43 @@
 
             // --- 5. Products ---
             app.renderProducts("الكل");
+        };
+
+        app.initBanners = () => {
+            const wrapper = document.getElementById('banners-wrapper');
+            const slides = wrapper.querySelectorAll('img');
+            if (!slides.length) return;
+
+            slides.forEach(img => {
+                img.classList.add('w-full', 'h-40', 'object-cover', 'flex-shrink-0');
+            });
+
+            bannerIndex = 0;
+            const update = () => {
+                wrapper.style.transform = `translateX(-${bannerIndex * 100}%)`;
+            };
+
+            const startAuto = () => {
+                if (bannerTimer) clearInterval(bannerTimer);
+                bannerTimer = setInterval(() => {
+                    bannerIndex = (bannerIndex + 1) % slides.length;
+                    update();
+                }, 4000);
+            };
+
+            document.getElementById('banner-prev').onclick = () => {
+                bannerIndex = (bannerIndex - 1 + slides.length) % slides.length;
+                update();
+                startAuto();
+            };
+            document.getElementById('banner-next').onclick = () => {
+                bannerIndex = (bannerIndex + 1) % slides.length;
+                update();
+                startAuto();
+            };
+
+            update();
+            startAuto();
         };
 
         app.renderProducts = (cat) => {
@@ -395,14 +474,23 @@
                 </div>
             `).join('');
 
-            // Financials
-            const sub = cart.reduce((a,b) => a+(b.price*b.qty), 0);
+            // Financials Logic (Revised: Price Includes Tax)
+            const gross = cart.reduce((a,b) => a + (b.price * b.qty), 0); // Price already includes tax
             const taxRate = restaurant.tax || 0;
             const fees = restaurant.fees || 0;
-            const taxVal = sub * (taxRate / 100);
-            const total = sub + taxVal + fees;
 
-            document.getElementById('bill-sub').innerText = sub.toFixed(2);
+            let net = gross;
+            let taxVal = 0;
+
+            if (taxRate > 0) {
+                const factor = 1 + (taxRate / 100);
+                net = gross / factor;         // Amount before tax
+                taxVal = gross - net;         // Tax portion inside the price
+            }
+
+            const total = gross + fees;       // Total = Gross Price + Fees (No extra tax added)
+
+            document.getElementById('bill-sub').innerText  = net.toFixed(2);
             document.getElementById('tax-rate').innerText = taxRate;
             document.getElementById('bill-tax').innerText = taxVal.toFixed(2);
             document.getElementById('bill-fees').innerText = fees.toFixed(2);
@@ -424,9 +512,35 @@
             document.getElementById('cart-modal').classList.remove('flex');
         };
 
+        app.showCelebration = () => {
+            const layer = document.getElementById('confetti-layer');
+            if (!layer) return;
+            layer.innerHTML = '';
+            layer.classList.remove('hidden');
+
+            const colors = ['#f97316','#22c55e','#3b82f6','#ec4899','#eab308'];
+            const pieces = 60;
+            for (let i = 0; i < pieces; i++) {
+                const div = document.createElement('div');
+                div.className = 'confetti-piece';
+                div.style.left = Math.random() * 100 + '%';
+                div.style.top = '-10px';
+                div.style.backgroundColor = colors[i % colors.length];
+                div.style.animationDelay = (Math.random() * 0.3) + 's';
+                layer.appendChild(div);
+            }
+            setTimeout(() => {
+                layer.classList.add('hidden');
+                layer.innerHTML = '';
+            }, 1700);
+        };
+
         app.checkout = () => {
             if(cart.length === 0) return;
             
+            // Trigger Animation
+            app.showCelebration();
+
             const name = document.getElementById('cust-name').value;
             const note = document.getElementById('cust-note').value;
             const total = document.getElementById('bill-total').innerText;
@@ -445,7 +559,11 @@
             msg += `💰 *الإجمالي: ${total}*`;
 
             const phone = restaurant.phone || "";
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+            
+            // Delay slightly to let animation start
+            setTimeout(() => {
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+            }, 800);
         };
 
         // --- Helpers ---
