@@ -308,11 +308,31 @@
                         <div id="landing-bg-color-div" class="mb-6">
                             <label class="text-xs font-bold text-gray-500 block mb-1">لون الخلفية</label>
                             <input id="set-landing-color" type="color" class="w-full h-10 rounded cursor-pointer bg-transparent border border-gray-200 p-1">
+                            <label class="text-xs font-bold text-gray-500 block mb-1 mt-3" data-i18n="lbl_grad2">لون التدرج الثاني (اختياري)</label>
+                            <input id="set-landing-color2" type="color" class="w-full h-10 rounded cursor-pointer bg-transparent border border-gray-200 p-1">
                         </div>
                         <div id="landing-bg-image-div" class="mb-6 hidden">
                             <div class="upload-box w-full h-32 rounded-xl flex items-center justify-center relative bg-gray-50 dark:bg-black/20">
                                 <span class="text-xs font-bold opacity-50">رفع صورة الهيدر</span>
                                 <input type="file" id="landing-bg-input" class="file-input-overlay" accept="image/*" onchange="window.app.handleLandingBgUpload(this)">
+                            </div>
+                        </div>
+
+                        <h3 class="font-bold text-xl mb-6 dark:text-white border-t border-gray-100 dark:border-gray-700 pt-6" data-i18n="lbl_page_bg">خلفية الصفحة</h3>
+                        <div class="flex gap-4 mb-4">
+                            <button onclick="window.app.toggleBgType('page', 'color')" class="flex-1 py-2 border rounded-xl font-bold hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700">لون 🎨</button>
+                            <button onclick="window.app.toggleBgType('page', 'image')" class="flex-1 py-2 border rounded-xl font-bold hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700">صورة 🖼️</button>
+                        </div>
+                        <input type="hidden" id="page-bg-type" value="color">
+                        
+                        <div id="page-bg-color-div" class="mb-6">
+                            <label class="text-xs font-bold text-gray-500 block mb-1">لون خلفية الصفحة</label>
+                            <input id="set-page-color" type="color" class="w-full h-10 rounded cursor-pointer bg-transparent border border-gray-200 p-1">
+                        </div>
+                        <div id="page-bg-image-div" class="mb-6 hidden">
+                            <div class="upload-box w-full h-32 rounded-xl flex items-center justify-center relative bg-gray-50 dark:bg-black/20">
+                                <span class="text-xs font-bold opacity-50">رفع صورة الصفحة</span>
+                                <input type="file" id="page-bg-input" class="file-input-overlay" accept="image/*" onchange="window.app.handlePageBgUpload(this)">
                             </div>
                         </div>
 
@@ -326,6 +346,17 @@
                                 <label class="text-xs font-bold text-gray-500 block mb-1">لون النصوص</label>
                                 <input id="set-landing-text-color" type="color" class="w-full h-10 rounded cursor-pointer bg-transparent border border-gray-200 p-1">
                             </div>
+                        </div>
+
+                        <div class="space-y-2 mb-6">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="set-show-loyalty" class="w-5 h-5 accent-primary rounded">
+                                <span class="text-sm font-bold text-gray-700 dark:text-gray-300" data-i18n="lbl_show_loyalty">إظهار زر نقاط الولاء</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="set-show-rating" class="w-5 h-5 accent-primary rounded">
+                                <span class="text-sm font-bold text-gray-700 dark:text-gray-300" data-i18n="lbl_show_rating">إظهار زر قيّم تجربتك</span>
+                            </label>
                         </div>
 
                         <div class="flex justify-between items-center mb-6 pt-6 border-t border-gray-100 dark:border-gray-700">
@@ -468,6 +499,7 @@
         let tempImg = "", tempLogo = "";
         let tempMenuBg = "";
         let tempLandingBg = "";
+        let tempPageBg = "";
 
         const i18n = {
             ar: {
@@ -483,7 +515,8 @@
                 sec_finance: "المالية والضريبة", lbl_tax: "الضريبة (%)", lbl_fees: "رسوم الخدمة", sec_seo: "محركات البحث", lbl_desc: "وصف المطعم", ph_desc: "وصف مختصر للمطعم", sec_branches: "إدارة الفروع",
                 al_spicy: "حار", al_gluten: "جلوتين", al_egg: "بيض", al_milk: "ألبان", al_nuts: "مكسرات", al_peanuts: "فول سوداني", al_sesame: "سمسم", al_fish: "بحري", al_soy: "صويا", al_sulphites: "كبريتيت", al_mustard: "خردل", al_lupin: "ترمس", al_molluscs: "رخويات", al_crustaceans: "قشريات",
                 bg_new: "جديد", bg_best: "مبيعاً", bg_offer: "عرض",
-                msg_req: "يرجى ملء الحقول المطلوبة", msg_saved: "تم الحفظ بنجاح", msg_del: "هل أنت متأكد من الحذف؟", msg_pass_up: "تم تحديث كلمة المرور", msg_limit: "عفواً، وصلت للحد الأقصى", msg_cat_change: "تغيير اسم القسم؟"
+                msg_req: "يرجى ملء الحقول المطلوبة", msg_saved: "تم الحفظ بنجاح", msg_del: "هل أنت متأكد من الحذف؟", msg_pass_up: "تم تحديث كلمة المرور", msg_limit: "عفواً، وصلت للحد الأقصى", msg_cat_change: "تغيير اسم القسم؟",
+                lbl_grad2: "لون التدرج الثاني", lbl_page_bg: "خلفية الصفحة", lbl_show_loyalty: "إظهار زر نقاط الولاء", lbl_show_rating: "إظهار زر قيّم تجربتك"
             },
             en: {
                 nav_home: "Overview", nav_products: "Products", nav_marketing: "Marketing", nav_tables: "Tables", nav_settings: "Settings", nav_qr: "QR Code", btn_upgrade: "Upgrade", btn_logout: "Logout", mob_header: "Dashboard",
@@ -498,7 +531,8 @@
                 sec_finance: "Finance & Tax", lbl_tax: "VAT (%)", lbl_fees: "Service Fees", sec_seo: "SEO", lbl_desc: "Description", ph_desc: "Short restaurant description", sec_branches: "Manage Branches",
                 al_spicy: "Spicy", al_gluten: "Gluten", al_egg: "Egg", al_milk: "Dairy", al_nuts: "Nuts", al_peanuts: "Peanuts", al_sesame: "Sesame", al_fish: "Seafood", al_soy: "Soy", al_sulphites: "Sulphites", al_mustard: "Mustard", al_lupin: "Lupin", al_molluscs: "Molluscs", al_crustaceans: "Crustaceans",
                 bg_new: "New", bg_best: "Bestseller", bg_offer: "Offer",
-                msg_req: "Missing required fields", msg_saved: "Saved successfully", msg_del: "Are you sure?", msg_pass_up: "Password updated", msg_limit: "Plan limit reached", msg_cat_change: "Change category name?"
+                msg_req: "Missing required fields", msg_saved: "Saved successfully", msg_del: "Are you sure?", msg_pass_up: "Password updated", msg_limit: "Plan limit reached", msg_cat_change: "Change category name?",
+                lbl_grad2: "Second Gradient Color", lbl_page_bg: "Page Background", lbl_show_loyalty: "Show Loyalty Button", lbl_show_rating: "Show Rating Button"
             }
         };
 
@@ -640,8 +674,16 @@
             const landingBgType = currentData.landingBgType || 'color';
             app.toggleBgType('landing', landingBgType);
             document.getElementById('set-landing-color').value = currentData.landingBgColor || "#FF9F1C";
+            document.getElementById('set-landing-color2').value = currentData.landingBgColor2 || '#000000';
             document.getElementById('set-landing-btn-color').value = currentData.landingBtnColor || "#2563eb";
             document.getElementById('set-landing-text-color').value = currentData.landingTextColor || "#ffffff";
+
+            const pageBgType = currentData.pageBgType || 'color';
+            app.toggleBgType('page', pageBgType);
+            document.getElementById('set-page-color').value = currentData.pageBgColor || '#f8fafc';
+
+            document.getElementById('set-show-loyalty').checked = currentData.showLoyalty !== false;
+            document.getElementById('set-show-rating').checked = currentData.showRating !== false;
 
             const socialContainer = document.getElementById('socials-list');
             socialContainer.innerHTML = '';
@@ -723,11 +765,12 @@
             container.appendChild(div);
         };
 
-        app.handleMenuBgUpload = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempMenuBg = r; });
-        app.handleLandingBgUpload = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempLandingBg = r; });
+        app.handleMenuBgUpload = (i) => i.files[0] && compressImage(i.files[0], 1920, (r) => { tempMenuBg = r; });
+        app.handleLandingBgUpload = (i) => i.files[0] && compressImage(i.files[0], 1920, (r) => { tempLandingBg = r; });
+        app.handlePageBgUpload = (i) => i.files[0] && compressImage(i.files[0], 1920, (r) => { tempPageBg = r; });
         app.handleSocialIcon = (input) => {
             if(input.files && input.files[0]) {
-                compressImage(input.files[0], (res) => {
+                compressImage(input.files[0], 800, (res) => {
                     const parent = input.parentElement;
                     parent.querySelector('.social-icon-preview').src = res;
                     parent.querySelector('.social-icon-val').value = res;
@@ -783,8 +826,15 @@
 
                 landingBgType: document.getElementById('landing-bg-type').value,
                 landingBgColor: document.getElementById('set-landing-color').value,
+                landingBgColor2: document.getElementById('set-landing-color2').value,
                 landingBtnColor: document.getElementById('set-landing-btn-color').value,
                 landingTextColor: document.getElementById('set-landing-text-color').value,
+
+                pageBgType: document.getElementById('page-bg-type').value,
+                pageBgColor: document.getElementById('set-page-color').value,
+
+                showLoyalty: document.getElementById('set-show-loyalty').checked,
+                showRating: document.getElementById('set-show-rating').checked,
 
                 branches: branches,
                 socialLinks: socialLinks
@@ -793,6 +843,7 @@
             if(tempLogo) updates.logo = tempLogo;
             if(tempMenuBg) updates.menuBgImage = tempMenuBg;
             if(tempLandingBg) updates.landingBgImage = tempLandingBg;
+            if(tempPageBg) updates.pageBgImage = tempPageBg;
 
             const pass = document.getElementById('set-pass').value;
 
@@ -854,7 +905,7 @@
             await updateDoc(doc(db, "restaurants", restId), { products });
         };
 
-        app.handleBannerUpload = (i) => i.files[0] && compressImage(i.files[0], async (r) => {
+        app.handleBannerUpload = (i) => i.files[0] && compressImage(i.files[0], 800, async (r) => {
             await updateDoc(doc(db, "restaurants", restId), { banners: arrayUnion(r) });
             app.init();
         });
@@ -884,24 +935,23 @@
             }
         };
 
-        function compressImage(file, cb) {
+        function compressImage(file, maxWidth = 800, cb) {
             const reader = new FileReader(); reader.readAsDataURL(file);
             reader.onload = (e) => {
                 const img = new Image(); img.src = e.target.result;
                 img.onload = () => {
-                    const MAX_WIDTH = 800;
-                    if(img.width <= MAX_WIDTH) { cb(e.target.result); return; }
+                    if(img.width <= maxWidth) { cb(e.target.result); return; }
                     const canvas = document.createElement('canvas');
-                    const scale = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
+                    const scale = maxWidth / img.width;
+                    canvas.width = maxWidth; canvas.height = img.height * scale;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     cb(canvas.toDataURL('image/jpeg', 0.8));
                 }
             }
         }
-        app.handleProdImg = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempImg=r; document.getElementById('prod-preview').src=r; document.getElementById('prod-preview').classList.remove('hidden'); });
-        app.handleLogo = (i) => i.files[0] && compressImage(i.files[0], (r) => { tempLogo=r; document.getElementById('preview-logo').src=r; });
+        app.handleProdImg = (i) => i.files[0] && compressImage(i.files[0], 800, (r) => { tempImg=r; document.getElementById('prod-preview').src=r; document.getElementById('prod-preview').classList.remove('hidden'); });
+        app.handleLogo = (i) => i.files[0] && compressImage(i.files[0], 800, (r) => { tempLogo=r; document.getElementById('preview-logo').src=r; });
         app.openCatModal = () => {
             const cats = [...new Set((currentData.products || []).map(p => p.category))];
             document.getElementById('cat-list-container').innerHTML = cats.map((c, idx) => `<div class="flex gap-2 items-center mb-2"><input type="text" value="${c}" id="cat-input-${idx}" class="flex-1 bg-gray-50 dark:bg-black/20 dark:text-white border p-2 rounded text-sm"><button onclick="window.app.updateCat('${c}', ${idx})" class="bg-blue-100 text-blue-600 px-3 py-2 rounded text-xs font-bold">Save</button></div>`).join('');
