@@ -25,8 +25,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        :root { --brand-color: #2563eb; --brand-light: #eff6ff; }
-        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; -webkit-tap-highlight-color: transparent; padding-bottom: 100px; }
+        :root {
+            --brand-color: #2563eb;
+            --brand-light: #eff6ff;
+            --brand-text-color: #ffffff;
+            --menu-page-bg: #f8fafc;
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--menu-page-bg);
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 100px;
+        }
+        
+        /* Dynamic Header Class */
+        .menu-header {
+            background: linear-gradient(135deg, #2563eb 0%, #000 100%); /* Fallback */
+            color: white;
+        }
+
+        /* General Button Class */
+        .btn-main {
+            background-color: var(--brand-color);
+            color: var(--brand-text-color);
+            transition: opacity 0.2s;
+        }
+        .btn-main:hover {
+            opacity: 0.9;
+        }
         
         /* Hide Scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -49,18 +75,18 @@
 
     <div id="loader" class="bg-white"><div class="spinner"></div></div>
 
-    <header class="bg-white shadow-sm p-4 relative z-20">
+    <header class="menu-header shadow-sm p-4 relative z-20">
         <div class="flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <img id="rest-logo" src="" class="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm hidden">
                 <div>
-                    <h1 id="rest-name" class="font-bold text-lg text-gray-800">...</h1>
-                    <p id="table-info" class="text-xs text-gray-500 hidden"><i class="fa-solid fa-chair text-brand"></i> طاولة رقم <span id="table-num"></span></p>
+                    <h1 id="rest-name" class="font-bold text-lg text-white">...</h1>
+                    <p id="table-info" class="text-xs text-gray-200 hidden"><i class="fa-solid fa-chair"></i> طاولة رقم <span id="table-num"></span></p>
                 </div>
             </div>
-            <button onclick="app.toggleLang()" class="bg-gray-100 px-3 py-1 rounded-lg text-xs font-bold">EN/AR</button>
+            <button onclick="app.toggleLang()" class="bg-white/20 px-3 py-1 rounded-lg text-xs font-bold text-white backdrop-blur-sm">EN/AR</button>
         </div>
-        <p id="rest-desc" class="text-xs text-gray-400 mt-2 line-clamp-2"></p>
+        <p id="rest-desc" class="text-xs text-gray-200 mt-2 line-clamp-2"></p>
     </header>
 
     <div id="banners-area" class="p-4 hidden">
@@ -78,7 +104,7 @@
             </div>
     </main>
 
-    <div id="cart-btn" class="fixed bottom-4 left-4 right-4 bg-brand text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center cursor-pointer z-50 transform translate-y-20 transition-all duration-300" onclick="app.openCart()">
+    <div id="cart-btn" class="fixed bottom-4 left-4 right-4 btn-main p-4 rounded-2xl shadow-2xl flex justify-between items-center cursor-pointer z-50 transform translate-y-20 transition-all duration-300" onclick="app.openCart()">
         <div class="flex items-center gap-3">
             <div class="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center font-bold" id="cart-count">0</div>
             <span class="font-bold text-sm">عرض السلة</span>
@@ -111,7 +137,7 @@
                         <span id="modal-qty" class="font-bold text-lg w-4 text-center">1</span>
                         <button onclick="app.adjustQty(1)" class="w-10 h-10 bg-white rounded-lg shadow text-brand font-bold">+</button>
                     </div>
-                    <button onclick="app.addToCart()" class="bg-brand text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30">إضافة</button>
+                    <button onclick="app.addToCart()" class="btn-main px-8 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30">إضافة</button>
                 </div>
             </div>
         </div>
@@ -136,7 +162,7 @@
                 <input type="text" id="cust-name" placeholder="الاسم (اختياري)" class="w-full border p-3 rounded-xl text-sm outline-none focus:border-brand">
                 <textarea id="cust-note" placeholder="ملاحظات..." class="w-full border p-3 rounded-xl text-sm outline-none focus:border-brand h-16 resize-none"></textarea>
                 
-                <button onclick="app.checkout()" class="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2">
+                <button onclick="app.checkout()" class="w-full btn-main hover:bg-green-700 py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2">
                     <i class="fa-brands fa-whatsapp text-2xl"></i> إرسال الطلب
                 </button>
             </div>
@@ -188,7 +214,32 @@
         };
 
         app.renderUI = () => {
-            // 1. Branding
+            // --- 1. Dynamic Colors & Theme ---
+            const brandColor = restaurant.btnColor || restaurant.themeColor || '#2563eb';
+            const brandText  = restaurant.textColor || '#ffffff';
+            document.documentElement.style.setProperty('--brand-color', brandColor);
+            document.documentElement.style.setProperty('--brand-text-color', brandText);
+
+            // Header Background Logic
+            const headerEl = document.querySelector('.menu-header');
+            if (restaurant.menuBgType === 'image' && restaurant.menuBgImage) {
+                headerEl.style.background = `linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%), url('${restaurant.menuBgImage}')`;
+                headerEl.style.backgroundSize = 'cover';
+                headerEl.style.backgroundPosition = 'center';
+            } else if (restaurant.menuBgType === 'color' && restaurant.menuBgColor) {
+                headerEl.style.background = restaurant.menuBgColor;
+            } else if (restaurant.themeColor) {
+                headerEl.style.background = `linear-gradient(135deg, ${restaurant.themeColor} 0%, #000 100%)`;
+            }
+
+            // Page Background Logic
+            if (restaurant.menuBgType === 'color' && restaurant.menuBgColor) {
+                document.documentElement.style.setProperty('--menu-page-bg', restaurant.menuBgColor);
+            } else {
+                document.documentElement.style.setProperty('--menu-page-bg', '#f8fafc');
+            }
+
+            // --- 2. Branding Content ---
             document.title = restaurant.name;
             document.getElementById('rest-name').innerText = restaurant.name;
             document.getElementById('rest-desc').innerText = restaurant.desc || "";
@@ -201,26 +252,23 @@
                 document.getElementById('table-num').innerText = tableNum;
             }
             
-            // Colors
-            if(restaurant.themeColor) document.documentElement.style.setProperty('--brand-color', restaurant.themeColor);
-
-            // 2. Banners
+            // --- 3. Banners ---
             if(restaurant.banners && restaurant.banners.length > 0) {
                 const bWrapper = document.getElementById('banners-wrapper');
                 bWrapper.innerHTML = restaurant.banners.map(b => `<img src="${b}" class="w-80 h-40 object-cover rounded-xl shadow-sm snap-center flex-shrink-0">`).join('');
                 document.getElementById('banners-area').classList.remove('hidden');
             }
 
-            // 3. Categories
+            // --- 4. Categories ---
             const cats = ["الكل", ...new Set(products.map(p => p.category))];
             const cWrapper = document.getElementById('cats-wrapper');
             cWrapper.innerHTML = cats.map((c, i) => `
-                <button onclick="app.filterCats(this, '${c}')" class="cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition ${i===0 ? 'bg-brand text-white shadow-lg' : 'bg-white text-gray-600 border border-gray-100'}">
+                <button onclick="app.filterCats(this, '${c}')" class="cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition ${i===0 ? 'btn-main shadow-lg' : 'bg-white text-gray-600 border border-gray-100'}">
                     ${c}
                 </button>
             `).join('');
 
-            // 4. Products
+            // --- 5. Products ---
             app.renderProducts("الكل");
         };
 
@@ -266,7 +314,7 @@
             document.querySelectorAll('.cat-btn').forEach(b => {
                 b.className = "cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition bg-white text-gray-600 border border-gray-100";
             });
-            btn.className = "cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition bg-brand text-white shadow-lg";
+            btn.className = "cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition btn-main shadow-lg";
             app.renderProducts(cat);
         };
 
@@ -408,7 +456,13 @@
         };
 
         function getBadgeName(key) {
-            const badges = { 'new': 'جديد', 'bestseller': 'الأكثر طلباً', 'promo': 'عرض خاص', 'spicy': 'حار' };
+            const badges = { 
+                'new': 'جديد', 
+                'bestseller': 'الأكثر طلباً', 
+                'promo': 'عرض خاص', 
+                'spicy': 'حار',
+                'vegan': 'نباتي'
+            };
             return badges[key] || key;
         }
 
