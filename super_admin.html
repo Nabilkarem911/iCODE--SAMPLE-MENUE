@@ -57,10 +57,38 @@
             </div>
         </div>
 
+        <div class="flex gap-4 items-center bg-gray-800/30 p-3 rounded-xl border border-gray-700/50 w-fit">
+            <span class="text-xs font-bold text-gray-400">ملخص الباقات:</span>
+            <div class="flex gap-2">
+                <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-lg text-xs font-bold">Free: <span id="count-free" class="text-white">0</span></span>
+                <span class="bg-yellow-900/30 text-yellow-500 px-3 py-1 rounded-lg text-xs font-bold">Gold: <span id="count-gold" class="text-yellow-400">0</span></span>
+                <span class="bg-purple-900/30 text-purple-400 px-3 py-1 rounded-lg text-xs font-bold">VIP: <span id="count-vip" class="text-purple-300">0</span></span>
+            </div>
+        </div>
+
         <div class="bg-gray-800/50 border border-gray-700 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm">
-            <div class="p-5 border-b border-gray-700 flex justify-between items-center bg-gray-900/50">
+            <div class="p-5 border-b border-gray-700 flex flex-wrap justify-between items-center gap-4 bg-gray-900/50">
                 <h2 class="font-bold text-lg text-white"><i class="fa-solid fa-list ml-2 text-blue-500"></i>قائمة المشتركين</h2>
-                <input type="text" id="search" onkeyup="searchTable()" placeholder="بحث سريع..." class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-blue-500 w-64 transition">
+                
+                <div class="flex flex-wrap items-center gap-3">
+                    <select id="filter-status" onchange="searchTable()" class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 outline-none focus:border-blue-500">
+                        <option value="all">كل الحالات</option>
+                        <option value="active">نشط</option>
+                        <option value="inactive">موقوف</option>
+                    </select>
+                    <select id="filter-plan" onchange="searchTable()" class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 outline-none focus:border-blue-500">
+                        <option value="all">كل الباقات</option>
+                        <option value="free">مجانية</option>
+                        <option value="gold">ذهبية</option>
+                        <option value="vip">VIP</option>
+                    </select>
+                    
+                    <input type="text" id="search" onkeyup="searchTable()" placeholder="بحث سريع..." class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-blue-500 w-48 transition">
+                    
+                    <button onclick="exportCSV()" class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-csv"></i> تصدير
+                    </button>
+                </div>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-right whitespace-nowrap">
@@ -181,6 +209,7 @@
         import { db, auth, collection, doc, setDoc, updateDoc, deleteDoc, getDocs, createUserWithEmailAndPassword } from './firebase-config.js';
 
         let clients = [];
+        let filteredList = []; // For export and rendering
 
         async function loadData() {
             const tbody = document.getElementById('clients-table');
@@ -197,6 +226,12 @@
                 document.getElementById('total-views').innerText = clients.reduce((a,b) => a + (b.stats?.views || 0), 0);
                 document.getElementById('total-prods').innerText = clients.reduce((a,b) => a + (b.products?.length || 0), 0);
 
+                // plans summary stats
+                document.getElementById('count-free').innerText = clients.filter(c => (c.plan || 'free') === 'free').length;
+                document.getElementById('count-gold').innerText = clients.filter(c => c.plan === 'gold').length;
+                document.getElementById('count-vip').innerText = clients.filter(c => c.plan === 'vip').length;
+
+                filteredList = clients; // Initialize filtered list
                 renderTable(clients);
             } catch (e) { console.error(e); }
         }
@@ -208,11 +243,19 @@
             tbody.innerHTML = list.map(c => {
                 // حساب الأيام المتبقية
                 let expiryHTML = '<span class="text-gray-500 text-xs">غير محدد</span>';
+                let warningIcon = ''; // badges: expiry warning icons
+
                 if(c.expiryDate) {
                     const days = Math.ceil((new Date(c.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
                     const color = days < 0 ? 'text-red-400' : (days < 7 ? 'text-orange-400' : 'text-green-400');
                     const text = days < 0 ? `منتهي منذ ${Math.abs(days)} يوم` : `باقي ${days} يوم`;
                     expiryHTML = `<span class="${color} text-xs font-bold bg-gray-800 px-2 py-1 rounded border border-gray-700">${text}</span>`;
+                    
+                    if (days < 0) {
+                        warningIcon = '<i class="fa-solid fa-triangle-exclamation text-red-500 ml-2" title="اشتراك منتهي"></i>';
+                    } else if (days < 7) {
+                        warningIcon = '<i class="fa-solid fa-circle-exclamation text-orange-500 ml-2" title="قارب على الانتهاء"></i>';
+                    }
                 }
 
                 // بادج الباقة
@@ -227,7 +270,7 @@
                                 ${c.name[0]}
                             </div>
                             <div>
-                                <p class="font-bold text-white text-base">${c.name} ${planBadge}</p>
+                                <p class="font-bold text-white text-base flex items-center">${c.name} ${warningIcon} ${planBadge}</p>
                                 <p class="text-xs text-gray-500 font-mono mt-1">ID: ${c.id}</p>
                             </div>
                         </div>
@@ -252,6 +295,9 @@
                     </td>
                     <td class="p-6 text-center">
                         <div class="flex justify-center gap-2 opacity-80 group-hover:opacity-100 transition">
+                            <button onclick="openMenu('${c.id}')" title="فتح المنيو" class="w-9 h-9 rounded-lg bg-gray-700 hover:bg-green-600 hover:text-white text-green-400 transition"><i class="fa-solid fa-utensils"></i></button>
+                            <button onclick="openLanding('${c.id}')" title="فتح اللاندنج" class="w-9 h-9 rounded-lg bg-gray-700 hover:bg-teal-600 hover:text-white text-teal-400 transition"><i class="fa-solid fa-globe"></i></button>
+                            
                             <button onclick="editClient('${c.id}')" title="تعديل شامل" class="w-9 h-9 rounded-lg bg-gray-700 hover:bg-blue-600 hover:text-white text-blue-400 transition"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="clientLogin('${c.id}')" title="دخول كعميل" class="w-9 h-9 rounded-lg bg-gray-700 hover:bg-purple-600 hover:text-white text-purple-400 transition"><i class="fa-solid fa-user-astronaut"></i></button>
                             <button onclick="copyLink('${c.id}')" title="نسخ الرابط" class="w-9 h-9 rounded-lg bg-gray-700 hover:bg-orange-500 hover:text-white text-orange-400 transition"><i class="fa-solid fa-link"></i></button>
@@ -330,10 +376,58 @@
             document.getElementById('report-modal').style.display = 'flex';
         }
 
+        // filters: status & plan updated logic
         window.searchTable = () => {
             const q = document.getElementById('search').value.toLowerCase();
-            renderTable(clients.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q)));
+            const statusFilter = document.getElementById('filter-status').value;
+            const planFilter = document.getElementById('filter-plan').value;
+
+            filteredList = clients.filter(c => {
+                const matchText = c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q);
+                
+                let matchStatus = true;
+                if(statusFilter === 'active') matchStatus = (c.isActive !== false);
+                if(statusFilter === 'inactive') matchStatus = (c.isActive === false);
+
+                let matchPlan = true;
+                if(planFilter !== 'all') matchPlan = (c.plan || 'free') === planFilter;
+
+                return matchText && matchStatus && matchPlan;
+            });
+
+            renderTable(filteredList);
         }
+
+        // export: CSV of filtered clients
+        window.exportCSV = () => {
+            const header = ['Name', 'Email', 'Phone', 'Plan', 'Status', 'Expiry', 'Views', 'Products'];
+            const rows = filteredList.map(c => [
+                `"${c.name}"`, 
+                c.email, 
+                c.phone || '', 
+                c.plan || 'free', 
+                c.isActive !== false ? 'Active' : 'Inactive',
+                c.expiryDate || '',
+                c.stats?.views || 0,
+                c.products?.length || 0
+            ]);
+
+            const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+                + header.join(",") + "\n" 
+                + rows.map(e => e.join(",")).join("\n");
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "clients_export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // quick open: menu & landing
+        window.openMenu = (id) => window.open(`menu.html?id=${id}`, '_blank');
+        window.openLanding = (id) => window.open(`landing.html?id=${id}`, '_blank');
 
         window.closeModal = () => { document.getElementById('modal').style.display='none'; }
         window.deleteClient = async (id) => { if(confirm("حذف نهائي؟")) { await deleteDoc(doc(db, "restaurants", id)); loadData(); } }
