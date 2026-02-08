@@ -87,9 +87,6 @@
                 <div class="flex flex-wrap justify-between items-center gap-4">
                     <h1 class="text-2xl font-black text-gray-800 dark:text-white" data-i18n="title_products">قائمة الطعام</h1>
                     <div class="flex gap-2">
-                        <button onclick="window.app.openAddonsModal()" class="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl font-bold text-sm shadow-sm">
-                            الإضافات
-                        </button>
                         <button onclick="window.app.openCatModal()" class="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl font-bold text-sm shadow-sm" data-i18n="btn_cats">إدارة الأقسام</button>
                         <button onclick="window.app.openModal()" class="bg-primary text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> <span data-i18n="btn_add">جديد</span></button>
                     </div>
@@ -523,20 +520,6 @@
         </div>
     </div>
 
-    <div id="addons-modal" class="fixed inset-0 bg-black/80 z-[60] hidden items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white dark:bg-surface w-full max-w-2xl rounded-3xl shadow-2xl p-6 relative flex flex-col max-h-[90vh]">
-            <button onclick="window.app.closeAddonsModal()" class="absolute top-5 right-5 text-gray-400 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
-            <h3 class="text-xl font-black mb-6 text-gray-800 dark:text-white">إدارة الإضافات</h3>
-            
-            <div class="flex-1 overflow-y-auto mb-4 p-1 space-y-3" id="addons-list">
-                </div>
-            
-            <button onclick="window.app.addAddonRow()" class="w-full border-2 border-dashed border-gray-300 dark:border-gray-700 text-gray-500 py-3 rounded-xl font-bold text-sm mb-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition">+ إضافة جديدة</button>
-            
-            <button onclick="window.app.saveAddons()" class="w-full bg-primary text-white py-3 rounded-xl font-bold text-sm shadow-lg">حفظ التغييرات</button>
-        </div>
-    </div>
-
     <script type="module">
         import { db, auth, doc, getDoc, updateDoc, arrayUnion, updatePassword } from './firebase-config.js';
 
@@ -803,71 +786,6 @@
             document.getElementById('set-extra-icon').value     = extra.icon || '';
 
             app.renderChart(currentData.stats?.views || 0);
-        };
-
-        // addons: management modal in products tab
-        window.app.openAddonsModal = () => {
-            document.getElementById('addons-modal').classList.remove('hidden');
-            app.renderAddonsList();
-        };
-
-        window.app.renderAddonsList = () => {
-            const list = document.getElementById('addons-list');
-            const addons = currentData.globalAddons || [];
-            list.innerHTML = addons.map((a, i) => `
-                <div class="flex gap-2 items-center p-2 border border-gray-100 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-black/10">
-                    <input type="text" value="${a.name}" data-index="${i}" data-field="name" class="addon-field flex-1 bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 p-2 rounded-lg text-sm dark:text-white" placeholder="اسم الإضافة">
-                    <input type="number" value="${a.price}" data-index="${i}" data-field="price" class="addon-field w-20 bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 p-2 rounded-lg text-sm dark:text-white" placeholder="سعر">
-                    <input type="text" value="${a.note || ''}" data-index="${i}" data-field="note" class="addon-field flex-1 bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 p-2 rounded-lg text-sm dark:text-white" placeholder="ملاحظة">
-                    <label class="flex items-center gap-1 cursor-pointer">
-                        <input type="checkbox" ${a.active !== false ? 'checked' : ''} data-index="${i}" data-field="active" class="addon-field w-4 h-4 accent-primary"> 
-                        <span class="text-xs dark:text-gray-300">نشط</span>
-                    </label>
-                    <button onclick="app.removeAddon(${i})" class="text-red-500 hover:bg-red-100 p-2 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            `).join('');
-        };
-
-        window.app.addAddonRow = () => {
-            if (!currentData.globalAddons) currentData.globalAddons = [];
-            currentData.globalAddons.push({ id: '', name: '', price: 0, note: '', active: true });
-            app.renderAddonsList();
-        };
-
-        window.app.removeAddon = (index) => {
-            if(!confirm('حذف هذه الإضافة؟')) return;
-            currentData.globalAddons.splice(index, 1);
-            app.renderAddonsList();
-        };
-
-        window.app.saveAddons = async () => {
-            // جمع البيانات من الحقول
-            const fields = document.querySelectorAll('.addon-field');
-            const addons = currentData.globalAddons || [];
-            fields.forEach(f => {
-                const idx = parseInt(f.dataset.index);
-                const field = f.dataset.field;
-                if (field === 'active') addons[idx][field] = f.checked;
-                else addons[idx][field] = f.value;
-            });
-
-            // توليد id من name لو فاضي
-            addons.forEach(a => {
-                if (!a.id && a.name) {
-                    a.id = a.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || `addon-${Date.now()}`;
-                }
-                a.price = parseFloat(a.price) || 0;
-            });
-
-            // حفظ في Firestore
-            await updateDoc(doc(db, "restaurants", restId), { globalAddons: addons });
-            currentData.globalAddons = addons;
-            document.getElementById('addons-modal').classList.add('hidden');
-            alert('✅ تم حفظ الإضافات');
-        };
-
-        window.app.closeAddonsModal = () => {
-            document.getElementById('addons-modal').classList.add('hidden');
         };
 
         app.openSettingSection = (sec) => {
