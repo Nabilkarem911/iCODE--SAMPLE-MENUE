@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI-menu Dashboard | Pro</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -17,9 +17,9 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="[https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap](https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap)" rel="stylesheet">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css)">
+    <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
     
     <style>
         body { font-family: 'Tajawal', sans-serif; overflow: hidden; }
@@ -87,6 +87,9 @@
                 <div class="flex flex-wrap justify-between items-center gap-4">
                     <h1 class="text-2xl font-black text-gray-800 dark:text-white" data-i18n="title_products">قائمة الطعام</h1>
                     <div class="flex gap-2">
+                        <button onclick="window.app.openAddonsModal()" class="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl font-bold text-sm shadow-sm">
+                            الإضافات
+                        </button>
                         <button onclick="window.app.openCatModal()" class="bg-white dark:bg-surface border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl font-bold text-sm shadow-sm" data-i18n="btn_cats">إدارة الأقسام</button>
                         <button onclick="window.app.openModal()" class="bg-primary text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> <span data-i18n="btn_add">جديد</span></button>
                     </div>
@@ -135,11 +138,6 @@
                     <div onclick="window.app.openSettingSection('branches')" class="setting-card bg-white dark:bg-surface p-6 rounded-3xl border border-gray-100 dark:border-gray-800 flex items-center gap-4">
                         <div class="w-14 h-14 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-map-location-dot"></i></div>
                         <div><h3 class="font-bold text-lg dark:text-white">الفروع والمواعيد</h3><p class="text-xs text-gray-500">إدارة الفروع، أوقات العمل</p></div>
-                    </div>
-
-                    <div onclick="window.app.openSettingSection('addons')" class="setting-card bg-white dark:bg-surface p-6 rounded-3xl border border-gray-100 dark:border-gray-800 flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-layer-group"></i></div>
-                        <div><h3 class="font-bold text-lg dark:text-white">الإضافات</h3><p class="text-xs text-gray-500">إدارة الإضافات العامة</p></div>
                     </div>
 
                     <div onclick="window.app.openSettingSection('menu')" class="setting-card bg-white dark:bg-surface p-6 rounded-3xl border border-gray-100 dark:border-gray-800 flex items-center gap-4">
@@ -248,14 +246,6 @@
                             <button onclick="window.app.addBranchUI()" class="bg-orange-100 text-orange-600 px-4 py-2 rounded-xl font-bold text-sm">+ فرع جديد</button>
                         </div>
                         <div id="branches-list" class="space-y-3"></div>
-                    </div>
-
-                    <div id="sec-addons" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-3xl shadow-sm max-w-3xl border border-gray-100 dark:border-gray-800">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="font-bold text-xl dark:text-white">إدارة الإضافات (Global Add-ons)</h3>
-                            <button onclick="window.app.addAddonUI()" class="bg-pink-100 text-pink-600 px-4 py-2 rounded-xl font-bold text-sm">+ إضافة جديدة</button>
-                        </div>
-                        <div id="addons-list" class="space-y-3"></div>
                     </div>
 
                     <div id="sec-menu" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-3xl shadow-sm max-w-3xl border border-gray-100 dark:border-gray-800">
@@ -407,7 +397,7 @@
                                 <input id="set-extra-title-en" type="text" placeholder="English title" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
                                 <input id="set-extra-sub-en" type="text" placeholder="English subtitle" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
                             </div>
-                            <input id="set-extra-link" type="text" placeholder="https://example.com" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
+                            <input id="set-extra-link" type="text" placeholder="[https://example.com](https://example.com)" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
                             <input id="set-extra-icon" type="text" placeholder="🔥 أو أيقونة" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
                         </div>
 
@@ -536,6 +526,25 @@
             <h3 class="text-xl font-black mb-6 text-gray-800 dark:text-white" data-i18n="title_cats">إدارة الأقسام</h3>
             <div id="cat-list-container" class="space-y-3 max-h-60 overflow-y-auto mb-4 p-1"></div>
             <button onclick="window.app.closeCatModal()" class="w-full bg-gray-100 dark:bg-gray-800 py-3 rounded-xl font-bold text-sm dark:text-white" data-i18n="btn_close">إغلاق</button>
+        </div>
+    </div>
+
+    <div id="addons-modal" class="fixed inset-0 bg-black/80 z-[60] hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-surface w-full max-w-2xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+            <div class="p-5 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-black/20">
+                <h3 class="text-lg font-black text-gray-800 dark:text-white">إدارة الإضافات (Global Add-ons)</h3>
+                <button onclick="document.getElementById('addons-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-red-500 hover:text-white transition flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 bg-white dark:bg-surface">
+                <div class="flex justify-end mb-4">
+                    <button onclick="window.app.addAddonRow()" class="bg-pink-100 text-pink-600 px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-pink-200 transition">+ إضافة جديدة</button>
+                </div>
+                <div id="addons-modal-list" class="space-y-3"></div>
+            </div>
+            <div class="p-5 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3 bg-gray-50 dark:bg-black/20">
+                <button onclick="document.getElementById('addons-modal').classList.add('hidden')" class="px-6 py-2.5 rounded-xl bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 text-sm font-bold" data-i18n="btn_cancel">إلغاء</button>
+                <button onclick="window.app.saveAddons()" class="px-8 py-2.5 rounded-xl bg-primary hover:bg-blue-600 text-white text-sm font-bold shadow-lg" data-i18n="btn_save">حفظ</button>
+            </div>
         </div>
     </div>
 
@@ -742,8 +751,7 @@
             branches.forEach(br => app.addBranchUI(br.name, br.link, br.phone, br.address, br.mapUrl));
             if(branches.length === 0) app.addBranchUI(); 
 
-            // addons: render settings list
-            app.renderAddonsSettings();
+            // addons: logic removed from renderAll
 
             document.getElementById('set-tax').value = currentData.tax || "";
             document.getElementById('set-fees').value = currentData.fees || "";
@@ -857,7 +865,7 @@
             div.className = "social-item flex gap-3 items-center bg-gray-50 dark:bg-black/10 p-3 rounded-xl relative border border-gray-200 dark:border-gray-700";
             div.innerHTML = `
                 <div class="w-12 h-12 relative bg-white dark:bg-black/30 rounded-full overflow-hidden border border-dashed flex-shrink-0 cursor-pointer hover:border-blue-500">
-                    <img src="${icon || 'https://placehold.co/100?text=Icon'}" class="social-icon-preview w-full h-full object-cover">
+                    <img src="${icon || '[https://placehold.co/100?text=Icon](https://placehold.co/100?text=Icon)'}" class="social-icon-preview w-full h-full object-cover">
                     <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="window.app.handleSocialIcon(this)">
                     <input type="hidden" class="social-icon-val" value="${icon}">
                 </div>
@@ -867,18 +875,19 @@
             container.appendChild(div);
         };
 
-        // addons: render list from currentData
-        app.renderAddonsSettings = () => {
-            const container = document.getElementById('addons-list');
+        // addons: new modal functions
+        app.openAddonsModal = () => {
+            const container = document.getElementById('addons-modal-list');
             container.innerHTML = '';
             const addons = currentData.globalAddons || [];
-            addons.forEach(a => app.addAddonUI(a));
-            if(addons.length === 0) app.addAddonUI();
+            addons.forEach(a => app.addAddonRow(a));
+            if(addons.length === 0) app.addAddonRow();
+            document.getElementById('addons-modal').classList.remove('hidden');
+            document.getElementById('addons-modal').classList.add('flex');
         };
 
-        // addons: add ui row
-        app.addAddonUI = (addon = null) => {
-            const container = document.getElementById('addons-list');
+        app.addAddonRow = (addon = null) => {
+            const container = document.getElementById('addons-modal-list');
             const div = document.createElement('div');
             div.className = "addon-row bg-gray-50 dark:bg-black/10 p-4 rounded-xl border border-gray-200 dark:border-gray-700 relative";
             const id = addon ? addon.id : '';
@@ -912,10 +921,33 @@
             // Only generate ID if it's empty (new addon)
             if(!idInput.value) {
                 const slug = input.value.trim().replace(/\s+/g, '-').toLowerCase();
-                // Simple random suffix to avoid duplicates if needed, but keeping it simple as requested
-                // To insure uniqueness we could append random string but let's stick to slug for now or handle on save
                 idInput.value = slug;
             }
+        };
+
+        app.saveAddons = async () => {
+            const globalAddons = [];
+            document.querySelectorAll('.addon-row').forEach(row => {
+                const name = row.querySelector('.addon-name').value;
+                const price = parseFloat(row.querySelector('.addon-price').value) || 0;
+                const note = row.querySelector('.addon-note').value;
+                const active = row.querySelector('.addon-active').checked;
+                let id = row.querySelector('.addon-id').value;
+                
+                if(name && !id) id = name.trim().replace(/\s+/g, '-').toLowerCase(); // fallback
+
+                if(name && id) {
+                    globalAddons.push({ id, name, price, note, active });
+                }
+            });
+
+            try {
+                await updateDoc(doc(db, "restaurants", restId), { globalAddons });
+                currentData.globalAddons = globalAddons; // Update local state
+                document.getElementById('addons-modal').classList.add('hidden');
+                alert(i18n[currentLang]['msg_saved']);
+                // Re-render things if needed, or just keep state
+            } catch(e) { alert(e.message); }
         };
 
         // switched to Cloudinary URL instead of Base64
@@ -980,22 +1012,6 @@
                 });
             });
 
-            // addons: collect global addons
-            const globalAddons = [];
-            document.querySelectorAll('.addon-row').forEach(row => {
-                const name = row.querySelector('.addon-name').value;
-                const price = parseFloat(row.querySelector('.addon-price').value) || 0;
-                const note = row.querySelector('.addon-note').value;
-                const active = row.querySelector('.addon-active').checked;
-                let id = row.querySelector('.addon-id').value;
-                
-                if(name && !id) id = name.trim().replace(/\s+/g, '-').toLowerCase(); // fallback
-
-                if(name && id) {
-                    globalAddons.push({ id, name, price, note, active });
-                }
-            });
-
             const updates = {
                 name: document.getElementById('set-name').value,
                 phone: document.getElementById('set-phone').value,
@@ -1045,7 +1061,7 @@
 
                 branches: branches,
                 socialLinks: socialLinks,
-                globalAddons: globalAddons // Save addons
+                // addons: removed from saveSettings (handled in saveAddons)
             };
 
             // Using Cloudinary URL if temp variables are set
