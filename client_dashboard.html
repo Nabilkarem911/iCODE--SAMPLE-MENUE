@@ -137,6 +137,11 @@
                         <div><h3 class="font-bold text-lg dark:text-white">الفروع والمواعيد</h3><p class="text-xs text-gray-500">إدارة الفروع، أوقات العمل</p></div>
                     </div>
 
+                    <div onclick="window.app.openSettingSection('addons')" class="setting-card bg-white dark:bg-surface p-6 rounded-3xl border border-gray-100 dark:border-gray-800 flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-layer-group"></i></div>
+                        <div><h3 class="font-bold text-lg dark:text-white">الإضافات</h3><p class="text-xs text-gray-500">إدارة الإضافات العامة</p></div>
+                    </div>
+
                     <div onclick="window.app.openSettingSection('menu')" class="setting-card bg-white dark:bg-surface p-6 rounded-3xl border border-gray-100 dark:border-gray-800 flex items-center gap-4">
                         <div class="w-14 h-14 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-palette"></i></div>
                         <div><h3 class="font-bold text-lg dark:text-white">تصميم المنيو</h3><p class="text-xs text-gray-500">الألوان، الخلفية، الضرائب، العرض</p></div>
@@ -243,6 +248,14 @@
                             <button onclick="window.app.addBranchUI()" class="bg-orange-100 text-orange-600 px-4 py-2 rounded-xl font-bold text-sm">+ فرع جديد</button>
                         </div>
                         <div id="branches-list" class="space-y-3"></div>
+                    </div>
+
+                    <div id="sec-addons" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-3xl shadow-sm max-w-3xl border border-gray-100 dark:border-gray-800">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-xl dark:text-white">إدارة الإضافات (Global Add-ons)</h3>
+                            <button onclick="window.app.addAddonUI()" class="bg-pink-100 text-pink-600 px-4 py-2 rounded-xl font-bold text-sm">+ إضافة جديدة</button>
+                        </div>
+                        <div id="addons-list" class="space-y-3"></div>
                     </div>
 
                     <div id="sec-menu" class="setting-section hidden bg-white dark:bg-surface p-8 rounded-3xl shadow-sm max-w-3xl border border-gray-100 dark:border-gray-800">
@@ -502,6 +515,12 @@
                             <div class="select-tag allergen-tag px-3 py-1.5 rounded-lg text-xs font-bold" onclick="window.app.toggleTag(this)" data-val="قشريات">🦞 <span data-i18n="al_crustaceans">قشريات</span></div>
                         </div>
                     </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2">الإضافات المتاحة لهذا المنتج</label>
+                        <div id="prod-addons-container" class="space-y-2 max-h-40 overflow-y-auto p-1 bg-gray-50 dark:bg-black/20 rounded-xl"></div>
+                    </div>
+
                 </div>
             </div>
             <div class="p-5 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3 bg-gray-50 dark:bg-black/20">
@@ -723,6 +742,9 @@
             branches.forEach(br => app.addBranchUI(br.name, br.link, br.phone, br.address, br.mapUrl));
             if(branches.length === 0) app.addBranchUI(); 
 
+            // addons: render settings list
+            app.renderAddonsSettings();
+
             document.getElementById('set-tax').value = currentData.tax || "";
             document.getElementById('set-fees').value = currentData.fees || "";
             document.getElementById('set-layout').value = currentData.layout || 'grid';
@@ -845,6 +867,57 @@
             container.appendChild(div);
         };
 
+        // addons: render list from currentData
+        app.renderAddonsSettings = () => {
+            const container = document.getElementById('addons-list');
+            container.innerHTML = '';
+            const addons = currentData.globalAddons || [];
+            addons.forEach(a => app.addAddonUI(a));
+            if(addons.length === 0) app.addAddonUI();
+        };
+
+        // addons: add ui row
+        app.addAddonUI = (addon = null) => {
+            const container = document.getElementById('addons-list');
+            const div = document.createElement('div');
+            div.className = "addon-row bg-gray-50 dark:bg-black/10 p-4 rounded-xl border border-gray-200 dark:border-gray-700 relative";
+            const id = addon ? addon.id : '';
+            const name = addon ? addon.name : '';
+            const price = addon ? addon.price : '';
+            const note = addon ? addon.note : '';
+            const active = addon ? (addon.active !== false) : true;
+
+            div.innerHTML = `
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-2">
+                    <input type="text" class="addon-name bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm" placeholder="اسم الإضافة (جبنة)" value="${name}" oninput="window.app.handleNameInput(this)">
+                    <input type="number" class="addon-price bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm" placeholder="السعر" value="${price}">
+                    <input type="text" class="addon-note col-span-2 md:col-span-1 bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm" placeholder="ملاحظة للعميل" value="${note}">
+                    <div class="flex items-center justify-between col-span-2 md:col-span-1 gap-2">
+                        <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-black/20 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 flex-1">
+                            <input type="checkbox" class="addon-active w-4 h-4 accent-primary" ${active ? 'checked' : ''}>
+                            <span class="text-xs font-bold text-gray-500">تفعيل</span>
+                        </label>
+                        <input type="text" class="addon-id w-20 text-[10px] text-gray-400 bg-transparent text-center" readonly value="${id}" placeholder="ID">
+                    </div>
+                </div>
+                <button onclick="this.parentElement.remove()" class="absolute top-2 left-2 text-red-500 hover:text-red-700"><i class="fa-solid fa-times"></i></button>
+            `;
+            container.appendChild(div);
+        };
+
+        // addons: auto generate slug
+        app.handleNameInput = (input) => {
+            const row = input.closest('.addon-row');
+            const idInput = row.querySelector('.addon-id');
+            // Only generate ID if it's empty (new addon)
+            if(!idInput.value) {
+                const slug = input.value.trim().replace(/\s+/g, '-').toLowerCase();
+                // Simple random suffix to avoid duplicates if needed, but keeping it simple as requested
+                // To insure uniqueness we could append random string but let's stick to slug for now or handle on save
+                idInput.value = slug;
+            }
+        };
+
         // switched to Cloudinary URL instead of Base64
         app.handleMenuBgUpload = async (i) => {
             if(i.files[0]) {
@@ -907,6 +980,22 @@
                 });
             });
 
+            // addons: collect global addons
+            const globalAddons = [];
+            document.querySelectorAll('.addon-row').forEach(row => {
+                const name = row.querySelector('.addon-name').value;
+                const price = parseFloat(row.querySelector('.addon-price').value) || 0;
+                const note = row.querySelector('.addon-note').value;
+                const active = row.querySelector('.addon-active').checked;
+                let id = row.querySelector('.addon-id').value;
+                
+                if(name && !id) id = name.trim().replace(/\s+/g, '-').toLowerCase(); // fallback
+
+                if(name && id) {
+                    globalAddons.push({ id, name, price, note, active });
+                }
+            });
+
             const updates = {
                 name: document.getElementById('set-name').value,
                 phone: document.getElementById('set-phone').value,
@@ -955,7 +1044,8 @@
                 showRating: document.getElementById('set-show-rating').checked,
 
                 branches: branches,
-                socialLinks: socialLinks
+                socialLinks: socialLinks,
+                globalAddons: globalAddons // Save addons
             };
 
             // Using Cloudinary URL if temp variables are set
@@ -992,6 +1082,10 @@
             document.querySelectorAll('.allergen-tag.selected').forEach(t => allergens.push(t.dataset.val));
             document.querySelectorAll('.badge-select.selected').forEach(t => badges.push(t.dataset.val));
 
+            // addons: collect selected allowed addons for product
+            const addons = [];
+            document.querySelectorAll('.prod-addon-check:checked').forEach(c => addons.push(c.value));
+
             const prodObj = {
                 name, 
                 price: parseFloat(price) || 0, 
@@ -1000,7 +1094,8 @@
                 description: document.getElementById('prod-desc').value,
                 // Using Cloudinary URL if tempImg is set
                 image: tempImg || (editIndex !== "" ? products[editIndex].image : "images/logo.png"),
-                allergens, badges, stock: true
+                allergens, badges, stock: true,
+                addons: addons // Save allowed addons
             };
 
             if(editIndex !== "") products[editIndex] = prodObj;
@@ -1118,6 +1213,28 @@
             document.querySelectorAll('.select-tag').forEach(t => t.classList.remove('selected'));
             document.getElementById('prod-preview').classList.add('hidden');
             
+            // addons: render checkboxes for product modal
+            const addonContainer = document.getElementById('prod-addons-container');
+            addonContainer.innerHTML = '';
+            const globalAddons = currentData.globalAddons || [];
+            
+            // Generate checkbox for each ACTIVE global addon
+            if(globalAddons.length > 0) {
+                globalAddons.filter(a => a.active !== false).forEach(a => {
+                    addonContainer.innerHTML += `
+                        <label class="flex items-center gap-2 p-2 border-b border-gray-100 dark:border-gray-700 last:border-0 cursor-pointer">
+                            <input type="checkbox" class="prod-addon-check w-4 h-4 accent-primary" value="${a.id}">
+                            <div class="flex-1">
+                                <span class="text-sm font-bold dark:text-white">${a.name}</span>
+                                <span class="text-xs text-gray-500 block">${a.price} ريال</span>
+                            </div>
+                        </label>
+                    `;
+                });
+            } else {
+                addonContainer.innerHTML = '<span class="text-xs text-gray-400 p-2">لا توجد إضافات عامة معرفة في الإعدادات</span>';
+            }
+
             if(editIdx !== "") {
                 const p = currentData.products[editIdx];
                 document.getElementById('prod-name').value = p.name;
@@ -1128,6 +1245,14 @@
                 if(p.image) { document.getElementById('prod-preview').src = p.image; document.getElementById('prod-preview').classList.remove('hidden'); }
                 if(p.allergens) p.allergens.forEach(val => { const el = document.querySelector(`.allergen-tag[data-val="${val}"]`); if(el) el.classList.add('selected'); });
                 if(p.badges) p.badges.forEach(val => { const el = document.querySelector(`.badge-select[data-val="${val}"]`); if(el) el.classList.add('selected'); });
+                
+                // addons: check allowed addons
+                if(p.addons) {
+                    p.addons.forEach(id => {
+                        const box = addonContainer.querySelector(`input[value="${id}"]`);
+                        if(box) box.checked = true;
+                    });
+                }
             } else {
                 document.querySelectorAll('#modal input:not([type=hidden]), #modal textarea').forEach(i => i.value="");
             }
