@@ -13,12 +13,27 @@
             --landing-btn-color: #FF9F1C;
             --landing-text-color: #ffffff;
             --landing-page-bg: #f8fafc;
+
+            --landing-header-text-color: #ffffff;
+            --landing-card-bg: #111827;
+            --landing-card-text: #f9fafb;
+            --landing-card-btn: #FF9F1C;
         }
 
         body { font-family: 'Tajawal', sans-serif; background-color: var(--landing-page-bg); padding-bottom: 80px; }
-        /* Updated .header-bg to handle dynamic backgrounds via JS */
-        .header-bg { background: linear-gradient(135deg, #FF9F1C 0%, #FF5400 100%); border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 15px 35px rgba(255, 84, 0, 0.25); color: var(--landing-text-color); padding-top: 40px; padding-bottom: 60px; text-align: center; position: relative; }
+        /* Updated .header-bg to handle dynamic backgrounds via JS and header text color */
+        .header-bg { background: linear-gradient(135deg, #FF9F1C 0%, #FF5400 100%); border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 15px 35px rgba(255, 84, 0, 0.25); color: var(--landing-header-text-color); padding-top: 40px; padding-bottom: 60px; text-align: center; position: relative; }
         
+        /* New Card Classes */
+        .card-main {
+            background-color: var(--landing-card-bg);
+            color: var(--landing-card-text);
+        }
+        .card-btn-circle {
+            background-color: var(--landing-card-btn);
+            color: var(--landing-card-text);
+        }
+
         /* Status Pulse */
         .status-pulse { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; margin-right: 5px; }
         .pulse-green { background-color: #22c55e; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); animation: pulse-green 2s infinite; }
@@ -88,10 +103,10 @@
     </div>
 
     <main class="px-6 space-y-5">
-        <a id="menu-btn" href="#" class="group block w-full rounded-[22px] p-1 shadow-xl transform transition active:scale-95 btn-landing-primary">
+        <a id="menu-btn" href="#" class="group block w-full rounded-[22px] p-1 shadow-xl transform transition active:scale-95 card-main">
             <div class="rounded-[20px] p-5 flex items-center justify-between border btn-landing-primary-inner">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition bg-white/20 text-white">🍽️</div>
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition card-btn-circle">🍽️</div>
                     <div><h2 class="text-xl font-bold" data-i18n="food_menu">قائمة الطعام</h2><p class="text-xs opacity-80" data-i18n="browse_menu">تصفح المنيو واطلب الآن</p></div>
                 </div>
                 <div class="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white"><i class="fa-solid fa-arrow-left ltr:rotate-180"></i></div>
@@ -178,6 +193,7 @@
                 checkStatus(restaurantData.openTime, restaurantData.closeTime, restaurantData.workDays);
                 const hoursText = buildWorkingHoursText(restaurantData.openTime, restaurantData.closeTime, restaurantData.workDays);
                 document.getElementById('rest-hours').innerText = hoursText;
+                renderExtraCard(restaurantData); 
             }
         }
 
@@ -232,6 +248,17 @@
                     document.documentElement.style.setProperty('--landing-btn-color', btnColor);
                     document.documentElement.style.setProperty('--landing-text-color', txtColor);
 
+                    // New Variables
+                    const headerText = data.landingHeaderTextColor || data.landingTextColor || '#ffffff';
+                    const cardBg     = data.landingCardBgColor || '#111827';
+                    const cardText   = data.landingCardTextColor || '#f9fafb';
+                    const cardBtn    = data.landingCardBtnColor || data.landingBtnColor || '#FF9F1C';
+
+                    document.documentElement.style.setProperty('--landing-header-text-color', headerText);
+                    document.documentElement.style.setProperty('--landing-card-bg', cardBg);
+                    document.documentElement.style.setProperty('--landing-card-text', cardText);
+                    document.documentElement.style.setProperty('--landing-card-btn', cardBtn);
+
                     // --- 2) Background Logic (Header + Page) ---
                     const headerEl = document.querySelector('.header-bg');
                     
@@ -265,7 +292,7 @@
                     }
 
                     // --- 3) Check Status & Working Hours Text ---
-                    checkStatus(data.openTime, data.closeTime, data.workDays);
+                    // Note: checkStatus will be called later after social links are rendered
                     const hoursText = buildWorkingHoursText(data.openTime, data.closeTime, data.workDays);
                     document.getElementById('rest-hours').innerText = hoursText;
 
@@ -306,20 +333,57 @@
                     const socialLinks = data.socialLinks || [];
                     
                     if(socialLinks.length > 0) {
-                        sContainer.innerHTML = socialLinks.map(link => `
-                            <a href="${link.url}" target="_blank" class="social-beat w-12 h-12 rounded-full overflow-hidden shadow-lg border-2 border-white bg-white flex items-center justify-center">
+                        sContainer.innerHTML = socialLinks.map(link => {
+                            const href = normalizeUrl(link.url);
+                            return `
+                            <a href="${href}" target="_blank" class="social-beat w-12 h-12 rounded-full overflow-hidden shadow-lg border-2 border-white bg-white flex items-center justify-center">
                                 <img src="${link.icon}" alt="social" class="w-full h-full object-cover">
                             </a>
-                        `).join('');
+                        `}).join('');
                     }
+
+                    // Call checkStatus AFTER rendering social links
+                    checkStatus(data.openTime, data.closeTime, data.workDays);
+
+                    // Render Extra Card
+                    renderExtraCard(data);
                 }
             } catch(e) { console.error(e); }
+        }
+
+        function renderExtraCard(data) {
+            const extra = data.extraCard;
+            const old = document.getElementById('extra-card');
+            if (old) old.remove();
+
+            if (!extra || !extra.enabled) return;
+
+            const title = currentLang === 'ar' ? extra.titleAr : extra.titleEn;
+            const sub   = currentLang === 'ar' ? extra.subAr   : extra.subEn;
+            const icon  = extra.icon || '✨';
+            const href  = normalizeUrl(extra.url);
+
+            const div = document.createElement('a');
+            div.id = 'extra-card';
+            div.href = href;
+            div.target = '_blank';
+            div.className = 'block bg-white p-4 rounded-2xl shadow-sm text-center border hover:shadow-md transition';
+            div.innerHTML = `
+                <div class="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
+                     style="background-color: var(--landing-card-bg); color: var(--landing-card-text);">
+                    ${icon}
+                </div>
+                <h4 class="font-bold text-sm" style="color: var(--landing-card-bg);">${title}</h4>
+                <p class="text-xs text-gray-500 mt-1">${sub}</p>
+            `;
+            // Add after rate-btn container
+            const ref = document.getElementById('rate-btn').parentElement;
+            ref.insertAdjacentElement('afterend', div);
         }
 
         function checkStatus(open, close, workDays) {
             const dot = document.getElementById('status-dot');
             const txt = document.getElementById('status-text');
-            const socialContainer = document.getElementById('socials-container');
             const icons = document.querySelectorAll('#socials-container .social-beat');
             
             // --- Determine Today's specific times ---
