@@ -318,6 +318,13 @@
                             </div>
                         </div>
 
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label class="text-xs font-bold text-gray-500 block mb-1">لون نص الهيدر</label>
+                                <input id="set-landing-header-text-color" type="color" class="w-full h-10 rounded cursor-pointer bg-transparent border border-gray-200 p-1">
+                            </div>
+                        </div>
+
                         <h3 class="font-bold text-xl mb-6 dark:text-white border-t border-gray-100 dark:border-gray-700 pt-6" data-i18n="lbl_page_bg">خلفية الصفحة</h3>
                         <div class="flex gap-4 mb-4">
                             <button onclick="window.app.toggleBgType('page', 'color')" class="flex-1 py-2 border rounded-xl font-bold hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700">لون 🎨</button>
@@ -348,6 +355,22 @@
                             </div>
                         </div>
 
+                        <h3 class="font-bold text-xl mb-4 pt-4 border-t border-gray-100 dark:border-gray-700 dark:text-white">ألوان الكروت</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div>
+                                <label class="text-xs font-bold text-gray-500 block mb-1">لون خلفية الكروت</label>
+                                <input id="set-landing-card-bg-color" type="color" class="w-full h-10 rounded cursor-pointer bg-transparent border border-gray-200 p-1">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500 block mb-1">لون نص الكروت</label>
+                                <input id="set-landing-card-text-color" type="color" class="w-full h-10 rounded cursor-pointer bg-transparent border border-gray-200 p-1">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500 block mb-1">لون زر الكروت</label>
+                                <input id="set-landing-card-btn-color" type="color" class="w-full h-10 rounded cursor-pointer bg-transparent border border-gray-200 p-1">
+                            </div>
+                        </div>
+
                         <div class="space-y-2 mb-6">
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="set-show-loyalty" class="w-5 h-5 accent-primary rounded">
@@ -357,6 +380,22 @@
                                 <input type="checkbox" id="set-show-rating" class="w-5 h-5 accent-primary rounded">
                                 <span class="text-sm font-bold text-gray-700 dark:text-gray-300" data-i18n="lbl_show_rating">إظهار زر قيّم تجربتك</span>
                             </label>
+                        </div>
+
+                        <h3 class="font-bold text-xl mb-4 pt-6 border-t border-gray-100 dark:border-gray-700 dark:text-white">كارت إضافي</h3>
+                        <div class="mb-6 space-y-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="set-extra-enabled" class="w-5 h-5 accent-primary rounded">
+                                <span class="text-sm font-bold text-gray-700 dark:text-gray-300">تفعيل الكارت الإضافي</span>
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input id="set-extra-title-ar" type="text" placeholder="عنوان عربي" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
+                                <input id="set-extra-sub-ar" type="text" placeholder="وصف عربي" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
+                                <input id="set-extra-title-en" type="text" placeholder="English title" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
+                                <input id="set-extra-sub-en" type="text" placeholder="English subtitle" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
+                            </div>
+                            <input id="set-extra-link" type="text" placeholder="https://example.com" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
+                            <input id="set-extra-icon" type="text" placeholder="🔥 أو أيقونة" class="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl p-3 dark:text-white">
                         </div>
 
                         <div class="flex justify-between items-center mb-6 pt-6 border-t border-gray-100 dark:border-gray-700">
@@ -705,6 +744,22 @@
             const cats = [...new Set(products.map(p => p.category))];
             document.getElementById('cats-list').innerHTML = cats.map(c => `<option value="${c}">`).join('');
 
+            // --- New Landing Colors ---
+            document.getElementById('set-landing-header-text-color').value = currentData.landingHeaderTextColor || currentData.landingTextColor || '#ffffff';
+            document.getElementById('set-landing-card-bg-color').value = currentData.landingCardBgColor || '#111827';
+            document.getElementById('set-landing-card-text-color').value = currentData.landingCardTextColor || '#f9fafb';
+            document.getElementById('set-landing-card-btn-color').value = currentData.landingCardBtnColor || currentData.landingBtnColor || '#FF9F1C';
+
+            // --- Extra Card ---
+            const extra = currentData.extraCard || {};
+            document.getElementById('set-extra-enabled').checked = !!extra.enabled;
+            document.getElementById('set-extra-title-ar').value = extra.titleAr || '';
+            document.getElementById('set-extra-sub-ar').value   = extra.subAr || '';
+            document.getElementById('set-extra-title-en').value = extra.titleEn || '';
+            document.getElementById('set-extra-sub-en').value   = extra.subEn || '';
+            document.getElementById('set-extra-link').value     = extra.url || '';
+            document.getElementById('set-extra-icon').value     = extra.icon || '';
+
             app.renderChart(currentData.stats?.views || 0);
         };
 
@@ -829,6 +884,22 @@
                 landingBgColor2: document.getElementById('set-landing-color2').value,
                 landingBtnColor: document.getElementById('set-landing-btn-color').value,
                 landingTextColor: document.getElementById('set-landing-text-color').value,
+
+                // New Fields
+                landingHeaderTextColor: document.getElementById('set-landing-header-text-color').value,
+                landingCardBgColor: document.getElementById('set-landing-card-bg-color').value,
+                landingCardTextColor: document.getElementById('set-landing-card-text-color').value,
+                landingCardBtnColor: document.getElementById('set-landing-card-btn-color').value,
+
+                extraCard: {
+                    enabled: document.getElementById('set-extra-enabled').checked,
+                    titleAr: document.getElementById('set-extra-title-ar').value,
+                    subAr:   document.getElementById('set-extra-sub-ar').value,
+                    titleEn: document.getElementById('set-extra-title-en').value,
+                    subEn:   document.getElementById('set-extra-sub-en').value,
+                    url:     document.getElementById('set-extra-link').value,
+                    icon:    document.getElementById('set-extra-icon').value,
+                },
 
                 pageBgType: document.getElementById('page-bg-type').value,
                 pageBgColor: document.getElementById('set-page-color').value,
