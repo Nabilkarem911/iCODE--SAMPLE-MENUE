@@ -334,24 +334,27 @@
             app.renderProducts("الكل");
         };
 
-        // banners: fixed slider flex nowrap
+        // banners: fixed slider with proper width calculation
         app.initBanners = () => {
             const wrapper = document.getElementById('banners-wrapper');
             const slides = wrapper.querySelectorAll('img');
             if (!slides.length) return;
 
-            // 1. Set wrapper width based on number of slides
+            // 1. Set wrapper to flex nowrap with full width
+            wrapper.style.display = 'flex';
+            wrapper.style.flexWrap = 'nowrap';
             wrapper.style.width = `${slides.length * 100}%`;
 
-            // 2. Set each slide width relative to the wrapper
+            // 2. Each slide gets equal width
             slides.forEach(img => {
                 img.classList.add('h-40', 'object-cover', 'flex-shrink-0');
                 img.style.width = `${100 / slides.length}%`;
             });
 
+            // Use global bannerIndex (already defined)
             bannerIndex = 0;
+
             const update = () => {
-                // 3. Calculate offset based on percentage fraction
                 const offset = (100 / slides.length) * bannerIndex;
                 wrapper.style.transform = `translateX(-${offset}%)`;
             };
@@ -364,16 +367,24 @@
                 }, 4000);
             };
 
-            document.getElementById('banner-prev').onclick = () => {
-                bannerIndex = (bannerIndex - 1 + slides.length) % slides.length;
-                update();
-                startAuto();
-            };
-            document.getElementById('banner-next').onclick = () => {
-                bannerIndex = (bannerIndex + 1) % slides.length;
-                update();
-                startAuto();
-            };
+            const prevBtn = document.getElementById('banner-prev');
+            const nextBtn = document.getElementById('banner-next');
+
+            if (prevBtn) {
+                prevBtn.onclick = () => {
+                    bannerIndex = (bannerIndex - 1 + slides.length) % slides.length;
+                    update();
+                    startAuto();
+                };
+            }
+
+            if (nextBtn) {
+                nextBtn.onclick = () => {
+                    bannerIndex = (bannerIndex + 1) % slides.length;
+                    update();
+                    startAuto();
+                };
+            }
 
             update();
             startAuto();
