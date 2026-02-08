@@ -77,11 +77,28 @@
             height: 14px;
             border-radius: 2px;
             opacity: 0.9;
+            /* Default fallback */
             animation: confetti-fall 1.5s ease-out forwards;
         }
         @keyframes confetti-fall {
             0%   { transform: translateY(0) rotate(0deg); }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* confetti: from sides */
+        .confetti-piece.from-left {
+            animation: confetti-left 2.2s ease-out forwards;
+        }
+        .confetti-piece.from-right {
+            animation: confetti-right 2.2s ease-out forwards;
+        }
+        @keyframes confetti-left {
+            0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(40vw, 100vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes confetti-right {
+            0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-40vw, 100vh) rotate(-720deg); opacity: 0; }
         }
     </style>
 </head>
@@ -115,7 +132,7 @@
     <div id="banners-area" class="p-4 hidden">
         <div class="relative">
             <div class="overflow-hidden rounded-xl">
-                <div class="flex transition-transform duration-500 ease-out no-scrollbar" id="banners-wrapper">
+                <div class="flex flex-nowrap transition-transform duration-500 ease-out no-scrollbar" id="banners-wrapper">
                     </div>
             </div>
             <button id="banner-prev" type="button" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm hover:bg-black/60 transition">‹</button>
@@ -208,7 +225,7 @@
         // State
         let restaurant = {};
         let products = [];
-        let globalAddons = []; // addons: loaded global addons
+        let globalAddons = [];
         let cart = [];
         let currentModalProd = null;
         let modalQty = 1;
@@ -241,7 +258,7 @@
                 if(snap.exists()) {
                     restaurant = snap.data();
                     products = restaurant.products || [];
-                    globalAddons = restaurant.globalAddons || []; // Load addons
+                    globalAddons = restaurant.globalAddons || [];
                     
                     // Increment Views (Analytics)
                     updateDoc(doc(db, "restaurants", restId), { "stats.views": increment(1) });
@@ -317,7 +334,7 @@
             app.renderProducts("الكل");
         };
 
-        // fixed banner slider
+        // banners: fixed slider flex nowrap
         app.initBanners = () => {
             const wrapper = document.getElementById('banners-wrapper');
             const slides = wrapper.querySelectorAll('img');
@@ -467,7 +484,6 @@
         };
 
         app.addToCart = () => {
-            // addons: calculate extras
             const selectedAddons = [];
             let addonsTotal = 0;
             document.querySelectorAll('.addon-option:checked').forEach(opt => {
@@ -480,11 +496,6 @@
                 });
             });
 
-            // Consider items different if they have different addons, simplified here: name match check should consider addons too?
-            // For simplicity in this structure: we assume separate items in cart for simplicity or just append. 
-            // Better: just push as new item if it has addons, or check deep equality. 
-            // Prompt requirement: "add addons data to cart item". We will push new item to keep it simple and safe.
-            
             cart.push({ 
                 ...currentModalProd, 
                 qty: modalQty,
@@ -495,7 +506,6 @@
             app.closeModal();
             app.updateCartBtn();
             
-            // Visual feedback
             const btn = document.getElementById('cart-btn');
             btn.classList.add('scale-110');
             setTimeout(() => btn.classList.remove('scale-110'), 200);
@@ -509,7 +519,6 @@
         // --- Cart Logic ---
         app.updateCartBtn = () => {
             const count = cart.reduce((a,b) => a+b.qty, 0);
-            // Total = (Base Price + Addons) * Qty
             const total = cart.reduce((a,b) => a + ((b.price + (b.addonsTotal || 0)) * b.qty), 0);
             
             document.getElementById('cart-count').innerText = count;
@@ -543,7 +552,6 @@
                 </div>
             `}).join('');
 
-            // Financials Logic (Revised: Price Includes Tax)
             const gross = cart.reduce((a,b) => a + ((b.price + (b.addonsTotal || 0)) * b.qty), 0); 
             const taxRate = restaurant.tax || 0;
             const fees = restaurant.fees || 0;
@@ -553,11 +561,11 @@
 
             if (taxRate > 0) {
                 const factor = 1 + (taxRate / 100);
-                net = gross / factor;         // Amount before tax
-                taxVal = gross - net;         // Tax portion inside the price
+                net = gross / factor;
+                taxVal = gross - net;
             }
 
-            const total = gross + fees;       // Total = Gross Price + Fees (No extra tax added)
+            const total = gross + fees;
 
             document.getElementById('bill-sub').innerText  = net.toFixed(2);
             document.getElementById('tax-rate').innerText = taxRate;
@@ -581,40 +589,37 @@
             document.getElementById('cart-modal').classList.remove('flex');
         };
 
-        // improved confetti
+        // confetti: from sides
         app.showCelebration = () => {
             const layer = document.getElementById('confetti-layer');
             if (!layer) return;
             layer.innerHTML = '';
             layer.classList.remove('hidden');
 
-            // Richer, darker colors
             const colors = ['#d32f2f', '#1976d2', '#388e3c', '#fbc02d', '#8e24aa', '#e64a19', '#5d4037'];
-            const pieces = 150; // Increased count
+            const pieces = 180;
 
             for (let i = 0; i < pieces; i++) {
                 const div = document.createElement('div');
-                div.className = 'confetti-piece';
+                const isLeft = Math.random() > 0.5;
+                div.className = `confetti-piece ${isLeft ? 'from-left' : 'from-right'}`;
                 
-                // Varied positions
-                div.style.left = Math.random() * 100 + '%'; 
-                div.style.top = '-10px';
+                // Position start
+                div.style.left = isLeft ? '-5%' : '105%';
+                div.style.top = Math.random() * 40 + '%'; // 0-40% from top
                 
                 div.style.backgroundColor = colors[i % colors.length];
                 
-                // Varied speed (longer duration 2s+)
-                div.style.animationDuration = (Math.random() * 1 + 2) + 's';
+                // Randomize duration and delay
+                div.style.animationDuration = (Math.random() * 0.8 + 1.8) + 's'; // 1.8s - 2.6s
                 div.style.animationDelay = (Math.random() * 0.5) + 's';
-                
-                // Random rotation
-                div.style.transform = `rotate(${Math.random() * 360}deg)`;
                 
                 layer.appendChild(div);
             }
             setTimeout(() => {
                 layer.classList.add('hidden');
                 layer.innerHTML = '';
-            }, 3000); // Increased timeout to match duration
+            }, 3200);
         };
 
         app.checkout = () => {
