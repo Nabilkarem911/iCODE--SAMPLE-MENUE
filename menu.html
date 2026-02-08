@@ -155,6 +155,8 @@
                 
                 <p id="modal-desc" class="text-gray-500 text-sm leading-relaxed mb-4"></p>
                 
+                <div id="modal-addons" class="space-y-2 mb-4"></div>
+
                 <div class="flex gap-4 text-xs text-gray-400 mb-6 border-y py-3">
                     <span id="modal-cal" class="flex items-center gap-1"><i class="fa-solid fa-fire text-orange-500"></i> <span></span> Kcal</span>
                     <div id="modal-allergens" class="flex gap-2"></div>
@@ -206,6 +208,7 @@
         // State
         let restaurant = {};
         let products = [];
+        let globalAddons = []; // addons: loaded global addons
         let cart = [];
         let currentModalProd = null;
         let modalQty = 1;
@@ -238,6 +241,7 @@
                 if(snap.exists()) {
                     restaurant = snap.data();
                     products = restaurant.products || [];
+                    globalAddons = restaurant.globalAddons || []; // Load addons
                     
                     // Increment Views (Analytics)
                     updateDoc(doc(db, "restaurants", restId), { "stats.views": increment(1) });
@@ -425,6 +429,33 @@
             // Allergens
             document.getElementById('modal-allergens').innerHTML = (p.allergens||[]).map(a => `<span class="bg-gray-100 px-2 py-1 rounded text-[10px]">${a}</span>`).join('');
 
+            // addons: render checkboxes for product modal
+            const addonContainer = document.getElementById('modal-addons');
+            addonContainer.innerHTML = '';
+            
+            if(p.addons && p.addons.length > 0) {
+                // Filter allowed addons that are active in global settings
+                const allowedAddons = globalAddons.filter(g => p.addons.includes(g.id) && g.active !== false);
+                
+                if(allowedAddons.length > 0) {
+                    addonContainer.innerHTML = `<h4 class="font-bold text-sm mb-2 text-gray-700">إضافات:</h4>`;
+                    allowedAddons.forEach(addon => {
+                        addonContainer.innerHTML += `
+                            <label class="flex items-center justify-between p-2 rounded-lg border border-gray-100 bg-gray-50 cursor-pointer">
+                                <div class="flex items-center gap-2">
+                                    <input type="checkbox" class="addon-option w-4 h-4 accent-brand" value="${addon.id}" data-price="${addon.price}" data-name="${addon.name}">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-bold text-gray-800">${addon.name}</span>
+                                        ${addon.note ? `<span class="text-[10px] text-gray-400">${addon.note}</span>` : ''}
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-brand">+${addon.price}</span>
+                            </label>
+                        `;
+                    });
+                }
+            }
+
             document.getElementById('prod-modal').classList.remove('hidden');
             document.getElementById('prod-modal').classList.add('flex');
         };
@@ -436,9 +467,30 @@
         };
 
         app.addToCart = () => {
-            const existing = cart.find(i => i.name === currentModalProd.name);
-            if(existing) existing.qty += modalQty;
-            else cart.push({ ...currentModalProd, qty: modalQty });
+            // addons: calculate extras
+            const selectedAddons = [];
+            let addonsTotal = 0;
+            document.querySelectorAll('.addon-option:checked').forEach(opt => {
+                const price = parseFloat(opt.dataset.price);
+                addonsTotal += price;
+                selectedAddons.push({
+                    id: opt.value,
+                    name: opt.dataset.name,
+                    price: price
+                });
+            });
+
+            // Consider items different if they have different addons, simplified here: name match check should consider addons too?
+            // For simplicity in this structure: we assume separate items in cart for simplicity or just append. 
+            // Better: just push as new item if it has addons, or check deep equality. 
+            // Prompt requirement: "add addons data to cart item". We will push new item to keep it simple and safe.
+            
+            cart.push({ 
+                ...currentModalProd, 
+                qty: modalQty,
+                selectedAddons: selectedAddons,
+                addonsTotal: addonsTotal
+            });
             
             app.closeModal();
             app.updateCartBtn();
@@ -457,7 +509,8 @@
         // --- Cart Logic ---
         app.updateCartBtn = () => {
             const count = cart.reduce((a,b) => a+b.qty, 0);
-            const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
+            // Total = (Base Price + Addons) * Qty
+            const total = cart.reduce((a,b) => a + ((b.price + (b.addonsTotal || 0)) * b.qty), 0);
             
             document.getElementById('cart-count').innerText = count;
             document.getElementById('cart-total').innerText = total.toFixed(2);
@@ -468,21 +521,30 @@
 
         app.openCart = () => {
             const wrapper = document.getElementById('cart-items');
-            wrapper.innerHTML = cart.map((item, i) => `
+            wrapper.innerHTML = cart.map((item, i) => {
+                const itemTotal = (item.price + (item.addonsTotal || 0)) * item.qty;
+                const addonsHtml = (item.selectedAddons && item.selectedAddons.length > 0) 
+                    ? `<div class="text-[10px] text-gray-500 mt-1">
+                        ${item.selectedAddons.map(a => `+ ${a.name} (${a.price})`).join('، ')}
+                       </div>`
+                    : '';
+
+                return `
                 <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100">
                     <div class="flex items-center gap-3">
                         <div class="bg-gray-100 w-12 h-12 rounded-lg flex items-center justify-center font-bold text-gray-500">${item.qty}x</div>
                         <div>
                             <h4 class="font-bold text-sm text-gray-800">${item.name}</h4>
-                            <p class="text-xs text-brand font-bold">${item.price * item.qty} ر.س</p>
+                            ${addonsHtml}
+                            <p class="text-xs text-brand font-bold">${itemTotal} ر.س</p>
                         </div>
                     </div>
                     <button onclick="app.removeFromCart(${i})" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button>
                 </div>
-            `).join('');
+            `}).join('');
 
             // Financials Logic (Revised: Price Includes Tax)
-            const gross = cart.reduce((a,b) => a + (b.price * b.qty), 0); // Price already includes tax
+            const gross = cart.reduce((a,b) => a + ((b.price + (b.addonsTotal || 0)) * b.qty), 0); 
             const taxRate = restaurant.tax || 0;
             const fees = restaurant.fees || 0;
 
@@ -572,6 +634,10 @@
             
             cart.forEach(item => {
                 msg += `▫️ ${item.qty}x ${item.name} (${item.price})\n`;
+                if(item.selectedAddons && item.selectedAddons.length > 0) {
+                    const addonsText = item.selectedAddons.map(a => `${a.name} (${a.price})`).join(' + ');
+                    msg += `   + ${addonsText}\n`;
+                }
             });
             
             msg += `----------------\n`;
