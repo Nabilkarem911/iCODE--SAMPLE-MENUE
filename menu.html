@@ -318,77 +318,89 @@
                 document.getElementById('banners-area').classList.remove('hidden');
                 
                 // Initialize Slider Logic
-                app.initBanners();
-            }
+               app.initBanners = () => {
+    const wrapper = document.getElementById('banners-wrapper');
+    const slides = wrapper.querySelectorAll('img');
+    if (!slides.length) return;
 
-            // --- 4. Categories ---
-            const cats = ["الكل", ...new Set(products.map(p => p.category))];
-            const cWrapper = document.getElementById('cats-wrapper');
-            cWrapper.innerHTML = cats.map((c, i) => `
-                <button onclick="app.filterCats(this, '${c}')" class="cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition ${i===0 ? 'btn-main shadow-lg' : 'bg-white text-gray-600 border border-gray-100'}">
-                    ${c}
-                </button>
-            `).join('');
+    // إعداد CSS عبر JavaScript لتفعيل scroll-snap
+    wrapper.style.display = 'flex';
+    wrapper.style.flexWrap = 'nowrap';
+    wrapper.style.overflowX = 'auto';
+    wrapper.style.scrollBehavior = 'smooth';
+    wrapper.style.scrollSnapType = 'x mandatory';
+    wrapper.style.WebkitOverflowScrolling = 'touch';
+    wrapper.classList.add('no-scrollbar');
 
-            // --- 5. Products ---
-            app.renderProducts("الكل");
-        };
+    // إعداد كل صورة لتكون عرض الحاوية بالضبط
+    slides.forEach(img => {
+        img.style.flexShrink = '0';
+        img.style.width = '100%';
+        img.style.height = '160px'; // h-40 = 160px تقريبًا
+        img.style.objectFit = 'cover';
+        img.style.scrollSnapAlign = 'start';
+    });
 
-        // banners: fixed slider with proper width calculation
-        app.initBanners = () => {
-            const wrapper = document.getElementById('banners-wrapper');
-            const slides = wrapper.querySelectorAll('img');
-            if (!slides.length) return;
+    let bannerIndex = 0;
+    let bannerTimer = null;
 
-            // 1. Set wrapper to flex nowrap with full width
-            wrapper.style.display = 'flex';
-            wrapper.style.flexWrap = 'nowrap';
-            wrapper.style.width = `${slides.length * 100}%`;
+    const goToSlide = (index) => {
+        if (index < 0) index = slides.length - 1;
+        if (index >= slides.length) index = 0;
+        bannerIndex = index;
+        const slideWidth = wrapper.clientWidth;
+        wrapper.scrollTo({
+            left: slideWidth * bannerIndex,
+            behavior: 'smooth'
+        });
+    };
 
-            // 2. Each slide gets equal width
-            slides.forEach(img => {
-                img.classList.add('h-40', 'object-cover', 'flex-shrink-0');
-                img.style.width = `${100 / slides.length}%`;
-            });
+    const startAuto = () => {
+        if (bannerTimer) clearInterval(bannerTimer);
+        bannerTimer = setInterval(() => {
+            goToSlide(bannerIndex + 1);
+        }, 4000);
+    };
 
-            // Use global bannerIndex (already defined)
-            bannerIndex = 0;
+    const prevBtn = document.getElementById('banner-prev');
+    const nextBtn = document.getElementById('banner-next');
 
-            const update = () => {
-                const offset = (100 / slides.length) * bannerIndex;
-                wrapper.style.transform = `translateX(-${offset}%)`;
-            };
-
-            const startAuto = () => {
-                if (bannerTimer) clearInterval(bannerTimer);
-                bannerTimer = setInterval(() => {
-                    bannerIndex = (bannerIndex + 1) % slides.length;
-                    update();
-                }, 4000);
-            };
-
-            const prevBtn = document.getElementById('banner-prev');
-            const nextBtn = document.getElementById('banner-next');
-
-            if (prevBtn) {
-                prevBtn.onclick = () => {
-                    bannerIndex = (bannerIndex - 1 + slides.length) % slides.length;
-                    update();
-                    startAuto();
-                };
-            }
-
-            if (nextBtn) {
-                nextBtn.onclick = () => {
-                    bannerIndex = (bannerIndex + 1) % slides.length;
-                    update();
-                    startAuto();
-                };
-            }
-
-            update();
+    if (prevBtn) {
+        prevBtn.onclick = (e) => {
+            e.stopPropagation();
+            goToSlide(bannerIndex - 1);
             startAuto();
         };
+    }
+
+    if (nextBtn) {
+        nextBtn.onclick = (e) => {
+            e.stopPropagation();
+            goToSlide(bannerIndex + 1);
+            startAuto();
+        };
+    }
+
+    // بدء التشغيل التلقائي
+    startAuto();
+
+    // تحديث المؤشر عند التمرير اليدوي (اختياري)
+    let isDown = false, startX, scrollLeft;
+    wrapper.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - wrapper.offsetLeft;
+        scrollLeft = wrapper.scrollLeft;
+    });
+    wrapper.addEventListener('mouseleave', () => isDown = false);
+    wrapper.addEventListener('mouseup', () => isDown = false);
+    wrapper.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - wrapper.offsetLeft;
+        const walk = (x - startX) * 2;
+        wrapper.scrollLeft = scrollLeft - walk;
+    });
+};
 
         app.renderProducts = (cat) => {
             const container = document.getElementById('products-container');
@@ -690,3 +702,4 @@
     </script>
 </body>
 </html>
+
