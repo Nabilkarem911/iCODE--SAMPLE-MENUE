@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI-menu | منصة إدارة القوائم الرقمية</title>
     
+    <meta name="description" content="منصة إدارة القوائم الرقمية للمطاعم والكافيهات - نظام طلبات واتساب ذكي + QR Code ديناميكي + تحليلات كاملة">
+    <meta name="keywords" content="منيو رقمي, QR menu, قائمة طعام إلكترونية, نظام طلبات واتساب, مطاعم, كافيهات">
+    <meta property="og:title" content="AI-menu - منصة القوائم الرقمية">
+    <meta property="og:description" content="نظام شامل للمطاعم والكافيهات: QR + واتساب + تحليلات">
+    <meta property="og:image" content="https://yourdomain.com/og-image.jpg"> <meta name="twitter:card" content="summary_large_image">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -395,7 +401,39 @@
     </div>
 
     <script type="module">
-        import { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, db, doc, setDoc, collection, query, where, getDocs } from './firebase-config.js';
+        import { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, db, doc, setDoc, collection, query, where, getDocs, getDoc } from './firebase-config.js';
+
+        // Toast Notification System
+        window.showToast = (msg, type = 'error') => {
+            const colors = {
+                error: 'bg-red-500',
+                success: 'bg-green-500',
+                info: 'bg-blue-500'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = `fixed top-24 left-1/2 -translate-x-1/2 ${colors[type]} text-white px-6 py-4 rounded-2xl shadow-2xl z-[200] font-bold text-sm transition-all duration-300 transform scale-0`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-xmark' : 'fa-circle-check'} ml-2"></i>${msg}`;
+            
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.replace('scale-0', 'scale-100'), 10);
+            
+            setTimeout(() => {
+                toast.classList.replace('scale-100', 'scale-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Close modals on ESC or outside click
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape') closeModals();
+        });
+        document.getElementById('login-modal').addEventListener('click', (e) => {
+            if(e.target.id === 'login-modal') closeModals();
+        });
+        document.getElementById('register-modal').addEventListener('click', (e) => {
+            if(e.target.id === 'register-modal') closeModals();
+        });
 
         // Login Logic
         window.login = async () => {
@@ -403,59 +441,118 @@
             const pass = document.getElementById('login-pass').value;
             const btn = document.getElementById('login-btn');
             
-            if(!email || !pass) return alert("الرجاء إدخال البيانات");
+            if(!email || !pass) return showToast("الرجاء إدخال البريد وكلمة المرور");
+            
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+            btn.disabled = true;
 
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
+                
                 if(email.toLowerCase() === "nabilkarem@gmail.com") {
-                    window.location.href = "super_admin.html";
+                    showToast("مرحباً Super Admin!", 'success');
+                    setTimeout(() => window.location.href = "super_admin.html", 1000);
                 } else {
                     const q = query(collection(db, "restaurants"), where("email", "==", email));
                     const snap = await getDocs(q);
+                    
                     if(!snap.empty) {
                         const data = snap.docs[0].data();
+                        
                         if(data.isActive === false) {
-                            alert("⛔ الحساب موقوف حالياً"); btn.innerText = "تسجيل الدخول"; return;
+                            showToast("⛔ الحساب موقوف حالياً. تواصل مع الدعم الفني");
+                            btn.innerText = "تسجيل الدخول";
+                            btn.disabled = false;
+                            return;
                         }
+                        
+                        showToast("تسجيل دخول ناجح!", 'success');
                         localStorage.setItem('admin_rest_id', snap.docs[0].id);
-                        window.location.href = "client_dashboard.html";
+                        setTimeout(() => window.location.href = "client_dashboard.html", 1000);
                     } else {
-                        alert("لا يوجد حساب بهذا البريد"); btn.innerText = "تسجيل الدخول";
+                        showToast("لا يوجد حساب بهذا البريد");
+                        btn.innerText = "تسجيل الدخول";
+                        btn.disabled = false;
                     }
                 }
             } catch(e) { 
-                console.error(e); alert("بيانات الدخول غير صحيحة"); btn.innerText = "تسجيل الدخول";
+                console.error(e);
+                if(e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found') {
+                    showToast("بيانات الدخول غير صحيحة");
+                } else if(e.code === 'auth/too-many-requests') {
+                    showToast("محاولات كثيرة. انتظر قليلاً وحاول مرة أخرى");
+                } else {
+                    showToast("خطأ في الاتصال: " + e.message);
+                }
+                btn.innerText = "تسجيل الدخول";
+                btn.disabled = false;
             }
         }
 
         // Register Logic (Free Plan)
         window.register = async () => {
-            const name = document.getElementById('reg-name').value;
-            const uid = document.getElementById('reg-uid').value.toLowerCase().replace(/\s/g, '-');
-            const email = document.getElementById('reg-email').value;
+            const name = document.getElementById('reg-name').value.trim();
+            const uid = document.getElementById('reg-uid').value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            const email = document.getElementById('reg-email').value.trim();
             const pass = document.getElementById('reg-pass').value;
             const btn = document.getElementById('reg-submit');
 
-            if(!name || !uid || !email || !pass) return alert("جميع الحقول مطلوبة");
+            // Validation
+            if(!name || !uid || !email || !pass) return showToast("جميع الحقول مطلوبة");
+            if(uid.length < 3) return showToast("الرابط يجب أن يكون 3 أحرف على الأقل");
+            if(!/^[a-z0-9-]+$/.test(uid)) return showToast("الرابط يجب أن يحتوي على أحرف إنجليزية وأرقام فقط");
+            if(pass.length < 6) return showToast("كلمة المرور يجب أن تكون 6 أحرف على الأقل");
+            
+            // Reserved UIDs
+            const reserved = ['admin', 'test', 'demo', 'api', 'root', 'super', 'system'];
+            if(reserved.includes(uid)) return showToast("هذا الرابط محجوز من النظام");
+
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري الإنشاء...';
+            btn.disabled = true;
 
             try {
+                // Check if UID exists
+                const uidCheck = await getDoc(doc(db, "restaurants", uid));
+                if(uidCheck.exists()) {
+                    showToast("هذا الرابط محجوز مسبقاً. جرب رابط آخر");
+                    btn.innerText = "إنشاء الحساب";
+                    btn.disabled = false;
+                    return;
+                }
+
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
                 await setDoc(doc(db, "restaurants", uid), {
                     ownerId: cred.user.uid,
-                    name: name, email: email,
-                    plan: 'free', isActive: true,
-                    themeColor: "#0ea5e9", logo: "images/logo.png",
-                    products: [], stats: { views: 0 },
+                    name: name, 
+                    email: email,
+                    plan: 'free', 
+                    isActive: true,
+                    themeColor: "#0ea5e9", 
+                    btnColor: "#0ea5e9",
+                    textColor: "#ffffff",
+                    logo: "images/logo.png",
+                    products: [], 
+                    globalAddons: [],
+                    banners: [],
+                    stats: { views: 0, orders: 0 },
                     createdAt: new Date().toISOString()
                 });
+                
+                showToast("تم إنشاء الحساب بنجاح! جاري التحويل...", 'success');
                 localStorage.setItem('admin_rest_id', uid);
-                window.location.href = "client_dashboard.html";
+                
+                setTimeout(() => {
+                    window.location.href = "client_dashboard.html";
+                }, 1500);
             } catch(e) {
-                if(e.code === 'auth/email-already-in-use') alert("البريد مسجل مسبقاً");
-                else alert("خطأ: " + e.message);
+                console.error(e);
+                if(e.code === 'auth/email-already-in-use') showToast("البريد مسجل مسبقاً");
+                else if(e.code === 'auth/weak-password') showToast("كلمة المرور ضعيفة جداً (6 أحرف على الأقل)");
+                else if(e.code === 'auth/invalid-email') showToast("البريد الإلكتروني غير صحيح");
+                else showToast("خطأ: " + e.message);
+                
                 btn.innerText = "إنشاء الحساب";
+                btn.disabled = false;
             }
         }
     </script>
