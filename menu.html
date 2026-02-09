@@ -77,7 +77,6 @@
             height: 14px;
             border-radius: 2px;
             opacity: 0.9;
-            /* Default fallback */
             animation: confetti-fall 1.5s ease-out forwards;
         }
         @keyframes confetti-fall {
@@ -334,84 +333,62 @@
             app.renderProducts("الكل");
         };
 
-        // banners: FIXED SLIDER FOR RTL WITH CORRECT AUTO-PLAY
+        // banners: FIXED SLIDER FOR RTL WITH TRANSFORM (NOT SCROLL)
         app.initBanners = () => {
             const wrapper = document.getElementById('banners-wrapper');
             const slides = wrapper.querySelectorAll('img');
             if (!slides.length) return;
 
-            // Reset styles for scroll-based slider
+            // Set wrapper width based on number of slides
             wrapper.style.display = 'flex';
             wrapper.style.flexWrap = 'nowrap';
-            wrapper.style.overflowX = 'auto';
-            wrapper.style.scrollBehavior = 'smooth';
-            wrapper.style.scrollSnapType = 'x mandatory';
-            wrapper.classList.add('no-scrollbar');
+            wrapper.style.width = `${slides.length * 100}%`;
+            wrapper.style.transition = 'transform 0.5s ease-out';
 
-            // Style each slide
+            // Each slide gets equal width
             slides.forEach(img => {
-                img.style.flexShrink = '0';
-                img.style.width = '100%';
-                img.style.height = '160px';
-                img.style.objectFit = 'cover';
-                img.style.scrollSnapAlign = 'start';
+                img.classList.add('h-40', 'object-cover', 'flex-shrink-0');
+                img.style.width = `${100 / slides.length}%`;
             });
 
-            // Use global bannerIndex (don't redeclare with let/const)
+            // Use global bannerIndex
             bannerIndex = 0;
 
-            const goToSlide = (index) => {
-                if (index < 0) index = slides.length - 1;
-                if (index >= slides.length) index = 0;
-                bannerIndex = index;
-                const slideWidth = wrapper.clientWidth;
-                wrapper.scrollTo({
-                    left: slideWidth * bannerIndex,
-                    behavior: 'smooth'
-                });
+            const update = () => {
+                const offset = (100 / slides.length) * bannerIndex;
+                wrapper.style.transform = `translateX(-${offset}%)`;
             };
 
             const startAuto = () => {
                 if (bannerTimer) clearInterval(bannerTimer);
                 bannerTimer = setInterval(() => {
-                    goToSlide(bannerIndex + 1);
+                    bannerIndex = (bannerIndex + 1) % slides.length;
+                    update();
                 }, 4000);
             };
 
             const prevBtn = document.getElementById('banner-prev');
             const nextBtn = document.getElementById('banner-next');
 
-            // Fixed RTL button logic:
-            // banner-prev (left button in RTL) = go to PREVIOUS slide
-            // banner-next (right button in RTL) = go to NEXT slide
+            // In RTL: LEFT button is on the LEFT visually, should go PREVIOUS
+            // RIGHT button is on the RIGHT visually, should go NEXT
             if (prevBtn) {
-                prevBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    goToSlide(bannerIndex - 1);
+                prevBtn.onclick = () => {
+                    bannerIndex = (bannerIndex - 1 + slides.length) % slides.length;
+                    update();
                     startAuto();
                 };
             }
+
             if (nextBtn) {
-                nextBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    goToSlide(bannerIndex + 1);
+                nextBtn.onclick = () => {
+                    bannerIndex = (bannerIndex + 1) % slides.length;
+                    update();
                     startAuto();
                 };
             }
 
-            // Pause auto-play when user scrolls manually
-            wrapper.addEventListener('scroll', () => {
-                if (bannerTimer) clearInterval(bannerTimer);
-                // Resume after 3 seconds of inactivity
-                setTimeout(() => {
-                    const currentScroll = wrapper.scrollLeft;
-                    const slideWidth = wrapper.clientWidth;
-                    bannerIndex = Math.round(currentScroll / slideWidth);
-                    startAuto();
-                }, 3000);
-            }, { passive: true });
-
-            goToSlide(0);
+            update();
             startAuto();
         };
 
@@ -668,21 +645,21 @@
             const note = document.getElementById('cust-note').value;
             const total = document.getElementById('bill-total').innerText;
             
-            let msg = `*طلب جديد* 🔔\n`;
-            if(tableNum) msg += `📍 طاولة: *${tableNum}*\n`;
-            msg += `👤 الاسم: ${name || 'غير محدد'}\n`;
-            msg += `----------------\n`;
+            let msg = `*طلب جديد* 🔔\\n`;
+            if(tableNum) msg += `📍 طاولة: *${tableNum}*\\n`;
+            msg += `👤 الاسم: ${name || 'غير محدد'}\\n`;
+            msg += `----------------\\n`;
             
             cart.forEach(item => {
-                msg += `▫️ ${item.qty}x ${item.name} (${item.price})\n`;
+                msg += `▫️ ${item.qty}x ${item.name} (${item.price})\\n`;
                 if(item.selectedAddons && item.selectedAddons.length > 0) {
                     const addonsText = item.selectedAddons.map(a => `${a.name} (${a.price})`).join(' + ');
-                    msg += `   + ${addonsText}\n`;
+                    msg += `   + ${addonsText}\\n`;
                 }
             });
             
-            msg += `----------------\n`;
-            msg += `📝 ملاحظات: ${note}\n`;
+            msg += `----------------\\n`;
+            msg += `📝 ملاحظات: ${note}\\n`;
             msg += `💰 *الإجمالي: ${total}*`;
 
             const phone = restaurant.phone || "";
