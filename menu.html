@@ -318,105 +318,82 @@
                 document.getElementById('banners-area').classList.remove('hidden');
                 
                 // Initialize Slider Logic
-                app.initBanners();
-            }
+               app.initBanners = () => {
+    const wrapper = document.getElementById('banners-wrapper');
+    const slides = wrapper.querySelectorAll('img');
+    if (!slides.length) return;
 
-            // --- 4. Categories ---
-            const cats = ["الكل", ...new Set(products.map(p => p.category))];
-            const cWrapper = document.getElementById('cats-wrapper');
-            cWrapper.innerHTML = cats.map((c, i) => `
-                <button onclick="app.filterCats(this, '${c}')" class="cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition ${i===0 ? 'btn-main shadow-lg' : 'bg-white text-gray-600 border border-gray-100'}">
-                    ${c}
-                </button>
-            `).join('');
+    // إعداد الحاوية للـ scroll-snap مع دعم RTL
+    wrapper.style.display = 'flex';
+    wrapper.style.flexWrap = 'nowrap';
+    wrapper.style.overflowX = 'auto';
+    wrapper.style.scrollBehavior = 'smooth';
+    wrapper.style.scrollSnapType = 'x mandatory';
+    wrapper.style.WebkitOverflowScrolling = 'touch';
+    wrapper.classList.add('no-scrollbar');
 
-            // --- 5. Products ---
-            app.renderProducts("الكل");
-        };
+    // تعيين كل صورة لتكون عرض الحاوية بالضبط
+    slides.forEach(img => {
+        img.style.flexShrink = '0';
+        img.style.width = '100%';
+        img.style.height = '160px'; // h-40 = 160px
+        img.style.objectFit = 'cover';
+        img.style.scrollSnapAlign = 'start';
+    });
 
-        // banners: fixed slider with proper width calculation using scrollTo + scroll-snap
-        app.initBanners = () => {
-            const wrapper = document.getElementById('banners-wrapper');
-            const slides = wrapper.querySelectorAll('img');
-            if (!slides.length) return;
+    let bannerIndex = 0;
+    let bannerTimer = null;
 
-            // Setup container for smooth scrolling with snap
-            wrapper.style.display = 'flex';
-            wrapper.style.flexWrap = 'nowrap';
-            wrapper.style.overflowX = 'auto';
-            wrapper.style.scrollBehavior = 'smooth';
-            wrapper.style.scrollSnapType = 'x mandatory';
-            wrapper.style.WebkitOverflowScrolling = 'touch';
-            wrapper.classList.add('no-scrollbar');
+    const goToSlide = (index) => {
+        if (index < 0) index = slides.length - 1;
+        if (index >= slides.length) index = 0;
+        bannerIndex = index;
+        const slideWidth = wrapper.clientWidth;
+        // في RTL: نستخدم scrollLeft = (width * index) من اليمين → لذا نعكس الاتجاه
+        // لكن لأن scrollLeft يعمل من اليسار، نحسب كما هو، ثم نعكس الاتجاه عبر CSS أو منطق
+        // نستخدم هنا: scrollLeft = (totalWidth - slideWidth) - (slideWidth * index)
+        // لكن أسهل: نستخدم scrollLeft = slideWidth * index (يعمل مع RTL إذا كانت الحاوية dir="rtl")
+        // لذا نتأكد من أن الحاوية داخل `dir="rtl"` — وهذا محقّق في `<html dir="rtl">`
+        wrapper.scrollTo({
+            left: slideWidth * bannerIndex,
+            behavior: 'smooth'
+        });
+    };
 
-            // Style each slide
-            slides.forEach(img => {
-                img.style.flexShrink = '0';
-                img.style.width = '100%';
-                img.style.height = '160px'; // matches h-40 in Tailwind
-                img.style.objectFit = 'cover';
-                img.style.scrollSnapAlign = 'start';
-            });
+    const startAuto = () => {
+        if (bannerTimer) clearInterval(bannerTimer);
+        bannerTimer = setInterval(() => {
+            goToSlide(bannerIndex + 1);
+        }, 4000); // 4 ثواني لكل سلايد
+    };
 
-            let bannerIndex = 0;
-            let bannerTimer = null;
+    const prevBtn = document.getElementById('banner-prev');
+    const nextBtn = document.getElementById('banner-next');
 
-            const goToSlide = (index) => {
-                if (index < 0) index = slides.length - 1;
-                if (index >= slides.length) index = 0;
-                bannerIndex = index;
-                const slideWidth = wrapper.clientWidth;
-                wrapper.scrollTo({
-                    left: slideWidth * bannerIndex,
-                    behavior: 'smooth'
-                });
-            };
-
-            const startAuto = () => {
-                if (bannerTimer) clearInterval(bannerTimer);
-                bannerTimer = setInterval(() => {
-                    goToSlide(bannerIndex + 1);
-                }, 4000);
-            };
-
-            const prevBtn = document.getElementById('banner-prev');
-            const nextBtn = document.getElementById('banner-next');
-
-            if (prevBtn) {
-                prevBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    goToSlide(bannerIndex - 1);
-                    startAuto();
-                };
-            }
-
-            if (nextBtn) {
-                nextBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    goToSlide(bannerIndex + 1);
-                    startAuto();
-                };
-            }
-
+    // ⚠️ في RTL: الزر الأيسر (‹) = التالي، الزر الأيمن (›) = السابق
+    if (prevBtn) {
+        prevBtn.onclick = (e) => {
+            e.stopPropagation();
+            goToSlide(bannerIndex + 1); // الزر الأيسر = التالي (في RTL)
             startAuto();
-
-            // Optional: handle manual drag (improves UX on touch)
-            let isDown = false, startX, scrollLeft;
-            wrapper.addEventListener('mousedown', (e) => {
-                isDown = true;
-                startX = e.pageX - wrapper.offsetLeft;
-                scrollLeft = wrapper.scrollLeft;
-            });
-            wrapper.addEventListener('mouseleave', () => isDown = false);
-            wrapper.addEventListener('mouseup', () => isDown = false);
-            wrapper.addEventListener('mousemove', (e) => {
-                if (!isDown) return;
-                e.preventDefault();
-                const x = e.pageX - wrapper.offsetLeft;
-                const walk = (x - startX) * 2;
-                wrapper.scrollLeft = scrollLeft - walk;
-            });
         };
+    }
+
+    if (nextBtn) {
+        nextBtn.onclick = (e) => {
+            e.stopPropagation();
+            goToSlide(bannerIndex - 1); // الزر الأيمن = السابق (في RTL)
+            startAuto();
+        };
+    }
+
+    // بدء التشغيل التلقائي
+    startAuto();
+
+    // (اختياري) تعديل اتجاه الزر لعرض رمز مناسب (لو أردت)
+    // مثلاً: لو أردت رمز "→" للزر الأيسر، و"←" للزر الأيمن في RTL، يمكنك تعديله بالـ CSS أو JS
+    // لكن في التصميم الحالي، الرموز ‹ و › مُستخدمة، وهي صحيحة لـ RTL إذا كان الاتجاه مُحدد جيدًا.
+};
 
         app.renderProducts = (cat) => {
             const container = document.getElementById('products-container');
@@ -718,3 +695,4 @@
     </script>
 </body>
 </html>
+
