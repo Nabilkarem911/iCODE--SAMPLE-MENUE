@@ -334,87 +334,86 @@
             app.renderProducts("الكل");
         };
 
-        // banners: FIXED SLIDER FOR RTL WITH AUTO-PLAY AND CORRECT BUTTON DIRECTION
-// banners: FIXED SLIDER FOR RTL WITH CORRECT AUTO-PLAY
-app.initBanners = () => {
-    const wrapper = document.getElementById('banners-wrapper');
-    const slides = wrapper.querySelectorAll('img');
-    if (!slides.length) return;
+        // banners: FIXED SLIDER FOR RTL WITH CORRECT AUTO-PLAY
+        app.initBanners = () => {
+            const wrapper = document.getElementById('banners-wrapper');
+            const slides = wrapper.querySelectorAll('img');
+            if (!slides.length) return;
 
-    // Reset styles for scroll-based slider
-    wrapper.style.display = 'flex';
-    wrapper.style.flexWrap = 'nowrap';
-    wrapper.style.overflowX = 'auto';
-    wrapper.style.scrollBehavior = 'smooth';
-    wrapper.style.scrollSnapType = 'x mandatory';
-    wrapper.classList.add('no-scrollbar');
+            // Reset styles for scroll-based slider
+            wrapper.style.display = 'flex';
+            wrapper.style.flexWrap = 'nowrap';
+            wrapper.style.overflowX = 'auto';
+            wrapper.style.scrollBehavior = 'smooth';
+            wrapper.style.scrollSnapType = 'x mandatory';
+            wrapper.classList.add('no-scrollbar');
 
-    // Style each slide
-    slides.forEach(img => {
-        img.style.flexShrink = '0';
-        img.style.width = '100%';
-        img.style.height = '160px';
-        img.style.objectFit = 'cover';
-        img.style.scrollSnapAlign = 'start';
-    });
+            // Style each slide
+            slides.forEach(img => {
+                img.style.flexShrink = '0';
+                img.style.width = '100%';
+                img.style.height = '160px';
+                img.style.objectFit = 'cover';
+                img.style.scrollSnapAlign = 'start';
+            });
 
-    // Use global bannerIndex (don't redeclare with let/const)
-    bannerIndex = 0;
+            // Use global bannerIndex (don't redeclare with let/const)
+            bannerIndex = 0;
 
-    const goToSlide = (index) => {
-        if (index < 0) index = slides.length - 1;
-        if (index >= slides.length) index = 0;
-        bannerIndex = index;
-        const slideWidth = wrapper.clientWidth;
-        wrapper.scrollTo({
-            left: slideWidth * bannerIndex,
-            behavior: 'smooth'
-        });
-    };
+            const goToSlide = (index) => {
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+                bannerIndex = index;
+                const slideWidth = wrapper.clientWidth;
+                wrapper.scrollTo({
+                    left: slideWidth * bannerIndex,
+                    behavior: 'smooth'
+                });
+            };
 
-    const startAuto = () => {
-        if (bannerTimer) clearInterval(bannerTimer);
-        bannerTimer = setInterval(() => {
-            goToSlide(bannerIndex + 1);
-        }, 4000);
-    };
+            const startAuto = () => {
+                if (bannerTimer) clearInterval(bannerTimer);
+                bannerTimer = setInterval(() => {
+                    goToSlide(bannerIndex + 1);
+                }, 4000);
+            };
 
-    const prevBtn = document.getElementById('banner-prev');
-    const nextBtn = document.getElementById('banner-next');
+            const prevBtn = document.getElementById('banner-prev');
+            const nextBtn = document.getElementById('banner-next');
 
-    // Fixed RTL button logic:
-    // banner-prev (left button in RTL) = go to PREVIOUS slide
-    // banner-next (right button in RTL) = go to NEXT slide
-    if (prevBtn) {
-        prevBtn.onclick = (e) => {
-            e.stopPropagation();
-            goToSlide(bannerIndex - 1); // ← السابق
+            // Fixed RTL button logic:
+            // banner-prev (left button in RTL) = go to PREVIOUS slide
+            // banner-next (right button in RTL) = go to NEXT slide
+            if (prevBtn) {
+                prevBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    goToSlide(bannerIndex - 1);
+                    startAuto();
+                };
+            }
+            if (nextBtn) {
+                nextBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    goToSlide(bannerIndex + 1);
+                    startAuto();
+                };
+            }
+
+            // Pause auto-play when user scrolls manually
+            wrapper.addEventListener('scroll', () => {
+                if (bannerTimer) clearInterval(bannerTimer);
+                // Resume after 3 seconds of inactivity
+                setTimeout(() => {
+                    const currentScroll = wrapper.scrollLeft;
+                    const slideWidth = wrapper.clientWidth;
+                    bannerIndex = Math.round(currentScroll / slideWidth);
+                    startAuto();
+                }, 3000);
+            }, { passive: true });
+
+            goToSlide(0);
             startAuto();
         };
-    }
-    if (nextBtn) {
-        nextBtn.onclick = (e) => {
-            e.stopPropagation();
-            goToSlide(bannerIndex + 1); // → التالي
-            startAuto();
-    };
-    }
-
-    // Pause auto-play when user scrolls manually
-    wrapper.addEventListener('scroll', () => {
-        if (bannerTimer) clearInterval(bannerTimer);
-        // Resume after 3 seconds of inactivity
-        setTimeout(() => {
-            const currentScroll = wrapper.scrollLeft;
-            const slideWidth = wrapper.clientWidth;
-            bannerIndex = Math.round(currentScroll / slideWidth);
-            startAuto();
-        }, 3000);
-    }, { passive: true });
-
-    goToSlide(0); // Initialize first slide
-    startAuto();
-};
 
         app.renderProducts = (cat) => {
             const container = document.getElementById('products-container');
@@ -716,5 +715,3 @@ app.initBanners = () => {
     </script>
 </body>
 </html>
-
-
