@@ -38,13 +38,11 @@
             padding-bottom: 100px;
         }
         
-        /* Dynamic Header Class */
         .menu-header {
-            background: linear-gradient(135deg, #2563eb 0%, #000 100%); /* Fallback */
+            background: linear-gradient(135deg, #2563eb 0%, #000 100%);
             color: white;
         }
 
-        /* General Button Class */
         .btn-main {
             background-color: var(--brand-color);
             color: var(--brand-text-color);
@@ -54,23 +52,18 @@
             opacity: 0.9;
         }
         
-        /* Hide Scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Animations */
         .fade-in { animation: fadeIn 0.3s ease-in; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Sticky Categories */
         .sticky-cats { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); }
 
-        /* Loader */
         #loader { position: fixed; inset: 0; background-color: white; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--brand-color); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Confetti Animation */
         .confetti-piece {
             position: absolute;
             width: 8px;
@@ -84,7 +77,6 @@
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
-        /* confetti: from sides */
         .confetti-piece.from-left {
             animation: confetti-left 2.2s ease-out forwards;
         }
@@ -221,7 +213,6 @@
 
         window.app = {};
         
-        // State
         let restaurant = {};
         let products = [];
         let globalAddons = [];
@@ -229,26 +220,21 @@
         let currentModalProd = null;
         let modalQty = 1;
         
-        // Banner slider state
         let bannerIndex = 0;
         let bannerTimer = null;
 
-        // Params
         const urlParams = new URLSearchParams(window.location.search);
         const restId = urlParams.get('id');
         const tableNum = urlParams.get('table');
         const lang = localStorage.getItem('menu_lang') || 'ar';
 
-        // --- Core ---
         app.init = async () => {
             if(!restId) return document.body.innerHTML = "<div class='p-10 text-center'>Error: No Restaurant ID provided in URL</div>";
             
-            // Setup Back Button
             const backLink = tableNum ? `landing.html?id=${restId}&table=${tableNum}` : `landing.html?id=${restId}`;
             const backEl = document.getElementById('back-main');
             if (backEl) backEl.href = backLink;
 
-            // Set Lang
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
@@ -259,7 +245,6 @@
                     products = restaurant.products || [];
                     globalAddons = restaurant.globalAddons || [];
                     
-                    // Increment Views (Analytics)
                     updateDoc(doc(db, "restaurants", restId), { "stats.views": increment(1) });
                     
                     app.renderUI();
@@ -272,13 +257,11 @@
         };
 
         app.renderUI = () => {
-            // --- 1. Dynamic Colors & Theme ---
             const brandColor = restaurant.btnColor || restaurant.themeColor || '#2563eb';
             const brandText  = restaurant.textColor || '#ffffff';
             document.documentElement.style.setProperty('--brand-color', brandColor);
             document.documentElement.style.setProperty('--brand-text-color', brandText);
 
-            // Header Background Logic
             const headerEl = document.querySelector('.menu-header');
             if (restaurant.menuBgType === 'image' && restaurant.menuBgImage) {
                 headerEl.style.background = `linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%), url('${restaurant.menuBgImage}')`;
@@ -290,14 +273,12 @@
                 headerEl.style.background = `linear-gradient(135deg, ${restaurant.themeColor} 0%, #000 100%)`;
             }
 
-            // Page Background Logic
             if (restaurant.menuBgType === 'color' && restaurant.menuBgColor) {
                 document.documentElement.style.setProperty('--menu-page-bg', restaurant.menuBgColor);
             } else {
                 document.documentElement.style.setProperty('--menu-page-bg', '#f8fafc');
             }
 
-            // --- 2. Branding Content ---
             document.title = restaurant.name;
             document.getElementById('rest-name').innerText = restaurant.name;
             document.getElementById('rest-desc').innerText = restaurant.desc || "";
@@ -310,17 +291,14 @@
                 document.getElementById('table-num').innerText = tableNum;
             }
             
-            // --- 3. Banners ---
             if(restaurant.banners && restaurant.banners.length > 0) {
                 const bWrapper = document.getElementById('banners-wrapper');
                 bWrapper.innerHTML = restaurant.banners.map(b => `<img src="${b}">`).join('');
                 document.getElementById('banners-area').classList.remove('hidden');
                 
-                // Initialize Slider Logic
                 app.initBanners();
             }
 
-            // --- 4. Categories ---
             const cats = ["الكل", ...new Set(products.map(p => p.category))];
             const cWrapper = document.getElementById('cats-wrapper');
             cWrapper.innerHTML = cats.map((c, i) => `
@@ -329,74 +307,73 @@
                 </button>
             `).join('');
 
-            // --- 5. Products ---
             app.renderProducts("الكل");
         };
 
-        // banners: FIXED SLIDER FOR RTL WITH TRANSFORM (NOT SCROLL)
+        // banners: FIXED SLIDER FOR RTL
         app.initBanners = () => {
             const wrapper = document.getElementById('banners-wrapper');
             const slides = wrapper.querySelectorAll('img');
             if (!slides.length) return;
 
-            // Set wrapper width based on number of slides
             wrapper.style.display = 'flex';
-            wrapper.style.flexWrap = 'nowrap';
-            wrapper.style.width = `${slides.length * 100}%`;
-            wrapper.style.transition = 'transform 0.5s ease-out';
+            wrapper.style.overflowX = 'auto';
+            wrapper.style.scrollSnapType = 'x mandatory';
+            wrapper.style.scrollBehavior = 'smooth';
+            wrapper.classList.add('no-scrollbar');
 
-            // Each slide gets equal width
             slides.forEach(img => {
-                img.classList.add('h-40', 'object-cover', 'flex-shrink-0');
-                img.style.width = `${100 / slides.length}%`;
+                img.style.minWidth = '100%';
+                img.style.height = '160px';
+                img.style.objectFit = 'cover';
+                img.style.scrollSnapAlign = 'start';
             });
 
-            // Use global bannerIndex
             bannerIndex = 0;
 
-            const update = () => {
-                const offset = (100 / slides.length) * bannerIndex;
-                wrapper.style.transform = `translateX(-${offset}%)`;
+            const goToSlide = (index) => {
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+                bannerIndex = index;
+                
+                const slideWidth = wrapper.offsetWidth;
+                wrapper.scrollLeft = slideWidth * bannerIndex;
             };
 
             const startAuto = () => {
                 if (bannerTimer) clearInterval(bannerTimer);
                 bannerTimer = setInterval(() => {
-                    bannerIndex = (bannerIndex + 1) % slides.length;
-                    update();
+                    goToSlide(bannerIndex + 1);
                 }, 4000);
             };
 
             const prevBtn = document.getElementById('banner-prev');
             const nextBtn = document.getElementById('banner-next');
 
-            // In RTL: LEFT button is on the LEFT visually, should go PREVIOUS
-            // RIGHT button is on the RIGHT visually, should go NEXT
             if (prevBtn) {
-                prevBtn.onclick = () => {
-                    bannerIndex = (bannerIndex - 1 + slides.length) % slides.length;
-                    update();
+                prevBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    goToSlide(bannerIndex + 1);
                     startAuto();
                 };
             }
 
             if (nextBtn) {
-                nextBtn.onclick = () => {
-                    bannerIndex = (bannerIndex + 1) % slides.length;
-                    update();
+                nextBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    goToSlide(bannerIndex - 1);
                     startAuto();
                 };
             }
 
-            update();
+            goToSlide(0);
             startAuto();
         };
 
         app.renderProducts = (cat) => {
             const container = document.getElementById('products-container');
-            const layout = restaurant.layout || 'grid'; // grid or list
+            const layout = restaurant.layout || 'grid';
             
-            // Set Layout Class
             container.className = layout === 'grid' ? "grid grid-cols-2 gap-4" : "flex flex-col gap-4";
 
             const filtered = cat === "الكل" ? products : products.filter(p => p.category === cat);
@@ -438,10 +415,9 @@
             app.renderProducts(cat);
         };
 
-        // --- Interaction ---
         app.openProdModal = (idx) => {
             const p = products[idx];
-            if(p.stock === false) return; // Can't open out of stock
+            if(p.stock === false) return;
 
             currentModalProd = p;
             modalQty = 1;
@@ -453,18 +429,14 @@
             document.getElementById('modal-cal').innerHTML = p.calories ? `<i class="fa-solid fa-fire text-orange-500"></i> ${p.calories} Kcal` : '';
             document.getElementById('modal-qty').innerText = 1;
 
-            // Badges
             document.getElementById('modal-badges').innerHTML = (p.badges||[]).map(b => `<span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs font-bold">${getBadgeName(b)}</span>`).join('');
             
-            // Allergens
             document.getElementById('modal-allergens').innerHTML = (p.allergens||[]).map(a => `<span class="bg-gray-100 px-2 py-1 rounded text-[10px]">${a}</span>`).join('');
 
-            // addons: render checkboxes for product modal
             const addonContainer = document.getElementById('modal-addons');
             addonContainer.innerHTML = '';
             
             if(p.addons && p.addons.length > 0) {
-                // Filter allowed addons that are active in global settings
                 const allowedAddons = globalAddons.filter(g => p.addons.includes(g.id) && g.active !== false);
                 
                 if(allowedAddons.length > 0) {
@@ -529,7 +501,6 @@
             document.getElementById('prod-modal').classList.remove('flex');
         };
 
-        // --- Cart Logic ---
         app.updateCartBtn = () => {
             const count = cart.reduce((a,b) => a+b.qty, 0);
             const total = cart.reduce((a,b) => a + ((b.price + (b.addonsTotal || 0)) * b.qty), 0);
@@ -592,7 +563,7 @@
 
         app.removeFromCart = (i) => {
             cart.splice(i, 1);
-            app.openCart(); // Re-render cart
+            app.openCart();
             app.updateCartBtn();
             if(cart.length === 0) app.closeCart();
         };
@@ -602,7 +573,6 @@
             document.getElementById('cart-modal').classList.remove('flex');
         };
 
-        // confetti: from sides
         app.showCelebration = () => {
             const layer = document.getElementById('confetti-layer');
             if (!layer) return;
@@ -617,14 +587,12 @@
                 const isLeft = Math.random() > 0.5;
                 div.className = `confetti-piece ${isLeft ? 'from-left' : 'from-right'}`;
                 
-                // Position start
                 div.style.left = isLeft ? '-5%' : '105%';
-                div.style.top = Math.random() * 40 + '%'; // 0-40% from top
+                div.style.top = Math.random() * 40 + '%';
                 
                 div.style.backgroundColor = colors[i % colors.length];
                 
-                // Randomize duration and delay
-                div.style.animationDuration = (Math.random() * 0.8 + 1.8) + 's'; // 1.8s - 2.6s
+                div.style.animationDuration = (Math.random() * 0.8 + 1.8) + 's';
                 div.style.animationDelay = (Math.random() * 0.5) + 's';
                 
                 layer.appendChild(div);
@@ -638,7 +606,6 @@
         app.checkout = () => {
             if(cart.length === 0) return;
             
-            // Trigger Animation
             app.showCelebration();
 
             const name = document.getElementById('cust-name').value;
@@ -664,13 +631,11 @@
 
             const phone = restaurant.phone || "";
             
-            // Delay slightly to let animation start
             setTimeout(() => {
                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
             }, 800);
         };
 
-        // --- Helpers ---
         app.toggleLang = () => {
             const newLang = lang === 'ar' ? 'en' : 'ar';
             localStorage.setItem('menu_lang', newLang);
