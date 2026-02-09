@@ -66,7 +66,7 @@
         .sticky-cats { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); }
 
         /* Loader */
-        #loader { position: fixed; inset: 0; bg-white; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        #loader { position: fixed; inset: 0; background-color: white; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--brand-color); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -133,7 +133,7 @@
         <div class="relative">
             <div class="overflow-hidden rounded-xl">
                 <div class="flex flex-nowrap transition-transform duration-500 ease-out no-scrollbar" id="banners-wrapper">
-                    </div>
+                </div>
             </div>
             <button id="banner-prev" type="button" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm hover:bg-black/60 transition">‹</button>
             <button id="banner-next" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm hover:bg-black/60 transition">›</button>
@@ -142,12 +142,12 @@
 
     <div class="sticky-cats border-b border-gray-100 shadow-sm">
         <div class="flex overflow-x-auto gap-2 p-3 no-scrollbar" id="cats-wrapper">
-            </div>
+        </div>
     </div>
 
     <main class="p-4 min-h-[60vh]">
         <div id="products-container" class="grid gap-4">
-            </div>
+        </div>
     </main>
 
     <div id="cart-btn" class="fixed bottom-4 left-4 right-4 btn-main p-4 rounded-2xl shadow-2xl flex justify-between items-center cursor-pointer z-50 transform translate-y-20 transition-all duration-300" onclick="app.openCart()">
@@ -199,7 +199,7 @@
             </div>
             
             <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4">
-                </div>
+            </div>
 
             <div class="p-6 border-t bg-gray-50 space-y-3">
                 <div class="flex justify-between text-sm text-gray-500"><span>المجموع (بدون ضريبة)</span><span id="bill-sub">0</span></div>
@@ -318,89 +318,105 @@
                 document.getElementById('banners-area').classList.remove('hidden');
                 
                 // Initialize Slider Logic
-               app.initBanners = () => {
-    const wrapper = document.getElementById('banners-wrapper');
-    const slides = wrapper.querySelectorAll('img');
-    if (!slides.length) return;
+                app.initBanners();
+            }
 
-    // إعداد CSS عبر JavaScript لتفعيل scroll-snap
-    wrapper.style.display = 'flex';
-    wrapper.style.flexWrap = 'nowrap';
-    wrapper.style.overflowX = 'auto';
-    wrapper.style.scrollBehavior = 'smooth';
-    wrapper.style.scrollSnapType = 'x mandatory';
-    wrapper.style.WebkitOverflowScrolling = 'touch';
-    wrapper.classList.add('no-scrollbar');
+            // --- 4. Categories ---
+            const cats = ["الكل", ...new Set(products.map(p => p.category))];
+            const cWrapper = document.getElementById('cats-wrapper');
+            cWrapper.innerHTML = cats.map((c, i) => `
+                <button onclick="app.filterCats(this, '${c}')" class="cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition ${i===0 ? 'btn-main shadow-lg' : 'bg-white text-gray-600 border border-gray-100'}">
+                    ${c}
+                </button>
+            `).join('');
 
-    // إعداد كل صورة لتكون عرض الحاوية بالضبط
-    slides.forEach(img => {
-        img.style.flexShrink = '0';
-        img.style.width = '100%';
-        img.style.height = '160px'; // h-40 = 160px تقريبًا
-        img.style.objectFit = 'cover';
-        img.style.scrollSnapAlign = 'start';
-    });
-
-    let bannerIndex = 0;
-    let bannerTimer = null;
-
-    const goToSlide = (index) => {
-        if (index < 0) index = slides.length - 1;
-        if (index >= slides.length) index = 0;
-        bannerIndex = index;
-        const slideWidth = wrapper.clientWidth;
-        wrapper.scrollTo({
-            left: slideWidth * bannerIndex,
-            behavior: 'smooth'
-        });
-    };
-
-    const startAuto = () => {
-        if (bannerTimer) clearInterval(bannerTimer);
-        bannerTimer = setInterval(() => {
-            goToSlide(bannerIndex + 1);
-        }, 4000);
-    };
-
-    const prevBtn = document.getElementById('banner-prev');
-    const nextBtn = document.getElementById('banner-next');
-
-    if (prevBtn) {
-        prevBtn.onclick = (e) => {
-            e.stopPropagation();
-            goToSlide(bannerIndex - 1);
-            startAuto();
+            // --- 5. Products ---
+            app.renderProducts("الكل");
         };
-    }
 
-    if (nextBtn) {
-        nextBtn.onclick = (e) => {
-            e.stopPropagation();
-            goToSlide(bannerIndex + 1);
+        // banners: fixed slider with proper width calculation using scrollTo + scroll-snap
+        app.initBanners = () => {
+            const wrapper = document.getElementById('banners-wrapper');
+            const slides = wrapper.querySelectorAll('img');
+            if (!slides.length) return;
+
+            // Setup container for smooth scrolling with snap
+            wrapper.style.display = 'flex';
+            wrapper.style.flexWrap = 'nowrap';
+            wrapper.style.overflowX = 'auto';
+            wrapper.style.scrollBehavior = 'smooth';
+            wrapper.style.scrollSnapType = 'x mandatory';
+            wrapper.style.WebkitOverflowScrolling = 'touch';
+            wrapper.classList.add('no-scrollbar');
+
+            // Style each slide
+            slides.forEach(img => {
+                img.style.flexShrink = '0';
+                img.style.width = '100%';
+                img.style.height = '160px'; // matches h-40 in Tailwind
+                img.style.objectFit = 'cover';
+                img.style.scrollSnapAlign = 'start';
+            });
+
+            let bannerIndex = 0;
+            let bannerTimer = null;
+
+            const goToSlide = (index) => {
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+                bannerIndex = index;
+                const slideWidth = wrapper.clientWidth;
+                wrapper.scrollTo({
+                    left: slideWidth * bannerIndex,
+                    behavior: 'smooth'
+                });
+            };
+
+            const startAuto = () => {
+                if (bannerTimer) clearInterval(bannerTimer);
+                bannerTimer = setInterval(() => {
+                    goToSlide(bannerIndex + 1);
+                }, 4000);
+            };
+
+            const prevBtn = document.getElementById('banner-prev');
+            const nextBtn = document.getElementById('banner-next');
+
+            if (prevBtn) {
+                prevBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    goToSlide(bannerIndex - 1);
+                    startAuto();
+                };
+            }
+
+            if (nextBtn) {
+                nextBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    goToSlide(bannerIndex + 1);
+                    startAuto();
+                };
+            }
+
             startAuto();
+
+            // Optional: handle manual drag (improves UX on touch)
+            let isDown = false, startX, scrollLeft;
+            wrapper.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - wrapper.offsetLeft;
+                scrollLeft = wrapper.scrollLeft;
+            });
+            wrapper.addEventListener('mouseleave', () => isDown = false);
+            wrapper.addEventListener('mouseup', () => isDown = false);
+            wrapper.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - wrapper.offsetLeft;
+                const walk = (x - startX) * 2;
+                wrapper.scrollLeft = scrollLeft - walk;
+            });
         };
-    }
-
-    // بدء التشغيل التلقائي
-    startAuto();
-
-    // تحديث المؤشر عند التمرير اليدوي (اختياري)
-    let isDown = false, startX, scrollLeft;
-    wrapper.addEventListener('mousedown', (e) => {
-        isDown = true;
-        startX = e.pageX - wrapper.offsetLeft;
-        scrollLeft = wrapper.scrollLeft;
-    });
-    wrapper.addEventListener('mouseleave', () => isDown = false);
-    wrapper.addEventListener('mouseup', () => isDown = false);
-    wrapper.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - wrapper.offsetLeft;
-        const walk = (x - startX) * 2;
-        wrapper.scrollLeft = scrollLeft - walk;
-    });
-};
 
         app.renderProducts = (cat) => {
             const container = document.getElementById('products-container');
@@ -702,4 +718,3 @@
     </script>
 </body>
 </html>
-
