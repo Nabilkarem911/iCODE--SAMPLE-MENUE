@@ -318,82 +318,87 @@
                 document.getElementById('banners-area').classList.remove('hidden');
                 
                 // Initialize Slider Logic
-               app.initBanners = () => {
-    const wrapper = document.getElementById('banners-wrapper');
-    const slides = wrapper.querySelectorAll('img');
-    if (!slides.length) return;
+                app.initBanners();
+            }
 
-    // إعداد الحاوية للـ scroll-snap مع دعم RTL
-    wrapper.style.display = 'flex';
-    wrapper.style.flexWrap = 'nowrap';
-    wrapper.style.overflowX = 'auto';
-    wrapper.style.scrollBehavior = 'smooth';
-    wrapper.style.scrollSnapType = 'x mandatory';
-    wrapper.style.WebkitOverflowScrolling = 'touch';
-    wrapper.classList.add('no-scrollbar');
+            // --- 4. Categories ---
+            const cats = ["الكل", ...new Set(products.map(p => p.category))];
+            const cWrapper = document.getElementById('cats-wrapper');
+            cWrapper.innerHTML = cats.map((c, i) => `
+                <button onclick="app.filterCats(this, '${c}')" class="cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition ${i===0 ? 'btn-main shadow-lg' : 'bg-white text-gray-600 border border-gray-100'}">
+                    ${c}
+                </button>
+            `).join('');
 
-    // تعيين كل صورة لتكون عرض الحاوية بالضبط
-    slides.forEach(img => {
-        img.style.flexShrink = '0';
-        img.style.width = '100%';
-        img.style.height = '160px'; // h-40 = 160px
-        img.style.objectFit = 'cover';
-        img.style.scrollSnapAlign = 'start';
-    });
+            // --- 5. Products ---
+            app.renderProducts("الكل");
+        };
 
-    let bannerIndex = 0;
-    let bannerTimer = null;
+        // banners: FIXED SLIDER FOR RTL WITH AUTO-PLAY AND CORRECT BUTTON DIRECTION
+        app.initBanners = () => {
+            const wrapper = document.getElementById('banners-wrapper');
+            const slides = wrapper.querySelectorAll('img');
+            if (!slides.length) return;
 
-    const goToSlide = (index) => {
-        if (index < 0) index = slides.length - 1;
-        if (index >= slides.length) index = 0;
-        bannerIndex = index;
-        const slideWidth = wrapper.clientWidth;
-        // في RTL: نستخدم scrollLeft = (width * index) من اليمين → لذا نعكس الاتجاه
-        // لكن لأن scrollLeft يعمل من اليسار، نحسب كما هو، ثم نعكس الاتجاه عبر CSS أو منطق
-        // نستخدم هنا: scrollLeft = (totalWidth - slideWidth) - (slideWidth * index)
-        // لكن أسهل: نستخدم scrollLeft = slideWidth * index (يعمل مع RTL إذا كانت الحاوية dir="rtl")
-        // لذا نتأكد من أن الحاوية داخل `dir="rtl"` — وهذا محقّق في `<html dir="rtl">`
-        wrapper.scrollTo({
-            left: slideWidth * bannerIndex,
-            behavior: 'smooth'
-        });
-    };
+            // Reset styles for scroll-based slider
+            wrapper.style.display = 'flex';
+            wrapper.style.flexWrap = 'nowrap';
+            wrapper.style.overflowX = 'auto';
+            wrapper.style.scrollBehavior = 'smooth';
+            wrapper.style.scrollSnapType = 'x mandatory';
+            wrapper.classList.add('no-scrollbar');
 
-    const startAuto = () => {
-        if (bannerTimer) clearInterval(bannerTimer);
-        bannerTimer = setInterval(() => {
-            goToSlide(bannerIndex + 1);
-        }, 4000); // 4 ثواني لكل سلايد
-    };
+            // Style each slide
+            slides.forEach(img => {
+                img.style.flexShrink = '0';
+                img.style.width = '100%';
+                img.style.height = '160px'; // h-40
+                img.style.objectFit = 'cover';
+                img.style.scrollSnapAlign = 'start';
+            });
 
-    const prevBtn = document.getElementById('banner-prev');
-    const nextBtn = document.getElementById('banner-next');
+            let bannerIndex = 0;
+            let bannerTimer = null;
 
-    // ⚠️ في RTL: الزر الأيسر (‹) = التالي، الزر الأيمن (›) = السابق
-    if (prevBtn) {
-        prevBtn.onclick = (e) => {
-            e.stopPropagation();
-            goToSlide(bannerIndex + 1); // الزر الأيسر = التالي (في RTL)
+            const goToSlide = (index) => {
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+                bannerIndex = index;
+                const slideWidth = wrapper.clientWidth;
+                wrapper.scrollTo({
+                    left: slideWidth * bannerIndex,
+                    behavior: 'smooth'
+                });
+            };
+
+            const startAuto = () => {
+                if (bannerTimer) clearInterval(bannerTimer);
+                bannerTimer = setInterval(() => {
+                    goToSlide(bannerIndex + 1);
+                }, 4000);
+            };
+
+            const prevBtn = document.getElementById('banner-prev');
+            const nextBtn = document.getElementById('banner-next');
+
+            // In RTL: LEFT button = NEXT, RIGHT button = PREVIOUS
+            if (prevBtn) {
+                prevBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    goToSlide(bannerIndex + 1);
+                    startAuto();
+                };
+            }
+            if (nextBtn) {
+                nextBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    goToSlide(bannerIndex - 1);
+                    startAuto();
+                };
+            }
+
             startAuto();
         };
-    }
-
-    if (nextBtn) {
-        nextBtn.onclick = (e) => {
-            e.stopPropagation();
-            goToSlide(bannerIndex - 1); // الزر الأيمن = السابق (في RTL)
-            startAuto();
-        };
-    }
-
-    // بدء التشغيل التلقائي
-    startAuto();
-
-    // (اختياري) تعديل اتجاه الزر لعرض رمز مناسب (لو أردت)
-    // مثلاً: لو أردت رمز "→" للزر الأيسر، و"←" للزر الأيمن في RTL، يمكنك تعديله بالـ CSS أو JS
-    // لكن في التصميم الحالي، الرموز ‹ و › مُستخدمة، وهي صحيحة لـ RTL إذا كان الاتجاه مُحدد جيدًا.
-};
 
         app.renderProducts = (cat) => {
             const container = document.getElementById('products-container');
@@ -695,4 +700,3 @@
     </script>
 </body>
 </html>
-
