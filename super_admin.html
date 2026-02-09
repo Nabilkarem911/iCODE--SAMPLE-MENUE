@@ -15,203 +15,291 @@
 </head>
 <body class="min-h-screen p-6">
 
-    <div class="max-w-[1400px] mx-auto space-y-8">
-        
-        <div class="flex flex-wrap justify-between items-center gap-4">
-            <div>
-                <h1 class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">AI-menu <span class="text-white text-lg font-medium opacity-60">Control Panel</span></h1>
-                <p class="text-gray-400 text-sm mt-1">مرحباً نبيل، أنت المسيطر هنا 😎</p>
+    <div id="login-screen" class="fixed inset-0 bg-gray-900 flex items-center justify-center z-[9999]">
+        <div class="bg-gray-800 border border-gray-700 rounded-3xl p-8 w-full max-w-md shadow-2xl">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-shield-halved text-blue-400 text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-black text-white mb-2">🔐 Super Admin Access</h2>
+                <p class="text-gray-400 text-sm">تسجيل دخول للوصول إلى لوحة التحكم</p>
             </div>
-            <div class="flex gap-3">
-                <a href="index.html" class="glass px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-red-500/20 hover:text-red-400 transition">تسجيل خروج</a>
-                <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-blue-500/20 transition">
-                    <i class="fa-solid fa-plus"></i> مشترك جديد
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-400 text-xs mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="admin-email" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none focus:border-blue-500" placeholder="admin@example.com">
+                </div>
+                <div>
+                    <label class="block text-gray-400 text-xs mb-2">كلمة المرور</label>
+                    <input type="password" id="admin-pass" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none focus:border-blue-500" placeholder="- - - - - - - - ">
+                </div>
+                <button onclick="attemptLogin()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition">
+                    <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i> دخول
                 </button>
+                <p id="login-error" class="text-red-400 text-xs text-center hidden"></p>
             </div>
         </div>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
-                <div class="absolute -right-4 -top-4 bg-blue-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
-                <p class="text-gray-400 text-xs font-bold mb-2">إجمالي المطاعم</p>
-                <h3 class="text-4xl font-black text-white" id="total-clients">0</h3>
-                <i class="fa-solid fa-store absolute left-6 top-6 text-2xl text-blue-500/50"></i>
-            </div>
-            <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
-                <div class="absolute -right-4 -top-4 bg-green-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
-                <p class="text-gray-400 text-xs font-bold mb-2">اشتراكات نشطة</p>
-                <h3 class="text-4xl font-black text-green-400" id="active-clients">0</h3>
-                <i class="fa-solid fa-circle-check absolute left-6 top-6 text-2xl text-green-500/50"></i>
-            </div>
-            <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
-                <div class="absolute -right-4 -top-4 bg-orange-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
-                <p class="text-gray-400 text-xs font-bold mb-2">إجمالي الزيارات</p>
-                <h3 class="text-4xl font-black text-orange-400" id="total-views">0</h3>
-                <i class="fa-solid fa-eye absolute left-6 top-6 text-2xl text-orange-500/50"></i>
-            </div>
-            <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
-                <div class="absolute -right-4 -top-4 bg-purple-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
-                <p class="text-gray-400 text-xs font-bold mb-2">إجمالي المنتجات</p>
-                <h3 class="text-4xl font-black text-purple-400" id="total-prods">0</h3>
-                <i class="fa-solid fa-burger absolute left-6 top-6 text-2xl text-purple-500/50"></i>
-            </div>
-        </div>
+    <div id="main-content" class="hidden">
 
-        <div class="flex gap-4 items-center bg-gray-800/30 p-3 rounded-xl border border-gray-700/50 w-fit">
-            <span class="text-xs font-bold text-gray-400">ملخص الباقات:</span>
-            <div class="flex gap-2">
-                <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-lg text-xs font-bold">Free: <span id="count-free" class="text-white">0</span></span>
-                <span class="bg-yellow-900/30 text-yellow-500 px-3 py-1 rounded-lg text-xs font-bold">Gold: <span id="count-gold" class="text-yellow-400">0</span></span>
-                <span class="bg-purple-900/30 text-purple-400 px-3 py-1 rounded-lg text-xs font-bold">VIP: <span id="count-vip" class="text-purple-300">0</span></span>
-            </div>
-        </div>
-
-        <div class="bg-gray-800/50 border border-gray-700 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm">
-            <div class="p-5 border-b border-gray-700 flex flex-wrap justify-between items-center gap-4 bg-gray-900/50">
-                <h2 class="font-bold text-lg text-white"><i class="fa-solid fa-list ml-2 text-blue-500"></i>قائمة المشتركين</h2>
-                
-                <div class="flex flex-wrap items-center gap-3">
-                    <select id="filter-status" onchange="searchTable()" class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 outline-none focus:border-blue-500">
-                        <option value="all">كل الحالات</option>
-                        <option value="active">نشط</option>
-                        <option value="inactive">موقوف</option>
-                    </select>
-                    <select id="filter-plan" onchange="searchTable()" class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 outline-none focus:border-blue-500">
-                        <option value="all">كل الباقات</option>
-                        <option value="free">مجانية</option>
-                        <option value="gold">ذهبية</option>
-                        <option value="vip">VIP</option>
-                    </select>
-                    
-                    <input type="text" id="search" onkeyup="searchTable()" placeholder="بحث سريع..." class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-blue-500 w-48 transition">
-                    
-                    <button onclick="exportCSV()" class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
-                        <i class="fa-solid fa-file-csv"></i> تصدير
+        <div class="max-w-[1400px] mx-auto space-y-8">
+            
+            <div class="flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <h1 class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">AI-menu <span class="text-white text-lg font-medium opacity-60">Control Panel</span></h1>
+                    <p class="text-gray-400 text-sm mt-1">مرحباً نبيل، أنت المسيطر هنا 😎</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="logoutAdmin()" class="glass px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-red-500/20 hover:text-red-400 transition">تسجيل خروج</button>
+                    <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-blue-500/20 transition">
+                        <i class="fa-solid fa-plus"></i> مشترك جديد
                     </button>
                 </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-right whitespace-nowrap">
-                    <thead class="bg-gray-900/80 text-gray-400 text-xs uppercase font-bold tracking-wider">
-                        <tr>
-                            <th class="p-6">المطعم</th>
-                            <th class="p-6">البيانات</th>
-                            <th class="p-6">حالة الاشتراك</th>
-                            <th class="p-6 text-center">التقارير</th>
-                            <th class="p-6 text-center">تحكم كامل</th>
-                        </tr>
-                    </thead>
-                    <tbody id="clients-table" class="text-gray-300 divide-y divide-gray-700/50 font-medium text-sm"></tbody>
-                </table>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 bg-blue-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
+                    <p class="text-gray-400 text-xs font-bold mb-2">إجمالي المطاعم</p>
+                    <h3 class="text-4xl font-black text-white" id="total-clients">0</h3>
+                    <i class="fa-solid fa-store absolute left-6 top-6 text-2xl text-blue-500/50"></i>
+                </div>
+                <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 bg-green-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
+                    <p class="text-gray-400 text-xs font-bold mb-2">اشتراكات نشطة</p>
+                    <h3 class="text-4xl font-black text-green-400" id="active-clients">0</h3>
+                    <i class="fa-solid fa-circle-check absolute left-6 top-6 text-2xl text-green-500/50"></i>
+                </div>
+                <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 bg-orange-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
+                    <p class="text-gray-400 text-xs font-bold mb-2">إجمالي الزيارات</p>
+                    <h3 class="text-4xl font-black text-orange-400" id="total-views">0</h3>
+                    <i class="fa-solid fa-eye absolute left-6 top-6 text-2xl text-orange-500/50"></i>
+                </div>
+                <div class="glass p-6 rounded-2xl stat-card relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 bg-purple-500/10 w-24 h-24 rounded-full group-hover:scale-150 transition duration-500"></div>
+                    <p class="text-gray-400 text-xs font-bold mb-2">إجمالي المنتجات</p>
+                    <h3 class="text-4xl font-black text-purple-400" id="total-prods">0</h3>
+                    <i class="fa-solid fa-burger absolute left-6 top-6 text-2xl text-purple-500/50"></i>
+                </div>
+            </div>
+
+            <div class="flex gap-4 items-center bg-gray-800/30 p-3 rounded-xl border border-gray-700/50 w-fit">
+                <span class="text-xs font-bold text-gray-400">ملخص الباقات:</span>
+                <div class="flex gap-2">
+                    <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-lg text-xs font-bold">Free: <span id="count-free" class="text-white">0</span></span>
+                    <span class="bg-yellow-900/30 text-yellow-500 px-3 py-1 rounded-lg text-xs font-bold">Gold: <span id="count-gold" class="text-yellow-400">0</span></span>
+                    <span class="bg-purple-900/30 text-purple-400 px-3 py-1 rounded-lg text-xs font-bold">VIP: <span id="count-vip" class="text-purple-300">0</span></span>
+                </div>
+            </div>
+
+            <div class="bg-gray-800/50 border border-gray-700 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm">
+                <div class="p-5 border-b border-gray-700 flex flex-wrap justify-between items-center gap-4 bg-gray-900/50">
+                    <h2 class="font-bold text-lg text-white"><i class="fa-solid fa-list ml-2 text-blue-500"></i>قائمة المشتركين</h2>
+                    
+                    <div class="flex flex-wrap items-center gap-3">
+                        <select id="filter-status" onchange="searchTable()" class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 outline-none focus:border-blue-500">
+                            <option value="all">كل الحالات</option>
+                            <option value="active">نشط</option>
+                            <option value="inactive">موقوف</option>
+                        </select>
+                        <select id="filter-plan" onchange="searchTable()" class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 outline-none focus:border-blue-500">
+                            <option value="all">كل الباقات</option>
+                            <option value="free">مجانية</option>
+                            <option value="gold">ذهبية</option>
+                            <option value="vip">VIP</option>
+                        </select>
+                        
+                        <input type="text" id="search" onkeyup="searchTable()" placeholder="بحث سريع..." class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-blue-500 w-48 transition">
+                        
+                        <button onclick="exportCSV()" class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
+                            <i class="fa-solid fa-file-csv"></i> تصدير
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right whitespace-nowrap">
+                        <thead class="bg-gray-900/80 text-gray-400 text-xs uppercase font-bold tracking-wider">
+                            <tr>
+                                <th class="p-6">المطعم</th>
+                                <th class="p-6">البيانات</th>
+                                <th class="p-6">حالة الاشتراك</th>
+                                <th class="p-6 text-center">التقارير</th>
+                                <th class="p-6 text-center">تحكم كامل</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clients-table" class="text-gray-300 divide-y divide-gray-700/50 font-medium text-sm"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div class="bg-gray-900 w-full max-w-2xl rounded-3xl border border-gray-700 shadow-2xl flex flex-col max-h-[90vh]">
-            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
-                <h2 class="text-xl font-bold text-white" id="modal-title">مشترك جديد</h2>
-                <button onclick="closeModal()" class="text-gray-500 hover:text-white transition"><i class="fa-solid fa-times text-xl"></i></button>
-            </div>
-            
-            <div class="p-6 overflow-y-auto space-y-6">
-                <input type="hidden" id="edit-id">
+        <div id="modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+            <div class="bg-gray-900 w-full max-w-2xl rounded-3xl border border-gray-700 shadow-2xl flex flex-col max-h-[90vh]">
+                <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-white" id="modal-title">مشترك جديد</h2>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-white transition"><i class="fa-solid fa-times text-xl"></i></button>
+                </div>
                 
-                <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50">
-                    <h3 class="text-xs text-blue-400 font-bold uppercase mb-3"><i class="fa-solid fa-lock ml-1"></i> بيانات الدخول</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">البريد الإلكتروني</label>
-                            <input type="email" id="c-email" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none">
+                <div class="p-6 overflow-y-auto space-y-6">
+                    <input type="hidden" id="edit-id">
+                    
+                    <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50">
+                        <h3 class="text-xs text-blue-400 font-bold uppercase mb-3"><i class="fa-solid fa-lock ml-1"></i> بيانات الدخول</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">البريد الإلكتروني</label>
+                                <input type="email" id="c-email" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">كلمة المرور (اتركه فارغاً إذا لم ترد التغيير)</label>
+                                <input type="text" id="c-pass" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="******">
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">كلمة المرور (اتركه فارغاً إذا لم ترد التغيير)</label>
-                            <input type="text" id="c-pass" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="******">
+                    </div>
+
+                    <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50">
+                        <h3 class="text-xs text-orange-400 font-bold uppercase mb-3"><i class="fa-solid fa-store ml-1"></i> بيانات المطعم</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">اسم المطعم</label>
+                                <input type="text" id="c-name" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">رقم الهاتف</label>
+                                <input type="text" id="c-phone" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs text-gray-500 mb-1">معرف الرابط (Unique ID)</label>
+                                <input type="text" id="c-uid" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none font-mono text-sm" placeholder="english-only-no-spaces">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50">
+                        <h3 class="text-xs text-purple-400 font-bold uppercase mb-3"><i class="fa-solid fa-crown ml-1"></i> الاشتراك والباقة</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">نوع الباقة</label>
+                                <select id="c-plan" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
+                                    <option value="free">مجانية (Starter)</option>
+                                    <option value="gold">ذهبية (Gold)</option>
+                                    <option value="vip">بلاتينية (VIP)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">تاريخ الانتهاء</label>
+                                <input type="date" id="c-expiry" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">الحالة</label>
+                                <select id="c-active" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
+                                    <option value="true">✅ نشط</option>
+                                    <option value="false">⛔ موقوف</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50">
-                    <h3 class="text-xs text-orange-400 font-bold uppercase mb-3"><i class="fa-solid fa-store ml-1"></i> بيانات المطعم</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">اسم المطعم</label>
-                            <input type="text" id="c-name" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">رقم الهاتف</label>
-                            <input type="text" id="c-phone" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs text-gray-500 mb-1">معرف الرابط (Unique ID)</label>
-                            <input type="text" id="c-uid" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none font-mono text-sm" placeholder="english-only-no-spaces">
-                        </div>
-                    </div>
+                <div class="p-6 border-t border-gray-800 flex gap-3">
+                    <button onclick="saveClient()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition">حفظ التغييرات</button>
+                    <button onclick="closeModal()" class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-bold transition">إلغاء</button>
                 </div>
-
-                <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50">
-                    <h3 class="text-xs text-purple-400 font-bold uppercase mb-3"><i class="fa-solid fa-crown ml-1"></i> الاشتراك والباقة</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">نوع الباقة</label>
-                            <select id="c-plan" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
-                                <option value="free">مجانية (Starter)</option>
-                                <option value="gold">ذهبية (Gold)</option>
-                                <option value="vip">بلاتينية (VIP)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">تاريخ الانتهاء</label>
-                            <input type="date" id="c-expiry" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">الحالة</label>
-                            <select id="c-active" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
-                                <option value="true">✅ نشط</option>
-                                <option value="false">⛔ موقوف</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="p-6 border-t border-gray-800 flex gap-3">
-                <button onclick="saveClient()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition">حفظ التغييرات</button>
-                <button onclick="closeModal()" class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-bold transition">إلغاء</button>
             </div>
         </div>
-    </div>
 
-    <div id="report-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 backdrop-blur-sm">
-        <div class="bg-gray-800 p-8 rounded-3xl w-full max-w-sm border border-gray-700 shadow-2xl text-center">
-            <div class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-                <i class="fa-solid fa-chart-pie"></i>
-            </div>
-            <h2 class="text-2xl font-bold text-white mb-1" id="rep-name">...</h2>
-            <p class="text-gray-400 text-sm mb-6" id="rep-plan">Plan: ...</p>
-            
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-gray-700/50 p-4 rounded-2xl">
-                    <p class="text-xs text-gray-400">الزيارات</p>
-                    <p class="text-2xl font-black text-orange-400" id="rep-views">0</p>
+        <div id="report-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 backdrop-blur-sm">
+            <div class="bg-gray-800 p-8 rounded-3xl w-full max-w-sm border border-gray-700 shadow-2xl text-center">
+                <div class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                    <i class="fa-solid fa-chart-pie"></i>
                 </div>
-                <div class="bg-gray-700/50 p-4 rounded-2xl">
-                    <p class="text-xs text-gray-400">المنتجات</p>
-                    <p class="text-2xl font-black text-green-400" id="rep-prods">0</p>
+                <h2 class="text-2xl font-bold text-white mb-1" id="rep-name">...</h2>
+                <p class="text-gray-400 text-sm mb-6" id="rep-plan">Plan: ...</p>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-gray-700/50 p-4 rounded-2xl">
+                        <p class="text-xs text-gray-400">الزيارات</p>
+                        <p class="text-2xl font-black text-orange-400" id="rep-views">0</p>
+                    </div>
+                    <div class="bg-gray-700/50 p-4 rounded-2xl">
+                        <p class="text-xs text-gray-400">المنتجات</p>
+                        <p class="text-2xl font-black text-green-400" id="rep-prods">0</p>
+                    </div>
                 </div>
+                
+                <button onclick="document.getElementById('report-modal').style.display='none'" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-xl font-bold transition">إغلاق</button>
             </div>
-            
-            <button onclick="document.getElementById('report-modal').style.display='none'" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-xl font-bold transition">إغلاق</button>
         </div>
-    </div>
 
-    <script type="module">
-        import { db, auth, collection, doc, setDoc, updateDoc, deleteDoc, getDocs, createUserWithEmailAndPassword } from './firebase-config.js';
+    </div> <script type="module">
+        import { db, auth, collection, doc, setDoc, updateDoc, deleteDoc, getDocs, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from './firebase-config.js';
+
+        const SUPER_ADMIN_EMAIL = "nabilkarem@gmail.com";
+
+        // Firebase Auth: Super Admin Protection
+        let isAuthenticated = false;
+
+        window.attemptLogin = async () => {
+            const email = document.getElementById('admin-email').value.trim();
+            const pass = document.getElementById('admin-pass').value;
+            const errorEl = document.getElementById('login-error');
+            
+            if (!email || !pass) {
+                errorEl.textContent = "⚠️ الرجاء إدخال البريد وكلمة المرور";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                
+                if (cred.user.email !== SUPER_ADMIN_EMAIL) {
+                    errorEl.textContent = "⛔ ليس لديك صلاحيات الوصول لهذه الصفحة";
+                    errorEl.classList.remove('hidden');
+                    await signOut(auth);
+                    return;
+                }
+                
+                // Success
+                isAuthenticated = true;
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+                loadData(); // Load data after successful login
+                
+            } catch (e) {
+                errorEl.textContent = "❌ خطأ: " + (e.code === 'auth/invalid-credential' ? 'بيانات دخول خاطئة' : e.message);
+                errorEl.classList.remove('hidden');
+            }
+        };
+
+        window.logoutAdmin = async () => {
+            await signOut(auth);
+            location.reload();
+        };
+
+        // Check auth state on page load
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.email === SUPER_ADMIN_EMAIL) {
+                isAuthenticated = true;
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+                loadData();
+            } else {
+                // Show login screen (already visible by default)
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('main-content').classList.add('hidden');
+            }
+        });
 
         let clients = [];
         let filteredList = []; // For export and rendering
 
         async function loadData() {
+            if (!isAuthenticated) return; // double check
+
             const tbody = document.getElementById('clients-table');
             tbody.innerHTML = `<tr><td colspan="5" class="text-center p-10"><i class="fa-solid fa-circle-notch fa-spin text-blue-500 text-2xl"></i></td></tr>`;
             
@@ -434,7 +522,7 @@
         window.clientLogin = (id) => { localStorage.setItem('admin_rest_id', id); window.location.href = "client_dashboard.html"; }
         window.copyLink = (id) => { navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname.replace('super_admin.html', '')}menu.html?id=${id}`); alert("تم النسخ!"); }
 
-        loadData();
+        // loadData(); // ❌ Remove this - will be called after auth
     </script>
 </body>
 </html>
