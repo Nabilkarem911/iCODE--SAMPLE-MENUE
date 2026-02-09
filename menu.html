@@ -335,7 +335,7 @@
             });
 
             const updatePosition = () => {
-                const offset = currentIndex * 100;
+                const offset = currentIndex * -100;
                 wrapper.style.transform = `translateX(${offset}%)`;
                 console.log('Moved to slide', currentIndex);
             };
@@ -359,14 +359,14 @@
 
             if (prevBtn) {
                 prevBtn.onclick = () => {
-                    goTo('next');
+                    goTo('prev');
                     startAuto();
                 };
             }
 
             if (nextBtn) {
                 nextBtn.onclick = () => {
-                    goTo('prev');
+                    goTo('next');
                     startAuto();
                 };
             }
