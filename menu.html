@@ -1,1106 +1,664 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>القائمة</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Menu Loading...</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: 'var(--brand-color)',
+                        brandLight: 'var(--brand-light)',
+                    },
+                    fontFamily: {
+                        tajawal: ['Tajawal', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
-        * {
-            font-family: 'Tajawal', sans-serif;
-            direction: rtl;
+        :root {
+            --brand-color: #2563eb;
+            --brand-light: #eff6ff;
+            --brand-text-color: #ffffff;
+            --menu-page-bg: #f8fafc;
         }
-
         body {
-            background-color: var(--bg-color, #f5f5f5);
-            color: var(--text-color, #333);
-            margin: 0;
-            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--menu-page-bg);
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 100px;
         }
-
-        .header {
-            background-color: var(--primary-color, #4CAF50);
+        
+        .menu-header {
+            background: linear-gradient(135deg, #2563eb 0%, #000 100%);
             color: white;
-            padding: 15px 20px;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .banner-wrapper {
-            width: 100%;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-            direction: rtl;
+        .btn-main {
+            background-color: var(--brand-color);
+            color: var(--brand-text-color);
+            transition: opacity 0.2s;
         }
-
-        .banner-slides {
-            display: flex;
-            flex-direction: row-reverse;
-            transition: transform 0.5s ease-in-out;
-            width: 100%;
+        .btn-main:hover {
+            opacity: 0.9;
         }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .banner-slide {
-            min-width: 100%;
-            height: 160px;
-            flex-shrink: 0;
-        }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .banner-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .sticky-cats { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); }
 
-        .banner-controls {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        #loader { position: fixed; inset: 0; background-color: white; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--brand-color); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .banner-btn {
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .categories-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 15px;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .category-card {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .category-card i {
-            font-size: 32px;
-            color: var(--primary-color, #4CAF50);
-            margin-bottom: 8px;
-        }
-
-        .category-card span {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .products-container {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin: 20px 0 15px 0;
-            color: var(--primary-color, #4CAF50);
-            padding-right: 10px;
-            border-right: 4px solid var(--primary-color, #4CAF50);
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-        }
-
-        .product-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            object-fit: cover;
-            margin-left: 15px;
-        }
-
-        .product-info {
-            flex: 1;
-        }
-
-        .product-name {
-            font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .product-price {
-            color: var(--primary-color, #4CAF50);
-            font-weight: 700;
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
-        .product-description {
-            color: #666;
-            font-size: 13px;
-            margin-bottom: 10px;
-        }
-
-        .cart-btn {
-            background-color: var(--primary-color, #4CAF50);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-
-        .cart-btn:hover {
-            background-color: #45a049;
-        }
-
-        .cart-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .cart-icon {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background-color: var(--primary-color, #4CAF50);
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            cursor: pointer;
-        }
-
-        .cart-badge {
+        .confetti-piece {
             position: absolute;
-            top: -5px;
-            left: -5px;
-            background-color: red;
-            color: white;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 700;
+            width: 8px;
+            height: 14px;
+            border-radius: 2px;
+            opacity: 0.9;
+            animation: confetti-fall 1.5s ease-out forwards;
+        }
+        @keyframes confetti-fall {
+            0%   { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
-        .cart-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
+        .confetti-piece.from-left {
+            animation: confetti-left 2.2s ease-out forwards;
         }
-
-        .cart-modal-content {
-            background: white;
-            border-radius: 12px;
-            width: 95%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
+        .confetti-piece.from-right {
+            animation: confetti-right 2.2s ease-out forwards;
         }
-
-        .cart-header {
-            padding: 15px 20px;
-            background-color: var(--primary-color, #4CAF50);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        @keyframes confetti-left {
+            0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(40vw, 100vh) rotate(720deg); opacity: 0; }
         }
-
-        .cart-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .cart-items {
-            padding: 15px 20px;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .cart-item-details {
-            flex: 1;
-        }
-
-        .cart-item-name {
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .cart-item-price {
-            color: var(--primary-color, #4CAF50);
-            font-weight: 700;
-        }
-
-        .cart-item-quantity {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .quantity-btn {
-            width: 30px;
-            height: 30px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 700;
-        }
-
-        .cart-total {
-            padding: 15px 20px;
-            border-top: 2px solid #eee;
-            font-weight: 700;
-            font-size: 18px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .checkout-btn {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--primary-color, #4CAF50);
-            color: white;
-            border: none;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            border-radius: 0 0 12px 12px;
-        }
-
-        .checkout-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .empty-cart {
-            padding: 40px 20px;
-            text-align: center;
-            color: #999;
-        }
-
-        .addon-item {
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 6px;
-        }
-
-        .addon-checkbox {
-            margin-left: 10px;
-        }
-
-        .addon-label {
-            font-weight: 500;
-        }
-
-        .addon-price {
-            color: var(--primary-color, #4CAF50);
-            margin-right: 5px;
-        }
-
-        .addon-required {
-            color: red;
-            font-size: 12px;
-            display: block;
-            margin-top: 3px;
-        }
-
-        .no-products {
-            text-align: center;
-            padding: 40px 20px;
-            color: #999;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--primary-color, #4CAF50);
-        }
-
-        .addon-group {
-            margin-bottom: 15px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            border: 1px solid #eee;
-        }
-
-        .addon-group-title {
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--primary-color, #4CAF50);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .addon-group-description {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .addon-options {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .addon-option {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            background: white;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-        }
-
-        .addon-option input[type="checkbox"],
-        .addon-option input[type="radio"] {
-            margin-left: 10px;
-            transform: scale(1.2);
-        }
-
-        .addon-option label {
-            flex: 1;
-            cursor: pointer;
-        }
-
-        .addon-option-price {
-            color: var(--primary-color, #4CAF50);
-            font-weight: 700;
-            margin-left: 10px;
-        }
-
-        .addon-min-max {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .addon-error {
-            color: red;
-            font-size: 13px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .addon-group.required .addon-error {
-            display: block;
-        }
-
-        @media (max-width: 768px) {
-            .categories-container {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            }
-
-            .category-card span {
-                font-size: 12px;
-            }
-
-            .product-card {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .product-image {
-                margin-left: 0;
-                margin-bottom: 10px;
-            }
-
-            .cart-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
-            }
+        @keyframes confetti-right {
+            0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-40vw, 100vh) rotate(-720deg); opacity: 0; }
         }
     </style>
 </head>
-
 <body>
-    <div class="header">
-        <h1 id="restaurant-name">جارٍ التحميل...</h1>
-    </div>
 
-    <div class="banner-wrapper" id="banner-wrapper">
-        <div class="banner-slides" id="banner-slides">
-            <!-- Banners will be inserted here -->
+    <div id="confetti-layer" class="pointer-events-none fixed inset-0 overflow-hidden z-[100] hidden"></div>
+
+    <div id="loader" class="bg-white"><div class="spinner"></div></div>
+
+    <header class="menu-header shadow-sm p-4 relative z-20">
+        <div class="flex justify-between items-center mb-3">
+            <a id="back-main" href="#" class="bg-white/20 px-3 py-1 rounded-lg text-xs font-bold text-white backdrop-blur-sm flex items-center gap-1 hover:bg-white/30 transition">
+                <i class="fa-solid fa-arrow-right rtl:rotate-180"></i> القائمة الرئيسية
+            </a>
+            
+            <button onclick="app.toggleLang()" class="bg-white/20 px-3 py-1 rounded-lg text-xs font-bold text-white backdrop-blur-sm">EN/AR</button>
+        </div>
+
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img id="rest-logo" src="" class="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm hidden">
+                <div>
+                    <h1 id="rest-name" class="font-bold text-lg text-white">...</h1>
+                    <p id="table-info" class="text-xs text-gray-200 hidden"><i class="fa-solid fa-chair"></i> طاولة رقم <span id="table-num"></span></p>
+                </div>
+            </div>
+        </div>
+        <p id="rest-desc" class="text-xs text-gray-200 mt-2 line-clamp-2"></p>
+    </header>
+
+    <div id="banners-area" class="p-4 hidden">
+        <div class="relative">
+            <div class="overflow-hidden rounded-xl" style="height: 160px;">
+                <div id="banners-wrapper" class="flex h-full transition-transform duration-500 ease-out" style="width: 100%;">
+                </div>
+            </div>
+            <button id="banner-prev" type="button" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold transition-all shadow-lg">
+                ←
+            </button>
+            <button id="banner-next" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold transition-all shadow-lg">
+                →
+            </button>
         </div>
     </div>
 
-    <div class="banner-controls">
-        <button class="banner-btn" id="banner-prev">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="banner-btn" id="banner-next">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    </div>
-
-    <div class="categories-container" id="categories-container">
-        <!-- Categories will be inserted here -->
-    </div>
-
-    <div class="products-container">
-        <div id="products-section">
-            <!-- Products will be inserted here -->
+    <div class="sticky-cats border-b border-gray-100 shadow-sm">
+        <div class="flex overflow-x-auto gap-2 p-3 no-scrollbar" id="cats-wrapper">
         </div>
     </div>
 
-    <div class="cart-icon" id="cart-icon">
-        <i class="fas fa-shopping-cart"></i>
-        <span class="cart-badge" id="cart-count">0</span>
+    <main class="p-4 min-h-[60vh]">
+        <div id="products-container" class="grid gap-4">
+        </div>
+    </main>
+
+    <div id="cart-btn" class="fixed bottom-4 left-4 right-4 btn-main p-4 rounded-2xl shadow-2xl flex justify-between items-center cursor-pointer z-50 transform translate-y-20 transition-all duration-300" onclick="app.openCart()">
+        <div class="flex items-center gap-3">
+            <div class="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center font-bold" id="cart-count">0</div>
+            <span class="font-bold text-sm">عرض السلة</span>
+        </div>
+        <span class="font-bold text-lg" id="cart-total">0.00</span>
     </div>
 
-    <div class="cart-modal" id="cart-modal">
-        <div class="cart-modal-content">
-            <div class="cart-header">
-                <h2>سلة التسوق</h2>
-                <button class="cart-close" id="cart-close">&times;</button>
+    <div id="prod-modal" class="fixed inset-0 bg-black/80 z-[60] hidden items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm transition-all">
+        <div class="bg-white w-full sm:max-w-md h-[90vh] sm:h-auto sm:rounded-3xl rounded-t-3xl overflow-y-auto relative animate-slide-up">
+            <button onclick="app.closeModal()" class="absolute top-4 right-4 z-10 bg-white/80 p-2 rounded-full shadow-md"><i class="fa-solid fa-times"></i></button>
+            <img id="modal-img" class="w-full h-64 object-cover bg-gray-100">
+            <div class="p-6 pb-24">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 id="modal-name" class="text-2xl font-black text-gray-800"></h2>
+                    <span id="modal-price" class="text-xl font-bold text-brand"></span>
+                </div>
+                
+                <div id="modal-badges" class="flex gap-2 mb-4"></div>
+                
+                <p id="modal-desc" class="text-gray-500 text-sm leading-relaxed mb-4"></p>
+                
+                <div id="modal-addons" class="space-y-2 mb-4"></div>
+
+                <div class="flex gap-4 text-xs text-gray-400 mb-6 border-y py-3">
+                    <span id="modal-cal" class="flex items-center gap-1"><i class="fa-solid fa-fire text-orange-500"></i> <span></span> Kcal</span>
+                    <div id="modal-allergens" class="flex gap-2"></div>
+                </div>
+
+                <div class="flex items-center justify-between bg-gray-50 p-2 rounded-xl border">
+                    <div class="flex items-center gap-4">
+                        <button onclick="app.adjustQty(-1)" class="w-10 h-10 bg-white rounded-lg shadow text-gray-600 font-bold">-</button>
+                        <span id="modal-qty" class="font-bold text-lg w-4 text-center">1</span>
+                        <button onclick="app.adjustQty(1)" class="w-10 h-10 bg-white rounded-lg shadow text-brand font-bold">+</button>
+                    </div>
+                    <button onclick="app.addToCart()" class="btn-main px-8 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30">إضافة</button>
+                </div>
             </div>
-            <div class="cart-items" id="cart-items">
-                <!-- Cart items will be inserted here -->
-            </div>
-            <div class="cart-total">
-                <span>المجموع:</span>
-                <span id="cart-total">0 ر.س</span>
-            </div>
-            <button class="checkout-btn" id="checkout-btn" disabled>تأكيد الطلب</button>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvaskit-wasm@0.26.0/bin/canvaskit.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/confetti.browser.min.js"></script>
-    <script src="./firebase-config.js"></script>
+    <div id="cart-modal" class="fixed inset-0 bg-black/80 z-[70] hidden justify-end transition-opacity">
+        <div class="bg-white w-full sm:max-w-md h-full ml-auto flex flex-col relative shadow-2xl">
+            <div class="p-5 border-b bg-gray-50 flex justify-between items-center">
+                <h3 class="font-bold text-lg"><i class="fa-solid fa-basket-shopping text-brand"></i> سلة الطلبات</h3>
+                <button onclick="app.closeCart()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-times text-xl"></i></button>
+            </div>
+            
+            <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4">
+            </div>
 
-    <script>
+            <div class="p-6 border-t bg-gray-50 space-y-3">
+                <div class="flex justify-between text-sm text-gray-500"><span>المجموع (بدون ضريبة)</span><span id="bill-sub">0</span></div>
+                <div class="flex justify-between text-sm text-gray-500"><span>الضريبة (<span id="tax-rate">0</span>%)</span><span id="bill-tax">0</span></div>
+                <div class="flex justify-between text-sm text-gray-500"><span>الخدمة</span><span id="bill-fees">0</span></div>
+                <div class="flex justify-between text-xl font-black text-gray-800 border-t pt-2"><span>الإجمالي</span><span id="bill-total" class="text-brand">0</span></div>
+                
+                <input type="text" id="cust-name" placeholder="الاسم (اختياري)" class="w-full border p-3 rounded-xl text-sm outline-none focus:border-brand">
+                <textarea id="cust-note" placeholder="ملاحظات..." class="w-full border p-3 rounded-xl text-sm outline-none focus:border-brand h-16 resize-none"></textarea>
+                
+                <button onclick="app.checkout()" class="w-full btn-main hover:bg-green-700 py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i> إرسال الطلب
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db, doc, getDoc, updateDoc, increment } from './firebase-config.js';
+
+        window.app = {};
+        
+        let restaurant = {};
+        let products = [];
+        let globalAddons = [];
+        let cart = [];
+        let currentModalProd = null;
+        let modalQty = 1;
+
         const urlParams = new URLSearchParams(window.location.search);
-        const restaurantId = urlParams.get('restaurantId');
-        const tableNumber = urlParams.get('tableNumber');
+        const restId = urlParams.get('id');
+        const tableNum = urlParams.get('table');
+        const lang = localStorage.getItem('menu_lang') || 'ar';
 
-        if (!restaurantId || !tableNumber) {
-            window.location.href = 'landing.html';
-        }
+        app.init = async () => {
+            if(!restId) return document.body.innerHTML = "<div class='p-10 text-center'>Error: No Restaurant ID provided in URL</div>";
+            
+            const backLink = tableNum ? `landing.html?id=${restId}&table=${tableNum}` : `landing.html?id=${restId}`;
+            const backEl = document.getElementById('back-main');
+            if (backEl) backEl.href = backLink;
 
-        const app = {
-            cart: [],
-            selectedCategory: null,
-            restaurantData: null,
-            categories: [],
-            products: [],
-            addons: [],
-            banners: []
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            try {
+                const snap = await getDoc(doc(db, "restaurants", restId));
+                if(snap.exists()) {
+                    restaurant = snap.data();
+                    products = restaurant.products || [];
+                    globalAddons = restaurant.globalAddons || [];
+                    
+                    updateDoc(doc(db, "restaurants", restId), { "stats.views": increment(1) });
+                    
+                    app.renderUI();
+                } else {
+                    document.body.innerHTML = "<div class='p-10 text-center'>Restaurant not found</div>";
+                }
+            } catch(e) { console.error(e); }
+            
+            document.getElementById('loader').style.display = 'none';
         };
 
-        let bannerIndex = 0;
-        let bannerTimer = null;
-        let scrollTimeout = null;
+        app.renderUI = () => {
+            const brandColor = restaurant.btnColor || restaurant.themeColor || '#2563eb';
+            const brandText  = restaurant.textColor || '#ffffff';
+            document.documentElement.style.setProperty('--brand-color', brandColor);
+            document.documentElement.style.setProperty('--brand-text-color', brandText);
+
+            const headerEl = document.querySelector('.menu-header');
+            if (restaurant.menuBgType === 'image' && restaurant.menuBgImage) {
+                headerEl.style.background = `linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%), url('${restaurant.menuBgImage}')`;
+                headerEl.style.backgroundSize = 'cover';
+                headerEl.style.backgroundPosition = 'center';
+            } else if (restaurant.menuBgType === 'color' && restaurant.menuBgColor) {
+                headerEl.style.background = restaurant.menuBgColor;
+            } else if (restaurant.themeColor) {
+                headerEl.style.background = `linear-gradient(135deg, ${restaurant.themeColor} 0%, #000 100%)`;
+            }
+
+            if (restaurant.menuBgType === 'color' && restaurant.menuBgColor) {
+                document.documentElement.style.setProperty('--menu-page-bg', restaurant.menuBgColor);
+            } else {
+                document.documentElement.style.setProperty('--menu-page-bg', '#f8fafc');
+            }
+
+            document.title = restaurant.name;
+            document.getElementById('rest-name').innerText = restaurant.name;
+            document.getElementById('rest-desc').innerText = restaurant.desc || "";
+            if(restaurant.logo) {
+                document.getElementById('rest-logo').src = restaurant.logo;
+                document.getElementById('rest-logo').classList.remove('hidden');
+            }
+            if(tableNum) {
+                document.getElementById('table-info').classList.remove('hidden');
+                document.getElementById('table-num').innerText = tableNum;
+            }
+            
+            if(restaurant.banners && restaurant.banners.length > 0) {
+                const bWrapper = document.getElementById('banners-wrapper');
+                bWrapper.innerHTML = restaurant.banners.map(b => `<img src="${b}" alt="Banner" style="display:block;width:100%;height:160px;object-fit:cover;flex-shrink:0;min-width:100%;">`).join('');
+                document.getElementById('banners-area').classList.remove('hidden');
+                
+                setTimeout(() => app.initBanners(), 200);
+            }
+
+            const cats = ["الكل", ...new Set(products.map(p => p.category))];
+            const cWrapper = document.getElementById('cats-wrapper');
+            cWrapper.innerHTML = cats.map((c, i) => `
+                <button onclick="app.filterCats(this, '${c}')" class="cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition ${i===0 ? 'btn-main shadow-lg' : 'bg-white text-gray-600 border border-gray-100'}">
+                    ${c}
+                </button>
+            `).join('');
+
+            app.renderProducts("الكل");
+        };
 
         app.initBanners = () => {
-            const wrapper = document.getElementById('banner-wrapper');
-            const slidesContainer = document.getElementById('banner-slides');
-            const prevBtn = document.getElementById('banner-prev');
-            const nextBtn = document.getElementById('banner-next');
+            const wrapper = document.getElementById('banners-wrapper');
+            if (!wrapper) return;
+            
+            const slides = wrapper.querySelectorAll('img');
+            if (!slides.length) return;
 
-            if (!wrapper || !slidesContainer) return;
+            console.log('Banner slider initialized with', slides.length, 'slides');
 
-            wrapper.style.cssText = `
-                width: 100%;
-                overflow-x: hidden;
-                scroll-behavior: smooth;
-                direction: rtl;
-            `;
+            let currentIndex = 0;
+            const totalSlides = slides.length;
+            let autoTimer = null;
 
-            slidesContainer.style.cssText = `
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-            `;
-
-            app.banners.forEach((banner, index) => {
-                const slide = document.createElement('div');
-                slide.className = 'banner-slide';
-                slide.style.cssText = `
-                    min-width: 100%;
-                    height: 160px;
-                    flex-shrink: 0;
-                `;
-                slide.innerHTML = `<img src="${banner.imageUrl}" alt="Banner ${index + 1}" onerror="this.src='https://via.placeholder.com/400x160?text=No+Image'">`;
-                slidesContainer.appendChild(slide);
+            slides.forEach((img, idx) => {
+                img.style.display = 'block';
+                img.style.width = '100%';
+                img.style.height = '160px';
+                img.style.objectFit = 'cover';
+                img.style.flexShrink = '0';
+                img.style.minWidth = '100%';
+                console.log('Image', idx, 'src:', img.src);
             });
 
-            const goToSlide = (index) => {
-                if (index < 0) index = app.banners.length - 1;
-                if (index >= app.banners.length) index = 0;
+            const updatePosition = () => {
+                const offset = currentIndex * -100;
+                wrapper.style.transform = `translateX(${offset}%)`;
+                console.log('Moved to slide', currentIndex);
+            };
 
-                bannerIndex = index;
-                const slideWidth = wrapper.offsetWidth;
-                wrapper.scrollLeft = slideWidth * index;
+            const goTo = (direction) => {
+                if (direction === 'next') {
+                    currentIndex = (currentIndex + 1) % totalSlides;
+                } else {
+                    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                }
+                updatePosition();
             };
 
             const startAuto = () => {
-                clearInterval(bannerTimer);
-                bannerTimer = setInterval(() => {
-                    goToSlide(bannerIndex + 1);
-                }, 4000);
+                if (autoTimer) clearInterval(autoTimer);
+                autoTimer = setInterval(() => goTo('next'), 4000);
             };
 
-            const resetAuto = () => {
-                clearInterval(bannerTimer);
-                setTimeout(() => {
-                    startAuto();
-                }, 3000);
-            };
+            const prevBtn = document.getElementById('banner-prev');
+            const nextBtn = document.getElementById('banner-next');
 
             if (prevBtn) {
-                prevBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    goToSlide(bannerIndex + 1);
-                    resetAuto();
+                prevBtn.onclick = () => {
+                    goTo('prev');
+                    startAuto();
                 };
             }
 
             if (nextBtn) {
-                nextBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    goToSlide(bannerIndex - 1);
-                    resetAuto();
+                nextBtn.onclick = () => {
+                    goTo('next');
+                    startAuto();
                 };
             }
 
-            wrapper.addEventListener('scroll', () => {
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    const slideWidth = wrapper.offsetWidth;
-                    const scrollPosition = wrapper.scrollLeft;
-                    const currentIndex = Math.round(scrollPosition / slideWidth);
-                    if (currentIndex !== bannerIndex) {
-                        bannerIndex = currentIndex;
-                    }
-                    resetAuto();
-                }, 100);
-            });
-
-            goToSlide(0);
+            updatePosition();
             startAuto();
         };
 
-        app.loadRestaurantData = async () => {
-            try {
-                const docRef = firebase.firestore().collection('restaurants').doc(restaurantId);
-                const docSnap = await docRef.get();
+        app.renderProducts = (cat) => {
+            const container = document.getElementById('products-container');
+            const layout = restaurant.layout || 'grid';
+            
+            container.className = layout === 'grid' ? "grid grid-cols-2 gap-4" : "flex flex-col gap-4";
 
-                if (docSnap.exists) {
-                    app.restaurantData = docSnap.data();
-                    document.documentElement.style.setProperty('--primary-color', app.restaurantData.primaryColor || '#4CAF50');
-                    document.documentElement.style.setProperty('--secondary-color', app.restaurantData.secondaryColor || '#f5f5f5');
-                    document.documentElement.style.setProperty('--text-color', app.restaurantData.textColor || '#333');
-                    document.documentElement.style.setProperty('--bg-color', app.restaurantData.backgroundColor || '#f5f5f5');
+            const filtered = cat === "الكل" ? products : products.filter(p => p.category === cat);
 
-                    if (app.restaurantData.logoUrl) {
-                        const header = document.querySelector('.header');
-                        header.innerHTML = `<img src="${app.restaurantData.logoUrl}" alt="${app.restaurantData.name}" style="max-height: 60px; max-width: 200px;">`;
-                    } else {
-                        document.getElementById('restaurant-name').textContent = app.restaurantData.name;
-                    }
-
-                    if (app.restaurantData.bannerImages && app.restaurantData.bannerImages.length > 0) {
-                        app.banners = app.restaurantData.bannerImages;
-                        app.initBanners();
-                    } else {
-                        document.getElementById('banner-wrapper').style.display = 'none';
-                        document.querySelector('.banner-controls').style.display = 'none';
-                    }
-                } else {
-                    alert('المطعم غير موجود');
-                    window.location.href = 'landing.html';
-                }
-            } catch (error) {
-                console.error('Error loading restaurant data:', error);
-                alert('حدث خطأ أثناء تحميل بيانات المطعم');
-            }
-        };
-
-        app.loadCategories = async () => {
-            try {
-                const snapshot = await firebase.firestore()
-                    .collection('restaurants')
-                    .doc(restaurantId)
-                    .collection('categories')
-                    .where('active', '==', true)
-                    .orderBy('order', 'asc')
-                    .get();
-
-                app.categories = [];
-                snapshot.forEach(doc => {
-                    app.categories.push({ id: doc.id, ...doc.data() });
-                });
-
-                app.renderCategories();
-            } catch (error) {
-                console.error('Error loading categories:', error);
-            }
-        };
-
-        app.renderCategories = () => {
-            const container = document.getElementById('categories-container');
-            container.innerHTML = '';
-
-            app.categories.forEach(category => {
-                const card = document.createElement('div');
-                card.className = 'category-card';
-                if (app.selectedCategory === category.id) {
-                    card.style.borderColor = 'var(--primary-color)';
-                    card.style.borderWidth = '2px';
-                }
-                card.innerHTML = `
-                    <i class="fas fa-${category.icon || 'utensils'}"></i>
-                    <span>${category.name}</span>
-                `;
-                card.onclick = () => app.selectCategory(category.id);
-                container.appendChild(card);
-            });
-        };
-
-        app.selectCategory = (categoryId) => {
-            app.selectedCategory = categoryId;
-            app.renderCategories();
-            app.loadProducts();
-        };
-
-        app.loadProducts = async () => {
-            try {
-                const productsSection = document.getElementById('products-section');
-                productsSection.innerHTML = '<div class="loading">جارٍ التحميل...</div>';
-
-                const query = app.selectedCategory
-                    ? firebase.firestore()
-                        .collection('restaurants')
-                        .doc(restaurantId)
-                        .collection('products')
-                        .where('category', '==', app.selectedCategory)
-                        .where('active', '==', true)
-                        .orderBy('order', 'asc')
-                    : firebase.firestore()
-                        .collection('restaurants')
-                        .doc(restaurantId)
-                        .collection('products')
-                        .where('active', '==', true)
-                        .orderBy('order', 'asc');
-
-                const snapshot = await query.get();
-
-                app.products = [];
-                snapshot.forEach(doc => {
-                    app.products.push({ id: doc.id, ...doc.data() });
-                });
-
-                if (app.products.length === 0) {
-                    productsSection.innerHTML = '<div class="no-products">لا توجد منتجات في هذا القسم</div>';
-                    return;
-                }
-
-                let html = '';
-                app.products.forEach(product => {
-                    html += `
-                        <div class="section-title">${product.name}</div>
-                        <div class="product-card">
-                            ${product.imageUrl ? `<img src="${product.imageUrl}" class="product-image" onerror="this.src='https://via.placeholder.com/80?text=No+Image'">` : ''}
-                            <div class="product-info">
-                                <div class="product-name">${product.name}</div>
-                                ${product.description ? `<div class="product-description">${product.description}</div>` : ''}
-                                <div class="product-price">${product.price.toFixed(2)} ر.س</div>
-                                ${product.addons && product.addons.length > 0 ? `<button class="cart-btn" onclick="app.showAddonsModal('${product.id}')">إضافة إلى السلة</button>` : `<button class="cart-btn" onclick="app.addToCart('${product.id}')">إضافة إلى السلة</button>`}
-                            </div>
-                        </div>
-                    `;
-                });
-
-                productsSection.innerHTML = html;
-            } catch (error) {
-                console.error('Error loading products:', error);
-                document.getElementById('products-section').innerHTML = '<div class="no-products">حدث خطأ أثناء تحميل المنتجات</div>';
-            }
-        };
-
-        app.loadAddons = async () => {
-            try {
-                const snapshot = await firebase.firestore()
-                    .collection('restaurants')
-                    .doc(restaurantId)
-                    .collection('addons')
-                    .where('active', '==', true)
-                    .get();
-
-                app.addons = [];
-                snapshot.forEach(doc => {
-                    app.addons.push({ id: doc.id, ...doc.data() });
-                });
-            } catch (error) {
-                console.error('Error loading addons:', error);
-            }
-        };
-
-        app.showAddonsModal = (productId) => {
-            const product = app.products.find(p => p.id === productId);
-            if (!product) return;
-
-            const modal = document.createElement('div');
-            modal.className = 'cart-modal';
-            modal.style.display = 'flex';
-
-            let addonsHtml = '';
-
-            if (product.addons && product.addons.length > 0) {
-                const productAddons = app.addons.filter(a => product.addons.includes(a.id));
-
-                const addonGroups = {};
-                productAddons.forEach(addon => {
-                    const groupId = addon.groupId || 'ungrouped';
-                    if (!addonGroups[groupId]) {
-                        addonGroups[groupId] = {
-                            id: groupId,
-                            name: addon.groupName || 'إضافات',
-                            description: addon.groupDescription || '',
-                            min: addon.groupMin || 0,
-                            max: addon.groupMax || productAddons.filter(a => a.groupId === groupId).length,
-                            addons: []
-                        };
-                    }
-                    addonGroups[groupId].addons.push(addon);
-                });
-
-                Object.values(addonGroups).forEach(group => {
-                    addonsHtml += `
-                        <div class="addon-group" data-group-id="${group.id}" data-min="${group.min}" data-max="${group.max}">
-                            <div class="addon-group-title">
-                                <span>${group.name}</span>
-                                ${group.min > 0 ? `<span class="addon-min-max">(اختر ${group.min}${group.max > group.min ? `-${group.max}` : ''})</span>` : ''}
-                            </div>
-                            ${group.description ? `<div class="addon-group-description">${group.description}</div>` : ''}
-                            <div class="addon-options">
-                    `;
-
-                    group.addons.forEach(addon => {
-                        const inputType = group.max === 1 ? 'radio' : 'checkbox';
-                        const nameAttr = inputType === 'radio' ? `name="addon-group-${group.id}"` : '';
-                        addonsHtml += `
-                            <div class="addon-option">
-                                <input type="${inputType}" id="addon-${addon.id}" class="addon-checkbox" ${nameAttr} data-id="${addon.id}" data-price="${addon.price}" data-group="${group.id}">
-                                <label for="addon-${addon.id}" class="addon-label">
-                                    <span>${addon.name}</span>
-                                    <span class="addon-option-price">${addon.price.toFixed(2)} ر.س</span>
-                                </label>
-                            </div>
-                        `;
-                    });
-
-                    addonsHtml += `
-                            </div>
-                            <div class="addon-error">الرجاء اختيار الإضافات المطلوبة</div>
-                        </div>
-                    `;
-                });
+            if(filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10">لا توجد منتجات في هذا القسم</div>`;
+                return;
             }
 
-            modal.innerHTML = `
-                <div class="cart-modal-content">
-                    <div class="cart-header">
-                        <h2>${product.name}</h2>
-                        <button class="cart-close">&times;</button>
+            container.innerHTML = filtered.map((p, i) => {
+                const isStock = p.stock !== false;
+                const badgesHtml = p.badges ? p.badges.map(b => `<span class="bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded shadow">${getBadgeName(b)}</span>`).join('') : '';
+                
+                return `
+                <div onclick="app.openProdModal(${products.indexOf(p)})" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative cursor-pointer active:scale-95 transition fade-in ${!isStock ? 'opacity-60 grayscale' : ''}">
+                    ${!isStock ? '<div class="absolute inset-0 z-10 flex items-center justify-center bg-black/10"><span class="bg-gray-800 text-white px-3 py-1 rounded-full text-xs font-bold">نفذت الكمية</span></div>' : ''}
+                    <div class="absolute top-2 right-2 flex flex-col gap-1 z-0">${badgesHtml}</div>
+                    
+                    <div class="${layout === 'grid' ? 'h-32' : 'h-48 w-full'} bg-gray-100">
+                        <img src="${p.image}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300?text=No+Image'">
                     </div>
-                    <div class="cart-items" style="max-height: 50vh; overflow-y: auto;">
-                        <div style="padding: 15px 20px;">
-                            <div class="product-price" style="font-size: 24px; margin-bottom: 15px;">${product.price.toFixed(2)} ر.س</div>
-                            ${product.description ? `<div class="product-description" style="margin-bottom: 15px;">${product.description}</div>` : ''}
-                            ${addonsHtml}
+                    
+                    <div class="p-3">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-gray-800 text-sm line-clamp-1">${p.name}</h3>
+                            <span class="text-brand font-black text-sm">${p.price}</span>
                         </div>
-                    </div>
-                    <div style="padding: 15px 20px; border-top: 1px solid #eee;">
-                        <button class="cart-btn" style="width: 100%; padding: 12px; font-size: 16px;" onclick="app.handleAddonsSelection('${product.id}', this)">إضافة إلى السلة</button>
+                        ${layout === 'list' ? `<p class="text-xs text-gray-400 line-clamp-2 mt-1">${p.description || ''}</p>` : ''}
                     </div>
                 </div>
-            `;
-
-            modal.querySelector('.cart-close').onclick = () => {
-                document.body.removeChild(modal);
-            };
-
-            modal.onclick = (e) => {
-                if (e.target === modal) {
-                    document.body.removeChild(modal);
-                }
-            };
-
-            document.body.appendChild(modal);
+            `}).join('');
         };
 
-        app.handleAddonsSelection = (productId, button) => {
-            const product = app.products.find(p => p.id === productId);
-            if (!product) return;
-
-            const modal = button.closest('.cart-modal');
-            const selectedAddons = [];
-
-            const addonGroups = modal.querySelectorAll('.addon-group');
-            for (const group of addonGroups) {
-                const groupId = group.dataset.groupId;
-                const min = parseInt(group.dataset.min);
-                const max = parseInt(group.dataset.max);
-                const selectedInGroup = Array.from(group.querySelectorAll('.addon-checkbox:checked')).map(cb => ({
-                    id: cb.dataset.id,
-                    name: cb.nextElementSibling.querySelector('span:first-child').textContent,
-                    price: parseFloat(cb.dataset.price)
-                }));
-
-                if (selectedInGroup.length < min) {
-                    group.classList.add('required');
-                    return;
-                } else {
-                    group.classList.remove('required');
-                }
-
-                selectedAddons.push(...selectedInGroup);
-            }
-
-            app.addToCart(productId, selectedAddons);
-            document.body.removeChild(modal);
+        app.filterCats = (btn, cat) => {
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                b.className = "cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition bg-white text-gray-600 border border-gray-100";
+            });
+            btn.className = "cat-btn px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition btn-main shadow-lg";
+            app.renderProducts(cat);
         };
 
-        app.addToCart = (productId, selectedAddons = []) => {
-            const product = app.products.find(p => p.id === productId);
-            if (!product) return;
+        app.openProdModal = (idx) => {
+            const p = products[idx];
+            if(p.stock === false) return;
 
-            const existingItem = app.cart.find(item => item.id === productId && JSON.stringify(item.addons) === JSON.stringify(selectedAddons));
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                app.cart.push({
-                    id: productId,
-                    name: product.name,
-                    price: product.price,
-                    quantity: 1,
-                    addons: selectedAddons
-                });
-            }
+            currentModalProd = p;
+            modalQty = 1;
+            
+            document.getElementById('modal-img').src = p.image || '';
+            document.getElementById('modal-name').innerText = p.name;
+            document.getElementById('modal-price').innerText = p.price + ' ر.س';
+            document.getElementById('modal-desc').innerText = p.description || '';
+            document.getElementById('modal-cal').innerHTML = p.calories ? `<i class="fa-solid fa-fire text-orange-500"></i> ${p.calories} Kcal` : '';
+            document.getElementById('modal-qty').innerText = 1;
 
-            app.updateCartIcon();
-            app.showConfetti();
-        };
+            document.getElementById('modal-badges').innerHTML = (p.badges||[]).map(b => `<span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs font-bold">${getBadgeName(b)}</span>`).join('');
+            
+            document.getElementById('modal-allergens').innerHTML = (p.allergens||[]).map(a => `<span class="bg-gray-100 px-2 py-1 rounded text-[10px]">${a}</span>`).join('');
 
-        app.updateCartIcon = () => {
-            const count = app.cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cart-count').textContent = count;
-        };
-
-        app.showConfetti = () => {
-            const canvas = document.createElement('canvas');
-            canvas.style.position = 'fixed';
-            canvas.style.top = '0';
-            canvas.style.left = '0';
-            canvas.style.width = '100%';
-            canvas.style.height = '100%';
-            canvas.style.pointerEvents = 'none';
-            canvas.style.zIndex = '9999';
-            document.body.appendChild(canvas);
-
-            const confetti = new Confetti(canvas);
-            confetti.render();
-
-            setTimeout(() => {
-                document.body.removeChild(canvas);
-            }, 3000);
-        };
-
-        app.showCart = () => {
-            const modal = document.getElementById('cart-modal');
-            const itemsContainer = document.getElementById('cart-items');
-            const totalElement = document.getElementById('cart-total');
-            const checkoutBtn = document.getElementById('checkout-btn');
-
-            if (app.cart.length === 0) {
-                itemsContainer.innerHTML = '<div class="empty-cart">سلة التسوق فارغة</div>';
-                checkoutBtn.disabled = true;
-            } else {
-                let html = '';
-                let total = 0;
-
-                app.cart.forEach((item, index) => {
-                    const itemTotal = item.price * item.quantity;
-                    total += itemTotal;
-
-                    html += `
-                        <div class="cart-item">
-                            <div class="cart-item-details">
-                                <div class="cart-item-name">${item.name}</div>
-                                ${item.addons && item.addons.length > 0 ? `
-                                    <div style="font-size: 12px; color: #666; margin-top: 5px;">
-                                        ${item.addons.map(a => `${a.name} (+${a.price.toFixed(2)} ر.س)`).join(', ')}
+            const addonContainer = document.getElementById('modal-addons');
+            addonContainer.innerHTML = '';
+            
+            if(p.addons && p.addons.length > 0) {
+                const allowedAddons = globalAddons.filter(g => p.addons.includes(g.id) && g.active !== false);
+                
+                if(allowedAddons.length > 0) {
+                    addonContainer.innerHTML = `<h4 class="font-bold text-sm mb-2 text-gray-700">إضافات:</h4>`;
+                    allowedAddons.forEach(addon => {
+                        addonContainer.innerHTML += `
+                            <label class="flex items-center justify-between p-2 rounded-lg border border-gray-100 bg-gray-50 cursor-pointer">
+                                <div class="flex items-center gap-2">
+                                    <input type="checkbox" class="addon-option w-4 h-4 accent-brand" value="${addon.id}" data-price="${addon.price}" data-name="${addon.name}">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-bold text-gray-800">${addon.name}</span>
+                                        ${addon.note ? `<span class="text-[10px] text-gray-400">${addon.note}</span>` : ''}
                                     </div>
-                                ` : ''}
-                                <div class="cart-item-price">${item.price.toFixed(2)} ر.س × ${item.quantity}</div>
-                            </div>
-                            <div class="cart-item-quantity">
-                                <button class="quantity-btn" onclick="app.updateQuantity(${index}, -1)">-</button>
-                                <span>${item.quantity}</span>
-                                <button class="quantity-btn" onclick="app.updateQuantity(${index}, 1)">+</button>
-                                <button class="quantity-btn" style="background-color: #ff4444; color: white;" onclick="app.removeFromCart(${index})">×</button>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                itemsContainer.innerHTML = html;
-                totalElement.textContent = `${total.toFixed(2)} ر.س`;
-                checkoutBtn.disabled = false;
-            }
-
-            modal.style.display = 'flex';
-        };
-
-        app.updateQuantity = (index, change) => {
-            app.cart[index].quantity += change;
-            if (app.cart[index].quantity <= 0) {
-                app.cart.splice(index, 1);
-            }
-            app.updateCartIcon();
-            app.showCart();
-        };
-
-        app.removeFromCart = (index) => {
-            app.cart.splice(index, 1);
-            app.updateCartIcon();
-            app.showCart();
-        };
-
-        app.checkout = async () => {
-            if (app.cart.length === 0) return;
-
-            const cartItems = app.cart.map(item => ({
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity,
-                addons: item.addons
-            }));
-
-            const orderData = {
-                restaurantId: restaurantId,
-                restaurantName: app.restaurantData.name,
-                tableNumber: tableNumber,
-                items: cartItems,
-                total: app.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-                status: 'new',
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                customerName: 'طاولة ' + tableNumber
-            };
-
-            try {
-                const orderRef = await firebase.firestore().collection('orders').add(orderData);
-                const orderId = orderRef.id;
-
-                app.cart = [];
-                app.updateCartIcon();
-
-                document.getElementById('cart-modal').style.display = 'none';
-
-                const message = `🛒 *طلب جديد* 🛒%0A%0A*المطعم:* ${app.restaurantData.name}%0A*الطاولة:* ${tableNumber}%0A*رقم الطلب:* ${orderId}%0A%0A*المنتجات:*%0A${cartItems.map(item => `- ${item.name} × ${item.quantity} (${item.price.toFixed(2)} ر.س)${item.addons && item.addons.length > 0 ? ` + ${item.addons.map(a => a.name).join(', ')}` : ''}`).join('%0A')}`
-
-                const whatsappUrl = `https://wa.me/${app.restaurantData.whatsappNumber}?text=${message}`;
-                window.open(whatsappUrl, '_blank');
-
-                if (app.restaurantData.enableConfetti !== false) {
-                    app.showConfetti();
+                                </div>
+                                <span class="text-xs font-bold text-brand">+${addon.price}</span>
+                            </label>
+                        `;
+                    });
                 }
-
-                setTimeout(() => {
-                    alert('تم إرسال طلبك بنجاح! سيتم تأكيد الطلب قريباً.');
-                }, 500);
-            } catch (error) {
-                console.error('Error placing order:', error);
-                alert('حدث خطأ أثناء إرسال الطلب. الرجاء المحاولة مرة أخرى.');
             }
+
+            document.getElementById('prod-modal').classList.remove('hidden');
+            document.getElementById('prod-modal').classList.add('flex');
         };
 
-        document.getElementById('cart-icon').onclick = () => app.showCart();
-        document.getElementById('cart-close').onclick = () => document.getElementById('cart-modal').style.display = 'none';
-        document.getElementById('cart-modal').onclick = (e) => {
-            if (e.target.id === 'cart-modal') {
-                document.getElementById('cart-modal').style.display = 'none';
+        app.adjustQty = (d) => {
+            modalQty += d;
+            if(modalQty < 1) modalQty = 1;
+            document.getElementById('modal-qty').innerText = modalQty;
+        };
+
+        app.addToCart = () => {
+            const selectedAddons = [];
+            let addonsTotal = 0;
+            document.querySelectorAll('.addon-option:checked').forEach(opt => {
+                const price = parseFloat(opt.dataset.price);
+                addonsTotal += price;
+                selectedAddons.push({
+                    id: opt.value,
+                    name: opt.dataset.name,
+                    price: price
+                });
+            });
+
+            cart.push({ 
+                ...currentModalProd, 
+                qty: modalQty,
+                selectedAddons: selectedAddons,
+                addonsTotal: addonsTotal
+            });
+            
+            app.closeModal();
+            app.updateCartBtn();
+            
+            const btn = document.getElementById('cart-btn');
+            btn.classList.add('scale-110');
+            setTimeout(() => btn.classList.remove('scale-110'), 200);
+        };
+
+        app.closeModal = () => {
+            document.getElementById('prod-modal').classList.add('hidden');
+            document.getElementById('prod-modal').classList.remove('flex');
+        };
+
+        app.updateCartBtn = () => {
+            const count = cart.reduce((a,b) => a+b.qty, 0);
+            const total = cart.reduce((a,b) => a + ((b.price + (b.addonsTotal || 0)) * b.qty), 0);
+            
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('cart-total').innerText = total.toFixed(2);
+            
+            if(count > 0) document.getElementById('cart-btn').classList.remove('translate-y-20');
+            else document.getElementById('cart-btn').classList.add('translate-y-20');
+        };
+
+        app.openCart = () => {
+            const wrapper = document.getElementById('cart-items');
+            wrapper.innerHTML = cart.map((item, i) => {
+                const itemTotal = (item.price + (item.addonsTotal || 0)) * item.qty;
+                const addonsHtml = (item.selectedAddons && item.selectedAddons.length > 0) 
+                    ? `<div class="text-[10px] text-gray-500 mt-1">
+                        ${item.selectedAddons.map(a => `+ ${a.name} (${a.price})`).join('، ')}
+                       </div>`
+                    : '';
+
+                return `
+                <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-gray-100 w-12 h-12 rounded-lg flex items-center justify-center font-bold text-gray-500">${item.qty}x</div>
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800">${item.name}</h4>
+                            ${addonsHtml}
+                            <p class="text-xs text-brand font-bold">${itemTotal} ر.س</p>
+                        </div>
+                    </div>
+                    <button onclick="app.removeFromCart(${i})" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `}).join('');
+
+            const gross = cart.reduce((a,b) => a + ((b.price + (b.addonsTotal || 0)) * b.qty), 0); 
+            const taxRate = restaurant.tax || 0;
+            const fees = restaurant.fees || 0;
+
+            let net = gross;
+            let taxVal = 0;
+
+            if (taxRate > 0) {
+                const factor = 1 + (taxRate / 100);
+                net = gross / factor;
+                taxVal = gross - net;
             }
-        };
-        document.getElementById('checkout-btn').onclick = () => app.checkout();
 
-        app.init = async () => {
-            await app.loadRestaurantData();
-            await app.loadCategories();
-            await app.loadProducts();
-            await app.loadAddons();
+            const total = gross + fees;
+
+            document.getElementById('bill-sub').innerText  = net.toFixed(2);
+            document.getElementById('tax-rate').innerText = taxRate;
+            document.getElementById('bill-tax').innerText = taxVal.toFixed(2);
+            document.getElementById('bill-fees').innerText = fees.toFixed(2);
+            document.getElementById('bill-total').innerText = total.toFixed(2) + ' ر.س';
+
+            document.getElementById('cart-modal').classList.remove('hidden');
+            document.getElementById('cart-modal').classList.add('flex');
         };
+
+        app.removeFromCart = (i) => {
+            cart.splice(i, 1);
+            app.openCart();
+            app.updateCartBtn();
+            if(cart.length === 0) app.closeCart();
+        };
+
+        app.closeCart = () => {
+            document.getElementById('cart-modal').classList.add('hidden');
+            document.getElementById('cart-modal').classList.remove('flex');
+        };
+
+        app.showCelebration = () => {
+            const layer = document.getElementById('confetti-layer');
+            if (!layer) return;
+            layer.innerHTML = '';
+            layer.classList.remove('hidden');
+
+            const colors = ['#d32f2f', '#1976d2', '#388e3c', '#fbc02d', '#8e24aa', '#e64a19', '#5d4037'];
+            const pieces = 180;
+
+            for (let i = 0; i < pieces; i++) {
+                const div = document.createElement('div');
+                const isLeft = Math.random() > 0.5;
+                div.className = `confetti-piece ${isLeft ? 'from-left' : 'from-right'}`;
+                
+                div.style.left = isLeft ? '-5%' : '105%';
+                div.style.top = Math.random() * 40 + '%';
+                
+                div.style.backgroundColor = colors[i % colors.length];
+                
+                div.style.animationDuration = (Math.random() * 0.8 + 1.8) + 's';
+                div.style.animationDelay = (Math.random() * 0.5) + 's';
+                
+                layer.appendChild(div);
+            }
+            setTimeout(() => {
+                layer.classList.add('hidden');
+                layer.innerHTML = '';
+            }, 3200);
+        };
+
+        app.checkout = () => {
+            if(cart.length === 0) return;
+            
+            app.showCelebration();
+
+            const name = document.getElementById('cust-name').value;
+            const note = document.getElementById('cust-note').value;
+            const total = document.getElementById('bill-total').innerText;
+            
+            let msg = `*طلب جديد* 🔔\\n`;
+            if(tableNum) msg += `📍 طاولة: *${tableNum}*\\n`;
+            msg += `👤 الاسم: ${name || 'غير محدد'}\\n`;
+            msg += `----------------\\n`;
+            
+            cart.forEach(item => {
+                msg += `▫️ ${item.qty}x ${item.name} (${item.price})\\n`;
+                if(item.selectedAddons && item.selectedAddons.length > 0) {
+                    const addonsText = item.selectedAddons.map(a => `${a.name} (${a.price})`).join(' + ');
+                    msg += `   + ${addonsText}\\n`;
+                }
+            });
+            
+            msg += `----------------\\n`;
+            msg += `📝 ملاحظات: ${note}\\n`;
+            msg += `💰 *الإجمالي: ${total}*`;
+
+            const phone = restaurant.phone || "";
+            
+            setTimeout(() => {
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+            }, 800);
+        };
+
+        app.toggleLang = () => {
+            const newLang = lang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('menu_lang', newLang);
+            location.reload();
+        };
+
+        function getBadgeName(key) {
+            const badges = { 
+                'new': 'جديد', 
+                'bestseller': 'الأكثر طلباً', 
+                'promo': 'عرض خاص', 
+                'spicy': 'حار',
+                'vegan': 'نباتي'
+            };
+            return badges[key] || key;
+        }
 
         app.init();
     </script>
 </body>
-
 </html>
